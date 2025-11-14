@@ -1,0 +1,123 @@
+name: bidhannagarpoliceapp
+description: "A new Flutter project."
+publish_to: 'none' 
+
+version: 4.8.0+24
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  carousel_slider: ^5.1.1
+  url_launcher: ^6.3.2
+  font_awesome_flutter: ^10.7.0
+  flutter_launcher_icons: ^0.14.4
+  lottie: ^3.3.1
+ 
+  syncfusion_flutter_pdfviewer: ^31.1.19
+  http: ^1.5.0
+  shared_preferences: ^2.5.3
+  path_provider: ^2.1.5
+  intl: ^0.20.2
+  permission_handler: ^12.0.1
+  share_plus: ^10.0.2
+  pin_code_fields: ^8.0.1
+  image_picker: ^1.2.0
+  file_picker: ^10.3.3
+  geolocator: ^14.0.2
+ 
+ 
+  
+
+  
+ 
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/BDN logo.png"
+
+
+
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/BDN logo.png
+    - assets/images/s1.jpg
+    - assets/images/s2.jpg
+    - assets/images/s3.jpg
+    - assets/images/10198757.jpg
+    - assets/images/puja.jpg
+    - assets/images/appbg.jpg
+    - assets/images/sos_1894555.png
+    - assets/images/X1CGyfIO5U.json
+    - assets/images/620765.png
+    - assets/images/2490354.png
+    - assets/images/10551084.png
+    - assets/images/14897102.png
+    - assets/images/17470916.png
+    - assets/images/insta.png
+    - assets/images/fb.png
+    - assets/images/x.png
+    - assets/images/yt.png
+    - assets/images/yt2.png
+    - assets/images/man_4140037.png
+    - assets/images/social_15707820.png
+    - assets/images/applogin.jpg
+    - assets/images/logos_14417709.png
+    - assets/images/complain.png
+    - assets/images/missing.png
+    - assets/images/lost-items.png
+    - assets/images/siren_9056479.png
+    - assets/images/authentication_14291356.png
+    - assets/images/direction-board_17575680.png
+    - assets/images/lost.jpg
+    - assets/images/tasks_14380629.png
+    - assets/images/durga icon.png
+    - assets/images/airport.png
+    - assets/images/parking-area.png
+    - assets/images/dials.png
+    - assets/images/s4.jpg
+    - assets/images/s6.jpg
+    - assets/images/tenant.png
+    - assets/images/bg.jpg
+    - assets/images/app login3.jpg
+    - assets/images/ss1.jpg
+    - assets/images/ss2.jpg
+    - assets/images/hotline_7833545.png
+    - assets/images/Tenant Registration Form.pdf
+    - assets/images/phone-book_7229022.png
+    - assets/images/Sarai Application.pdf
+    - assets/images/Traffic Heirarchy.pdf
+    - assets/images/Traffic Addresses Chart.pdf
+    - assets/images/Traffic Map.pdf
+    - assets/images/jurisdiction.pdf
+    - assets/images/ambulance.png
+    - assets/images/hacker.png
+    - assets/images/Capture.pdf
+    - assets/images/TrafficRules.pdf
+    - assets/images/SAANJI BAATI.pdf
+    - assets/images/Guidelines Security-Advisory.pdf
+    - assets/images/wp.png
+    - assets/images/Puja Guide25.pdf
+    - assets/images/profilebg.jpg
+    - assets/images/temple_1183161.png
+    - assets/images/Untitled_compressed.pdf
+    - assets/images/app login.jpg
+    - assets/images/psd.jpg
+    - assets/images/crimereport.png
+    - assets/images/firdownload.png
+    - assets/images/trafficindident.png
+    - assets/images/line.png
