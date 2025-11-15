@@ -376,7 +376,8 @@ isLoading
             psCtrl.text = value.toString();
           });
         },
-        decoration: InputDecoration(labelText: " Police Station"),
+        decoration: InputDecoration(labelText: " Police Station*"),
+        validator: (value) => value == null ? 'Select P.S' : null,
       ),
 
 

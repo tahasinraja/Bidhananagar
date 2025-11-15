@@ -312,7 +312,7 @@ class _trafficreportState extends State<trafficreport> {
               ),
               TextFormField(
                 controller: localityCtrl,
-                decoration: const InputDecoration(labelText: 'Locality'),
+                decoration: const InputDecoration(labelText: 'Locality*'),
                 validator: (v) => v!.isEmpty ? 'Enter locality' : null,
               ),
               TextFormField(

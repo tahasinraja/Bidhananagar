@@ -35,7 +35,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:share_plus/share_plus.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -66,12 +66,12 @@ class _homepageState extends State<homepage> {
 ) {
   showDialog(
     context: context,
-    barrierDismissible: false, // user must choose one
+    barrierDismissible: true, // user must choose one
     builder: (context) => AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text(
+      title:  Text(
         "Welcome!",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),textAlign: TextAlign.center,
       ),
       content: const Text(
         "You need to log in or sign up to continue.",
@@ -79,22 +79,39 @@ class _homepageState extends State<homepage> {
       ),
       actionsAlignment: MainAxisAlignment.spaceAround,
       actions: [
-        TextButton.icon(
-          icon: const Icon(Icons.login, color: Colors.blue),
-          label: const Text("Login", style: TextStyle(color: Colors.blue)),
-          onPressed: () {
-            Navigator.pop(context);
-            onLoginTap();
-          },
+        SizedBox(
+          
+          child: TextButton.icon( style: TextButton.styleFrom(
+            backgroundColor: Colors.green,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              
+            ),
+          ),
+            icon: const Icon(Icons.login, color: Colors.white),
+            label: const Text("Login", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+            onPressed: () {
+              Navigator.pop(context);
+              onLoginTap();
+            },
+          ),
         ),
-        TextButton.icon(
-          icon: const Icon(Icons.person_add, color: Colors.green),
-          label: const Text("Sign Up", style: TextStyle(color: Colors.green)),
+        TextButton.icon( style: TextButton.styleFrom(
+          backgroundColor: Colors.blue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            
+          ),
+
+        ),
+          icon: const Icon(Icons.person_add, color: Colors.white),
+          label: const Text("Sign Up", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
           onPressed: () {
             Navigator.pop(context);
             onSignupTap();
           },
         ),
+       
       ],
     ),
   );
@@ -768,23 +785,21 @@ class _homepageState extends State<homepage> {
                     
                           const Divider(),
                     
-                          // 🔹 Single Items
-                          // _buildDrawerItem(
-                          //   Icons.store_mall_directory_outlined,
-                          //   "Gallery",
-                          //   onTap: () {
-                          //     Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //         builder:
-                          //             (context) => comingsoon(
-                          //               onThemeChanged: widget.onThemeChanged,
-                          //               isDarkMode: widget.isDarkMode,
-                          //             ),
-                          //       ),
-                          //     );
-                          //   },
-                          // ),
+                         // 🔹 Single Items
+                          _buildDrawerItem(
+                            Icons.assignment_outlined,
+                            "Forms",
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => formspage(onThemeChanged:widget. onThemeChanged, 
+                                      isDarkMode:widget. isDarkMode),
+                                ),
+                              );
+                            },
+                          ),
                           _buildDrawerItem(
                             Icons.feedback_outlined,
                             "Feedback",
@@ -996,248 +1011,286 @@ class _homepageState extends State<homepage> {
         ),
 
         // ✅ AppBar
-        appBar: AppBar(
-          backgroundColor: widget.isDarkMode ? Colors.black : Color(0xFFe9e4de),
-          shadowColor: Colors.black,
-          // elevation: 4,
-          automaticallyImplyLeading: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Builder(
-                builder:
-                    (context) => GestureDetector(
-                      onTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      child: SizedBox(
-                        height: 30,
-                        child: Image.asset('assets/images/BDN logo.png'),
-                      ),
-                    ),
-              ),
-              Text(
-                '  Bidhannagar Police',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-
-              Spacer(),
-              IconButton(
-                onPressed: () => callnumber2(),
-                icon: ImageIcon(
-                  AssetImage('assets/images/sos_1894555.png'),
-                  color: Colors.red,
-                  size: 30,
-                ),
-              ),
-
-              FutureBuilder<List<NoticeModel>>(
-                future: _futureNotices,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    _notificationCount = snapshot.data!.length; // notice count
-                  }
-
-                  return IconButton(
-                    icon: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                         Icon(
-                          Icons.notifications_active_outlined,
-                          color:widget. isDarkMode ? Colors.white : Colors.black,
-                          size: 30,
-                        ),
-                        if (_notificationCount > 0)
-                          Positioned(
-                            right: -3,
-                            top: -3,
-                            child: Container(
-                              padding: const EdgeInsets.all(3),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              constraints: const BoxConstraints(
-                                minWidth: 18,
-                                minHeight: 18,
-                              ),
-                              child: Text(
-                                '$_notificationCount',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    onPressed: () async {
-                      SharedPreferences prets =
-                          await SharedPreferences.getInstance();
-                      bool isloggedin = prets.getBool('isloggedin') ?? false;
-
-                   if (!isloggedin) {
-  showLoginSignupDialog(
-    context,
-    // when user taps Login
-    () {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 500),
-          pageBuilder: (context, animation, secondaryAnimation) => testlogin(
-            onThemeChanged: widget.onThemeChanged,
-            isDarkMode: widget.isDarkMode,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, -1.0);
-            const end = Offset.zero;
-            var tween = Tween(begin: begin, end: end)
-                .chain(CurveTween(curve: Curves.easeInOut));
-            return SlideTransition(position: animation.drive(tween), child: child);
-          },
+        appBar: PreferredSize( preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.07),
+          child: AppBar(
+            backgroundColor: widget.isDarkMode ? Colors.black : Color(0xFFe9e4de),
+            shadowColor: Colors.black,
+            // elevation: 4,
+            automaticallyImplyLeading: false,
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+             Expanded(
+            child: Row(
+              children: [
+           Builder(
+  builder: (context) => GestureDetector(
+    onTap: () => Scaffold.of(context).openDrawer(),
+    child: Row(
+      children: [
+        Text("☰", style: TextStyle(fontSize: 27)),
+        SizedBox(width: 12),
+        Image.asset(
+          'assets/images/BDN logo.png',
+          height: MediaQuery.of(context).size.height * 0.040,
         ),
-      );
-    },
-    // when user taps Signup
-    () {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 500),
-          pageBuilder: (context, animation, secondaryAnimation) => signuppage(
-            onThemeChanged: widget.onThemeChanged,
-            isDarkMode: widget.isDarkMode,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, -1.0);
-            const end = Offset.zero;
-            var tween = Tween(begin: begin, end: end)
-                .chain(CurveTween(curve: Curves.easeInOut));
-            return SlideTransition(position: animation.drive(tween), child: child);
-          },
-        ),
-      );
-    },
-  );
-} else {
-  Navigator.push(
-    context,
-    PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 1000),
-      pageBuilder: (context, animation, secondaryAnimation) => Notificationscreen(
-        onThemeChanged: widget.onThemeChanged,
-        isDarkMode: widget.isDarkMode,
-      ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(0.0, -1.0);
-        const end = Offset.zero;
-        var tween = Tween(begin: begin, end: end)
-            .chain(CurveTween(curve: Curves.easeInOut));
-        return SlideTransition(position: animation.drive(tween), child: child);
-      },
-    ),
-  );
-}
-
-                      
-
-                      // 🔹 Reset counter after opening notification screen
-                      setState(() {
-                        _notificationCount = 0;
-                      });
-                    },
-                  );
-                },
-              ),
-           GestureDetector(
-  onTap: () async {
-    // ✅ 1️⃣ Check login status
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isloggedin = prefs.getBool('isloggedin') ?? false;
-
-    // ✅ 2️⃣ If NOT logged in → show popup
-    if (!isloggedin) {
-      showLoginSignupDialog(
-        context,
-        // When user taps Login
-        () {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              transitionDuration: const Duration(milliseconds: 500),
-              pageBuilder: (context, animation, secondaryAnimation) => testlogin(
-                onThemeChanged: widget.onThemeChanged,
-                isDarkMode: widget.isDarkMode,
-              ),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                const begin = Offset(0.0, -1.0);
-                const end = Offset.zero;
-                var tween = Tween(begin: begin, end: end)
-                    .chain(CurveTween(curve: Curves.easeInOut));
-                return SlideTransition(position: animation.drive(tween), child: child);
-              },
-            ),
-          );
-        },
-        // When user taps Signup
-        () {
-          Navigator.pushReplacement(
-            context,
-            PageRouteBuilder(
-              transitionDuration: const Duration(milliseconds: 500),
-              pageBuilder: (context, animation, secondaryAnimation) => signuppage(
-                onThemeChanged: widget.onThemeChanged,
-                isDarkMode: widget.isDarkMode,
-              ),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                const begin = Offset(0.0, -1.0);
-                const end = Offset.zero;
-                var tween = Tween(begin: begin, end: end)
-                    .chain(CurveTween(curve: Curves.easeInOut));
-                return SlideTransition(position: animation.drive(tween), child: child);
-              },
-            ),
-          );
-        },
-      );
-    } 
-    // ✅ 3️⃣ If logged in → go to profile screen
-    else {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 600),
-          pageBuilder: (context, animation, secondaryAnimation) => profilescreen(
-            onThemeChanged: widget.onThemeChanged,
-            isDarkMode: widget.isDarkMode,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, -1.0);
-            const end = Offset.zero;
-            var tween = Tween(begin: begin, end: end)
-                .chain(CurveTween(curve: Curves.easeInOut));
-            return SlideTransition(position: animation.drive(tween), child: child);
-          },
-        ),
-      );
-    }
-  },
-
-  // ✅ 4️⃣ Profile Avatar UI
-  child: const CircleAvatar(
-    radius: 15,
-    backgroundColor: Colors.white,
-    child: Image(
-      image: AssetImage('assets/images/man_4140037.png'),
+      ],
     ),
   ),
 ),
 
-            ],
+          
+                SizedBox(width: 12),
+          
+                Expanded(   
+          // child: Text(
+          //   "Bidhannagar Police",
+          //   style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),
+
+          //  // maxLines: 1,
+          //   overflow: TextOverflow.ellipsis,
+          // )
+          
+          //  ⭐ IMPORTANT!
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Bidhannagar Police",
+                     style: TextStyle(
+             fontSize: 20,
+             fontWeight: FontWeight.bold,
+             height: 1.1,     // optional, makes text tighter
+          ),
+          
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+                
+          
+               // Spacer(),
+                IconButton(
+                  onPressed: () => callnumber2(),
+                  icon: ImageIcon(
+                    AssetImage('assets/images/sos_1894555.png'),
+                    color: Colors.red,
+                    size: MediaQuery.of(  context).size.width * 0.08,
+                  ),
+                ),
+          
+                FutureBuilder<List<NoticeModel>>(
+                  future: _futureNotices,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      _notificationCount = snapshot.data!.length; // notice count
+                    }
+          
+                    return IconButton(
+                      icon: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                           Icon(
+                            Icons.notifications_active_outlined,
+                            color:widget. isDarkMode ? Colors.white : Colors.black,
+                        size: MediaQuery.of(  context).size.width * 0.08,
+                          ),
+                          if (_notificationCount > 0)
+                            Positioned(
+                              right: -3,
+                              top: -3,
+                              child: Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                constraints: const BoxConstraints(
+                                  minWidth: 18,
+                                  minHeight: 18,
+                                ),
+                                child: Text(
+                                  '$_notificationCount',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      onPressed: () async {
+                        SharedPreferences prets =
+                            await SharedPreferences.getInstance();
+                        bool isloggedin = prets.getBool('isloggedin') ?? false;
+          
+                     if (!isloggedin) {
+            showLoginSignupDialog(
+              context,
+              // when user taps Login
+              () {
+                Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            pageBuilder: (context, animation, secondaryAnimation) => testlogin(
+              onThemeChanged: widget.onThemeChanged,
+              isDarkMode: widget.isDarkMode,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, -1.0);
+              const end = Offset.zero;
+              var tween = Tween(begin: begin, end: end)
+                  .chain(CurveTween(curve: Curves.easeInOut));
+              return SlideTransition(position: animation.drive(tween), child: child);
+            },
+          ),
+                );
+              },
+              // when user taps Signup
+              () {
+                Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            pageBuilder: (context, animation, secondaryAnimation) => signuppage(
+              onThemeChanged: widget.onThemeChanged,
+              isDarkMode: widget.isDarkMode,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, -1.0);
+              const end = Offset.zero;
+              var tween = Tween(begin: begin, end: end)
+                  .chain(CurveTween(curve: Curves.easeInOut));
+              return SlideTransition(position: animation.drive(tween), child: child);
+            },
+          ),
+                );
+              },
+            );
+          } else {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 1000),
+                pageBuilder: (context, animation, secondaryAnimation) => Notificationscreen(
+          onThemeChanged: widget.onThemeChanged,
+          isDarkMode: widget.isDarkMode,
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, -1.0);
+          const end = Offset.zero;
+          var tween = Tween(begin: begin, end: end)
+              .chain(CurveTween(curve: Curves.easeInOut));
+          return SlideTransition(position: animation.drive(tween), child: child);
+                },
+              ),
+            );
+          }
+          
+                        
+          
+                        // 🔹 Reset counter after opening notification screen
+                        setState(() {
+                          _notificationCount = 0;
+                        });
+                      },
+                    );
+                  },
+                ),
+             GestureDetector(
+            onTap: () async {
+              // ✅ 1️⃣ Check login status
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              bool isloggedin = prefs.getBool('isloggedin') ?? false;
+          
+              // ✅ 2️⃣ If NOT logged in → show popup
+              if (!isloggedin) {
+                showLoginSignupDialog(
+          context,
+          // When user taps Login
+          () {
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 500),
+                pageBuilder: (context, animation, secondaryAnimation) => testlogin(
+                  onThemeChanged: widget.onThemeChanged,
+                  isDarkMode: widget.isDarkMode,
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(0.0, -1.0);
+                  const end = Offset.zero;
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: Curves.easeInOut));
+                  return SlideTransition(position: animation.drive(tween), child: child);
+                },
+              ),
+            );
+          },
+          // When user taps Signup
+          () {
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 500),
+                pageBuilder: (context, animation, secondaryAnimation) => signuppage(
+                  onThemeChanged: widget.onThemeChanged,
+                  isDarkMode: widget.isDarkMode,
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(0.0, -1.0);
+                  const end = Offset.zero;
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: Curves.easeInOut));
+                  return SlideTransition(position: animation.drive(tween), child: child);
+                },
+              ),
+            );
+          },
+                );
+              } 
+              // ✅ 3️⃣ If logged in → go to profile screen
+              else {
+                Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 600),
+            pageBuilder: (context, animation, secondaryAnimation) => profilescreen(
+              onThemeChanged: widget.onThemeChanged,
+              isDarkMode: widget.isDarkMode,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, -1.0);
+              const end = Offset.zero;
+              var tween = Tween(begin: begin, end: end)
+                  .chain(CurveTween(curve: Curves.easeInOut));
+              return SlideTransition(position: animation.drive(tween), child: child);
+            },
+          ),
+                );
+              }
+            },
+          
+            // ✅ 4️⃣ Profile Avatar UI
+            child:  CircleAvatar(
+              radius: MediaQuery.of(context).size.height * 0.020,
+              backgroundColor: Colors.white,
+              child: Image(
+                image: AssetImage('assets/images/man_4140037.png'),
+              ),
+            ),
+          ),
+          
+              ],
+            ),
           ),
         ),
 
@@ -1387,35 +1440,189 @@ class _homepageState extends State<homepage> {
                         tilesButton(
                           title: 'Report \nCrime',
                           imagepath: 'assets/images/crimereport.png',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => crimereport(
-                                      onThemeChanged: widget.onThemeChanged,
-                                      isDarkMode: widget.isDarkMode,
-                                    ),
-                              ),
-                            );
+                          onTap: () async{
+                           SharedPreferences prefs = await SharedPreferences.getInstance();
+                            bool isLoggedIn = prefs.getBool('isloggedin') ?? false;
+                            if (!isLoggedIn) {
+                                  showLoginSignupDialog(
+          context,
+          // When user taps Login
+          () {
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 500),
+                pageBuilder: (context, animation, secondaryAnimation) => testlogin(
+                  onThemeChanged: widget.onThemeChanged,
+                  isDarkMode: widget.isDarkMode,
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(0.0, -1.0);
+                  const end = Offset.zero;
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: Curves.easeInOut));
+                  return SlideTransition(position: animation.drive(tween), child: child);
+                },
+              ),
+            );
+          },
+          // When user taps Signup
+          () {
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 500),
+                pageBuilder: (context, animation, secondaryAnimation) => signuppage(
+                  onThemeChanged: widget.onThemeChanged,
+                  isDarkMode: widget.isDarkMode,
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(0.0, -1.0);
+                  const end = Offset.zero;
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: Curves.easeInOut));
+                  return SlideTransition(position: animation.drive(tween), child: child);
+                },
+              ),
+            );
+          },
+                );
+              } 
+              // ✅ 3️⃣ If logged in → go to profile screen
+              else {
+                Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 600),
+            pageBuilder: (context, animation, secondaryAnimation) => crimereport(
+              onThemeChanged: widget.onThemeChanged,
+              isDarkMode: widget.isDarkMode,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, -1.0);
+              const end = Offset.zero;
+              var tween = Tween(begin: begin, end: end)
+                  .chain(CurveTween(curve: Curves.easeInOut));
+              return SlideTransition(position: animation.drive(tween), child: child);
+            },
+          ),
+                );
+             
+                            }
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder:
+                            //         (context) => crimereport(
+                            //           onThemeChanged: widget.onThemeChanged,
+                            //           isDarkMode: widget.isDarkMode,
+                            //         ),
+                            //   ),
+                            // );
                           },
                         ),
-                              tilesButton(
+                         tilesButton(
                           title: 'Report\nTraffic Incident',
                           imagepath: 'assets/images/trafficindident.png',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => trafficreport(
-                                      onThemeChanged: widget.onThemeChanged,
-                                      isDarkMode: widget.isDarkMode,
-                                    ),
-                              ),
-                            );
+                          onTap: () async{
+                           SharedPreferences prefs = await SharedPreferences.getInstance();
+                            bool isLoggedIn = prefs.getBool('isloggedin') ?? false;
+                            if (!isLoggedIn) {
+                                  showLoginSignupDialog(
+          context,
+          // When user taps Login
+          () {
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 500),
+                pageBuilder: (context, animation, secondaryAnimation) => testlogin(
+                  onThemeChanged: widget.onThemeChanged,
+                  isDarkMode: widget.isDarkMode,
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(0.0, -1.0);
+                  const end = Offset.zero;
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: Curves.easeInOut));
+                  return SlideTransition(position: animation.drive(tween), child: child);
+                },
+              ),
+            );
+          },
+          // When user taps Signup
+          () {
+            Navigator.pushReplacement(
+              context,
+              PageRouteBuilder(
+                transitionDuration: const Duration(milliseconds: 500),
+                pageBuilder: (context, animation, secondaryAnimation) => signuppage(
+                  onThemeChanged: widget.onThemeChanged,
+                  isDarkMode: widget.isDarkMode,
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(0.0, -1.0);
+                  const end = Offset.zero;
+                  var tween = Tween(begin: begin, end: end)
+                      .chain(CurveTween(curve: Curves.easeInOut));
+                  return SlideTransition(position: animation.drive(tween), child: child);
+                },
+              ),
+            );
+          },
+                );
+              } 
+              // ✅ 3️⃣ If logged in → go to profile screen
+              else {
+                Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 600),
+            pageBuilder: (context, animation, secondaryAnimation) => trafficreport(
+              onThemeChanged: widget.onThemeChanged,
+              isDarkMode: widget.isDarkMode,
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, -1.0);
+              const end = Offset.zero;
+              var tween = Tween(begin: begin, end: end)
+                  .chain(CurveTween(curve: Curves.easeInOut));
+              return SlideTransition(position: animation.drive(tween), child: child);
+            },
+          ),
+                );
+             
+                            }
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder:
+                            //         (context) => crimereport(
+                            //           onThemeChanged: widget.onThemeChanged,
+                            //           isDarkMode: widget.isDarkMode,
+                            //         ),
+                            //   ),
+                            // );
                           },
                         ),
+                        //       tilesButton(
+                        //   title: 'Report\nTraffic Incident',
+                        //   imagepath: 'assets/images/trafficindident.png',
+                        //   onTap: ()async {
+                        //    SharedPreferences prefs = await SharedPreferences.getInstance();
+                           
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder:
+                        //             (context) => trafficreport(
+                        //               onThemeChanged: widget.onThemeChanged,
+                        //               isDarkMode: widget.isDarkMode,
+                        //             ),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
 
 
 
@@ -1481,18 +1688,18 @@ class _homepageState extends State<homepage> {
                             }
                           },
                         ),
-                          tilesButton(
-                          title: 'Saanjh Baati\nRegistration',
-                          imagepath: 'assets/images/10551084.png',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SaanjhBatiPage(),
-                              ),
-                            );
-                          },
-                        ),
+                        //   tilesButton(
+                        //   title: 'Saanjh Baati\nRegistration',
+                        //   imagepath: 'assets/images/10551084.png',
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => SaanjhBatiPage(),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                            tilesButton(
                           title: 'Forms',
                           imagepath:
@@ -1515,23 +1722,23 @@ class _homepageState extends State<homepage> {
 
 
 
-                        tilesButton(
-                          title: 'Tenant\nRegistration',
-                          imagepath: 'assets/images/tenant.png',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => docsdownviewpage(
-                                      filePath:
-                                          'assets/images/Tenant Registration Form.pdf',
-                                      title: 'Tenant Registration',
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
+                        // tilesButton(
+                        //   title: 'Tenant\nRegistration',
+                        //   imagepath: 'assets/images/tenant.png',
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder:
+                        //             (context) => docsdownviewpage(
+                        //               filePath:
+                        //                   'assets/images/Tenant Registration Form.pdf',
+                        //               title: 'Tenant Registration',
+                        //             ),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                         // ServiceButton(
                         //   title: 'Missing Person',
                         //   imagepath: 'assets/images/siren_9056479.png',
