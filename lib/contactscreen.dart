@@ -21,15 +21,23 @@ class contactscreen extends StatelessWidget {
     final w = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor:isDarkMode ? Colors.black : Color(0xFFe9e4de),
+     backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? Colors.black
+    : const Color(0xFFe9e4de),
+
       appBar: AppBar(
         title:  Text(
           "Important Contacts",
           style: TextStyle(fontWeight: FontWeight.bold,
-          color: isDarkMode ? Colors.white : Colors.black ,fontSize: 20
+           color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,
           ),
         ),
-   backgroundColor:isDarkMode ? Colors.black : Color(0xFFe9e4de),
+   backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? Colors.black
+    : const Color(0xFFe9e4de),
+
         foregroundColor: Colors.white,
       ),
       body: ListView(
@@ -37,7 +45,7 @@ class contactscreen extends StatelessWidget {
         children: [
           _buildExpansionSection(
             context,
-            title: "📍 Bidhannagar Police",
+            title: "📍 Bidhannagar Control Room",
             h: h,
             children: [
               _buildHelplineCard("📞 Control Room (24x7)",
@@ -57,64 +65,84 @@ class contactscreen extends StatelessWidget {
                   numbers: ["9147889436", 
                   
                   ],
-                  emails: ["icairportps@gmail.com"],
+                 // emails: ["icairportps@gmail.com"],
+                 emails: ['psairport@policewb.gov.in'],
                    h: h, w: w),
               _buildHelplineCard("Baguiati PS",
                   numbers: ["9147889475",],
-                  emails: ["ocbaguiatips@gmail.com"],
+//emails: ["ocbaguiatips@gmail.com"],
+emails: ['psbaguiati@policewb.gov.in'],
                    h: h, w: w),
               _buildHelplineCard("Bidhannagar East PS",
                   numbers: ["9147889451", ],
-                  emails: ["icbidhannagareastps\n@gmail.com"],
+               //   emails: ["icbidhannagareastps\n@gmail.com"],
+               emails: ['psbdneast@policewb.gov.in'],
                    h: h, w: w),
               _buildHelplineCard("Bidhannagar North PS",
                   numbers: ["9147889485", ],
-                  emails: ["icbidhannagarnorthps\n@gmail.com"],
+                 // emails: ["icbidhannagarnorthps\n@gmail.com"],
+                 emails: ['psbdnnorth@mail.\nwbpolice.gov.in'],
+                  
+                   h: h, w: w),
+                       _buildHelplineCard("Bidhannagar South PS",
+                  numbers: ["9147889481  ", ],
+               //   emails: ["icbidhannagarsouthps\n@gmail.com"],
+               emails: ['psbdnsouth@police.gov.in'],
                    h: h, w: w),
               _buildHelplineCard("Cyber Crime PS",
                   numbers: ["9147889474", ],
-                  emails: ["bdncyberps@gmail.com"],
+                //  emails: ["bdncyberps@gmail.com"],
+                emails: ['pscybercrime_bdn@mail.\nwbpolice.gov.in'],
                    h: h, w: w),
 
-                      _buildHelplineCard("Bidhannagar South PS",
-                  numbers: ["9147889481  ", ],
-                  emails: ["icbidhannagarsouthps\n@gmail.com"],
-                   h: h, w: w),
+                  
              
          
               _buildHelplineCard("Electronics Complex PS",
                   numbers: ["9147889450", ],
-                  emails: ["icelectronicscomplexps\n@gmail.com"],
+               //   emails: ["icelectronicscomplexps\n@gmail.com"],
+               emails: ['psecomplex@policewb.gov.in'],
                    h: h, w: w),
+                     _buildHelplineCard("Eco Park PS",
+                  numbers: ["9147889509", ],
+                //  emails: ["ecoparkpolicestation\n@gmail.com"],
+                emails: ['psecopark_bdn@mail.\nwbpolice.gov.in'],
+                   h: h, w: w),
+
               _buildHelplineCard("Lake Town PS",
                   numbers: ["9147889479", ],
-                  emails: ["iclaketownps@gmail.com"],
+                //  emails: ["iclaketownps@gmail.com"],
+                emails: ['pslaketown@policewb.gov.in'],
+                   h: h, w: w),
+                    
+              _buildHelplineCard("Narayanpur PS",
+                  numbers: ["9147889511", ],
+                 // emails: ["icnarayanpurps@gmail.com"],
+                 emails: ['psnarayanpur@mail.\nwbpolice.gov.in'],
+                   h: h, w: w),
+                   
+              _buildHelplineCard("New Town PS",
+                  numbers: ["9147889505", ],
+                //  emails: ["ocnewtownps@gmail.com"],
+                emails: ['psnewtown@policewb.gov.in'],
                    h: h, w: w),
 
                  
                    _buildHelplineCard("NSCBI Airport PS",
                   numbers: [ "9147889465"],
-                  emails: ["icnscbips@gmail.com"],
+                //  emails: ["icnscbips@gmail.com"],
+                emails: ['psnscbi@policewb.gov.in'],
                    h: h, w: w),
-              _buildHelplineCard("ECO PARK PS",
-                  numbers: ["9147889509", ],
-                  emails: ["ecoparkpolicestation\n@gmail.com"],
-                   h: h, w: w),
-              _buildHelplineCard("Narayanpur PS",
-                  numbers: ["9147889511", ],
-                  emails: ["icnarayanpurps@gmail.com"],
-                   h: h, w: w),
-              _buildHelplineCard("New Town PS",
-                  numbers: ["9147889505", ],
-                  emails: ["ocnewtownps@gmail.com"],
-                   h: h, w: w),
+           
               _buildHelplineCard("Rajarhat PS",
                   numbers: ["9147889441", ],
-                  emails: ["rajarhatps@gmail.com"],
+                //  emails: ["rajarhatps@gmail.com"],
+                emails: ['psrajarhat@policewb.gov.in'],
                    h: h, w: w),
-                  _buildHelplineCard("Techno City PS",
+                  _buildHelplineCard("Technocity PS",
                   numbers: ["9147889510", ],
-                  emails: ['technocitypsbdn@gmail.com'],
+                //  emails: ['technocitypsbdn@gmail.com'],
+                emails: ['pstechnocity_bdn@mail.\nwbpolice.gov.in'],
                    h: h, w: w),
 
                   //  _buildHelplineCard("Cyber-Crime PS",
@@ -122,25 +150,26 @@ class contactscreen extends StatelessWidget {
 
                    _buildHelplineCard("Women PS",
                   numbers: ["9147889440"],
-                  emails: ["womenpsbidhannagar\n@gmail.com"],
+                 // emails: ["womenpsbidhannagar\n@gmail.com"],
+                 emails: ['womenps_bdn@mail.\nwbpolice.gov.in'],
                    h: h, w: w),
             ],
           ),
 
-          _buildExpansionSection(
-            context,
-            title: "🚨 Emergency Helpline",
-            h: h,
-            children: [
-              _buildHelplineCard("🚒 Fire Brigade Helpline", numbers: ["101"], h: h, w: w),
-              _buildHelplineCard("🚑 Ambulance Services", numbers: ["102"], h: h, w: w),
-              _buildHelplineCard("📞 Cyber Crime", numbers: ["1930"], h: h, w: w),
-              _buildHelplineCard("👩‍🦰 Women’s Helpline", numbers: ["1091"], h: h, w: w),
-              _buildHelplineCard("👶 Child Helpline", numbers: ["1098"], h: h, w: w),
-              _buildHelplineCard("📞 Disaster Management", numbers: ["1078"], h: h, w: w),
-              _buildHelplineCard("📞 Railway Enquiry", numbers: ["139"], h: h, w: w),
-            ],
-          ),
+          // _buildExpansionSection(
+          //   context,
+          //   title: "🚨 Emergency Helpline",
+          //   h: h,
+          //   children: [
+          //     _buildHelplineCard("🚒 Fire Brigade Helpline", numbers: ["101"], h: h, w: w),
+          //     _buildHelplineCard("🚑 Ambulance Services", numbers: ["102"], h: h, w: w),
+          //     _buildHelplineCard("📞 Cyber Crime", numbers: ["1930"], h: h, w: w),
+          //     _buildHelplineCard("👩‍🦰 Women’s Helpline", numbers: ["1091"], h: h, w: w),
+          //     _buildHelplineCard("👶 Child Helpline", numbers: ["1098"], h: h, w: w),
+          //     _buildHelplineCard("📞 Disaster Management", numbers: ["1078"], h: h, w: w),
+          //     _buildHelplineCard("📞 Railway Enquiry", numbers: ["139"], h: h, w: w),
+          //   ],
+          // ),
              _buildExpansionSection(
             context,
             title: "👮‍♂️ Senior Police Officers",
@@ -162,43 +191,63 @@ class contactscreen extends StatelessWidget {
           //     _buildHelplineCard("Addl. Charge of ADCP SB", numbers: ["9147889468"],
           //      h: h, w: w),
 
-               _buildHelplineCard("Additional Deputy Commissioner of Police Bidhannagar ", numbers: ["9147889458"],
+               _buildHelplineCard("Additional Deputy Commissioner of Police, Bidhannagar Division", numbers: ["9147889458"],
                emails: ["adcpbdnpc@gmail.com"],
                h: h, w: w),
-              _buildHelplineCard("Additional Deputy Commissioner of Police DD", numbers: ["9147889507"],
+              _buildHelplineCard("Additional Deputy Commissioner of Police, Detective Department", numbers: ["9147889507"],
               emails: ["adcpdd.bdn@gmail.com"],
                h: h, w: w),
+                _buildHelplineCard("Assistant Commissioner of Police, Airport Zone", numbers: ["9147889482"],
+              emails: ["acpaptz2@gmail.com"], h: h, w: w),
               // _buildHelplineCard("COF, BDNPC", numbers: ["9147889480"],
               // h: h, w: w),
-              _buildHelplineCard("Assistant Commissioner of Police HQ", numbers: ["9147889457"], 
-              emails: ["acphqbdnpc2019@gmail.com"],h: h, w: w),
-              _buildHelplineCard("Assistant Commissioner of Police New Town", numbers: ["9147889487"],
+                _buildHelplineCard("Assistant Commissioner of Police, New Town Zone", numbers: ["9147889487"],
               emails: ["acpnewtownbdnpc\n@gmail.com"], h: h, w: w),
-              
-              _buildHelplineCard("Assistant Commissioner of Police Airport", numbers: ["9147889482"],
-              emails: ["acpaptz2@gmail.com"], h: h, w: w),
-              _buildHelplineCard("Assistant Commissioner of Police North ", numbers: ["9147889438"],
+                 _buildHelplineCard("Assistant Commissioner of Police, North Zone", numbers: ["9147889438"],
               emails: ['acpbdn@gmail.com'],
              h: h, w: w),
-                     _buildHelplineCard("Assistant Commissioner of Police AP ", numbers: ["9147889443"],
-                     emails: ["acpapbidhannagar\n@gmail.com"], 
-                   h: h, w: w),
+                _buildHelplineCard("Assistant Commissioner of Police, Rajarhat Zone", numbers: ["9147889508"],
+              emails: ["acprajarhat@gmail.com"], h: h, w: w),
+              _buildHelplineCard("Assistant Commissioner of Police, South Zone", numbers: ["9147889456",],
+              emails: ["acpbdnz1@gmail.com"], h: h, w: w),
+                //  _buildHelplineCard("Assistant Commissioner of Police, Armed Police", numbers: ["9147889443"],
+                //      emails: ["acpapbidhannagar\n@gmail.com"], 
+                //    h: h, w: w),
+                     _buildHelplineCard("Assistant Commissioner of Police, Detective Department", numbers: ["9147889466" ],
+              emails: ["acpdd.bdnpc@gmail.com"], h: h, w: w),
+
+
+                _buildHelplineCard("Assistant Commissioner of Police, Cyber", numbers: ["9147889466" ],
+              emails: ["acpdd2bdn@policewb.gov.in"], h: h, w: w),
+
+                   _buildHelplineCard("Assistant Commissioner of Police, Enforcement Branch", numbers: ["9147889459" ],
+              emails: ["acpebbdnpc@gmail.com"], h: h, w: w),
+
+              
+              _buildHelplineCard("Assistant Commissioner of Police, Headquarter", numbers: ["9147889457"], 
+              emails: ["acphqbdnpc2019@gmail.com"],h: h, w: w),
+
+                _buildHelplineCard("Assistant Commissioner of Police, Special Branch",
+                 numbers: ["9147171382" ],
+              emails: ["dcsbcontrol@gmail.com"], h: h, w: w),
+            
+             
+           
+                  
 
             //   _buildHelplineCard("Additional charge of ACP Cyber", numbers: ["9147889459"],
             // h: h, w: w),
-
-              _buildHelplineCard("Assistant Commissioner of Police Traffic -II", numbers: ["9147889486"],
+                _buildHelplineCard("Assistant Commissioner of Police - I, Traffic", numbers: ["9147889443"],
               emails: ["acptraffic1bdn@gmail.com"], h: h, w: w),
-              _buildHelplineCard("Assistant Commissioner of Police Rajarhat", numbers: ["9147889508"],
-              emails: ["acprajarhat@gmail.com"], h: h, w: w),
-              _buildHelplineCard("Assistant Commissioner of Police South", numbers: ["9147889456",],
-              emails: ["acpbdnz1@gmail.com"], h: h, w: w),
+
+              _buildHelplineCard("Assistant Commissioner of Police - II, Traffic", numbers: ["9147889486"],
+              emails: ["acptraffic1bdn@gmail.com"], h: h, w: w),
+           
               
-              _buildHelplineCard("Assistant Commissioner of Police DD - 1", numbers: ["9147889466" ],
-              emails: ["acpdd.bdnpc@gmail.com"], h: h, w: w),
+              
+            
 
-              _buildHelplineCard("Assistant Commissioner of Police Traffic-I", numbers: ["9147889443"],
-              emails: ["acptraffic1bdn@gmail.com"], h: h, w: w),
+          
 
      //           _buildHelplineCard("IC North PS", numbers: ["9147889485"],
     //             emails: ["icbidhannagarnorthps\n@gmail.com"], h: h, w: w),
@@ -276,29 +325,33 @@ class contactscreen extends StatelessWidget {
   }
 
   /// Expansion Section
-  Widget _buildExpansionSection(BuildContext context,
-      {required String title, required double h, required List<Widget> children}) {
-    return Card(
-      
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 3,
-      margin: EdgeInsets.symmetric(vertical: h * 0.01),
-      child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        iconColor: Colors.redAccent,
-        collapsedIconColor: Colors.grey,
-        childrenPadding: const EdgeInsets.only(bottom: 12),
-        title: Text(
-          title,
-          style: TextStyle(
-              fontSize: h * 0.022,
-              fontWeight: FontWeight.bold,
-             color:isDarkMode ? Colors.white : Colors.black,),
+Widget _buildExpansionSection(BuildContext context,
+    {required String title, required double h, required List<Widget> children}) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
+  return Card(
+    color: isDark ? Colors.grey[900] : Colors.white,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 3,
+    margin: EdgeInsets.symmetric(vertical: h * 0.01),
+    child: ExpansionTile(
+      tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      iconColor: Colors.redAccent,
+      collapsedIconColor: isDark ? Colors.white70 : Colors.grey,
+      childrenPadding: const EdgeInsets.only(bottom: 12),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: h * 0.022,
+          fontWeight: FontWeight.bold,
+          color: isDark ? Colors.white : Colors.black87,
         ),
-        children: children,
       ),
-    );
-  }
+      children: children,
+    ),
+  );
+}
+
 
   /// Helpline Card inside expansion
 Widget _buildHelplineCard(
@@ -311,7 +364,7 @@ Widget _buildHelplineCard(
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: w * 0.04, vertical: h * 0.008),
     child: Card(
-      color: isDarkMode ? Colors.black : Colors.white,
+     // color: isDarkMode ? Colors.black : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 2,
       child: Padding(

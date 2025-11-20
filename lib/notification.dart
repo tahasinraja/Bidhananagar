@@ -17,10 +17,14 @@ class Notificationscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
        backgroundColor:
-          isDarkMode ? Colors.black : Colors.white,
+        Theme.of(context).brightness == Brightness.dark
+    ? Color(0xFF1A1A1A)
+    : const Color(0xFFe9e4de),
       appBar: AppBar(
            backgroundColor:
-          isDarkMode ? Colors.black : Colors.white,
+         Theme.of(context).brightness == Brightness.dark
+    ? Color(0xFF1A1A1A)
+    : const Color(0xFFe9e4de),
         title: const Text("Notifications"),
       ),
       body: FutureBuilder<List<NoticeModel>>(

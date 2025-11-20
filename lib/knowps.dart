@@ -90,7 +90,7 @@ class _knowpspageState extends State<knowpspage> {
            , mail: 'icelectronicscomplexps@gmail.com',
            mapurl:'https://maps.app.goo.gl/XGb2eSzLaSn255H96',
             h: h, w: w),    psdetailscard(context,
-             title: 'ECO PARK PS',
+             title: 'Eco Park PS',
            number: '9147889509'
            , mail: ' ecoparkpolicestation@gmail.com',
            mapurl:'https://maps.app.goo.gl/EJy686RzNqK84PkdA',
@@ -122,7 +122,7 @@ class _knowpspageState extends State<knowpspage> {
            , mail: ' rajarhatps@gmail.com',
            mapurl:'https://maps.app.goo.gl/7RQLbqzGLyov2Gjc9',
             h: h, w: w),
-            psdetailscard(context, title: 'Techno City PS',
+            psdetailscard(context, title: 'Technocity PS',
            number: '9147889510'
            , mail: 'technocitypsbdn@gmail.com',
            mapurl:'https://maps.app.goo.gl/Rz8CWb9AhX6XQkEB6',

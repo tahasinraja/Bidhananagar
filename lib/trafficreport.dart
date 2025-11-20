@@ -275,12 +275,16 @@ class _trafficreportState extends State<trafficreport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          widget.isDarkMode ? Colors.black : const Color(0xFFe9e4de),
+     backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? Colors.black
+    : const Color(0xFFe9e4de),
+
       appBar: AppBar(
         title: const Text('Report Traffic Incident'),
-        backgroundColor:
-            widget.isDarkMode ? Colors.black : const Color(0xFFe9e4de),
+       backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? Colors.black
+    : const Color(0xFFe9e4de),
+
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -292,15 +296,28 @@ class _trafficreportState extends State<trafficreport> {
                 controller: nameCtrl,
                 readOnly: isnamefilled,
               //  readOnly: nameCtrl.text.isNotEmpty,// agar emty mile to edit ho jaaye
-                decoration: const InputDecoration(labelText: 'Name'),
-                // validator: (v) => v!.isEmpty ? 'Enter name' : null,
+                decoration:  InputDecoration(label:RichText(text:   
+                TextSpan(text: "Name",style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,),
+                children: [
+                  TextSpan(text: "*", style: TextStyle(color: Colors.red),),
+                ]),),),
+                
+                 validator: (v) => v!.isEmpty ? 'Enter name' : null,
               ),
               TextFormField(
                 controller: phCtrl,
                 readOnly: true,
-                decoration: const InputDecoration(labelText: 'Phone'),
+                decoration:  InputDecoration(label: RichText(text:  TextSpan(text: "Phone",
+                 style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,),
+                 children: [
+                   TextSpan(text: "*", style: TextStyle(color: Colors.red),),
+                 ]),),),
                 keyboardType: TextInputType.phone,
-                // validator: (v) => v!.isEmpty ? 'Enter phone' : null,
+                 validator: (v) => v!.isEmpty ? 'Enter phone' : null,
               ),
                 TextFormField(
                 controller: uidCtrl,
@@ -312,13 +329,35 @@ class _trafficreportState extends State<trafficreport> {
               ),
               TextFormField(
                 controller: localityCtrl,
-                decoration: const InputDecoration(labelText: 'Locality*'),
+                decoration:  InputDecoration(label: RichText(text:  TextSpan(text: "Locality",
+                
+                style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,),
+                children: [
+                  TextSpan(text: "*", style: TextStyle(color: Colors.red),),
+                  
+                ]
+                  ),
+
+                   ),
+                   
+          
+                   ),
+                   
                 validator: (v) => v!.isEmpty ? 'Enter locality' : null,
+              
               ),
               TextFormField(
                 controller: desCtrl,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration:  InputDecoration(label:RichText(text: 
+                TextSpan(text: "Description",
+                 style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,),
+                 children: [TextSpan(text: "*", style: TextStyle(color: Colors.red),)]) ),),
                 maxLines: 3,
+                validator: (v) => v!.isEmpty ? 'Enter description' : null,
               ),
               const SizedBox(height: 10),
               Text('📍 Lat: ${latitude ?? "..."}, Lng: ${longitude ?? "..."}'),

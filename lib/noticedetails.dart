@@ -69,7 +69,9 @@ class _noticedetailsState extends State<noticedetails> {
       backgroundColor:widget. isDarkMode ? Colors.black : const Color(0xFFe9e4de),
       appBar: AppBar(
         title: Text("Notice Details"),
-          backgroundColor:widget. isDarkMode ? Colors.black : const Color(0xFFe9e4de),
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? Colors.black
+    : const Color(0xFFe9e4de),
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())

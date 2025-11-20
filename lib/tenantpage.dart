@@ -1,23 +1,22 @@
-import 'package:bidhannagarpoliceapp/tenantregistration.dart';
-import 'package:bidhannagarpoliceapp/webviewsaanjhbati.dart';
+
+import 'package:bidhannagarpoliceapp/webviewtenantpage.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SaanjhBatiPage extends StatefulWidget {
+class tenantpage extends StatefulWidget {
   final Function(bool) onThemeChanged;
   final bool isDarkMode;
-
-  const SaanjhBatiPage({
+  const tenantpage({
     super.key,
     required this.onThemeChanged,
     required this.isDarkMode,
   });
 
   @override
-  State<SaanjhBatiPage> createState() => _SaanjhBatiPageState();
+  State<tenantpage> createState() => _tenantpageState();
 }
 
-class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
+class _tenantpageState extends State<tenantpage> {
   final Uri saanjbaatihelp = Uri(scheme: 'tel', path: '9748898933');
 
   Future<void> sanjbaticont() async {
@@ -32,24 +31,27 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // shorthand
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor, // AUTO THEME COLOR
+      backgroundColor: isDark ? Colors.black : const Color(0xFFe9e4de),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(left: 16, right: 16, top: 45),
 
         child: Column(
           children: [
-            // Card for description
+            // --------------------------------------------
+            //  TOP WELCOME CARD
+            // --------------------------------------------
             Card(
-              color: theme.cardColor, // AUTO THEME CARD COLOR
+              color: isDark ? Colors.grey[900] : Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
               elevation: 6,
               shadowColor: Colors.blueAccent.withOpacity(0.3),
+
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -57,35 +59,40 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
                   children: [
                     Text(
                       'WELCOME TO',
-                      style: theme.textTheme.titleLarge!.copyWith(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
                     Text(
-                      'SAANJ BAATI',
-                      style: theme.textTheme.titleLarge!.copyWith(
+                      'Tenant Registration',
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
+
                     const SizedBox(height: 15),
+
                     Text(
                       'An initiative of Bidhannagar Police for elderly citizens',
-                      style: theme.textTheme.titleMedium!.copyWith(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white70 : Colors.black87,
                       ),
                     ),
+
                     const SizedBox(height: 12),
+
                     Text(
-                      'Since its initial days, Salt Lake City, or Bidhannagar, has had a significant population of senior citizens who live alone. '
-                      'And, to reach out to these people - for not only their safety and security, but also to take care of their health and happiness - '
-                      'the Bidhannagar City Police, along with OFFER, a non-profit organisation, came up with Saanjhbaati, '
-                      'a community policing project for elderly persons living alone in this jurisdiction.',
-                      style: theme.textTheme.bodyMedium!.copyWith(
+                      'No description available.....',
+                      style: TextStyle(
                         fontSize: 16,
                         height: 1.5,
+                        color: isDark ? Colors.white70 : Colors.black87,
                       ),
                     ),
                   ],
@@ -95,25 +102,31 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
 
             const SizedBox(height: 20),
 
-            // PDF Button
+            // ---------------------------------------------------
+            //   REGISTRATION FORM BUTTON
+            // ---------------------------------------------------
             ElevatedButton.icon(
-              onPressed: () async {
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder:
-                        (context) => Webviewsaanjhbati(
+                        (context) => webviewtennatpage(
                           onThemeChanged: widget.onThemeChanged,
                           isDarkMode: widget.isDarkMode,
                         ),
                   ),
                 );
               },
+
               icon: const Icon(Icons.app_registration),
-              label: const Text('Registration Form'),
+              label: const Text(
+                'Registration Form',
+                style: TextStyle(color: Colors.white),
+              ),
+
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueAccent,
-                foregroundColor: Colors.white, // BUTTON TEXT COLOR FIX
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
@@ -129,28 +142,6 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
             ),
 
             const SizedBox(height: 20),
-
-            // Emergency Contact Button
-            ElevatedButton.icon(
-              onPressed: sanjbaticont,
-              icon: const Icon(Icons.contact_phone),
-              label: const Text('Emergency Contact'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white, // BUTTON TEXT COLOR FIX
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
           ],
         ),
       ),

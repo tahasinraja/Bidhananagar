@@ -1,23 +1,17 @@
 import 'package:bidhannagarpoliceapp/tenantregistration.dart';
-import 'package:bidhannagarpoliceapp/webviewsaanjhbati.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SaanjhBatiPage extends StatefulWidget {
-  final Function(bool) onThemeChanged;
+class saraipage extends StatefulWidget {
+    final Function(bool) onThemeChanged;
   final bool isDarkMode;
-
-  const SaanjhBatiPage({
-    super.key,
-    required this.onThemeChanged,
-    required this.isDarkMode,
-  });
+  const saraipage({super.key, required this.onThemeChanged, required this.isDarkMode});
 
   @override
-  State<SaanjhBatiPage> createState() => _SaanjhBatiPageState();
+  State<saraipage> createState() => _saraipageState();
 }
 
-class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
+class _saraipageState extends State<saraipage> {
   final Uri saanjbaatihelp = Uri(scheme: 'tel', path: '9748898933');
 
   Future<void> sanjbaticont() async {
@@ -32,7 +26,7 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // shorthand
+    final theme = Theme.of(context); // shortcut
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor, // AUTO THEME COLOR
@@ -42,9 +36,9 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
 
         child: Column(
           children: [
-            // Card for description
+            // Card
             Card(
-              color: theme.cardColor, // AUTO THEME CARD COLOR
+              color: theme.cardColor, // DARK/LIGHT AUTO
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -63,7 +57,7 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
                       ),
                     ),
                     Text(
-                      'SAANJ BAATI',
+                      'Sarai Application',
                       style: theme.textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
@@ -79,10 +73,7 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Since its initial days, Salt Lake City, or Bidhannagar, has had a significant population of senior citizens who live alone. '
-                      'And, to reach out to these people - for not only their safety and security, but also to take care of their health and happiness - '
-                      'the Bidhannagar City Police, along with OFFER, a non-profit organisation, came up with Saanjhbaati, '
-                      'a community policing project for elderly persons living alone in this jurisdiction.',
+                      'No description available.....',
                       style: theme.textTheme.bodyMedium!.copyWith(
                         fontSize: 16,
                         height: 1.5,
@@ -95,17 +86,16 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
 
             const SizedBox(height: 20),
 
-            // PDF Button
+            // Registration Form Button
             ElevatedButton.icon(
-              onPressed: () async {
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) => Webviewsaanjhbati(
-                          onThemeChanged: widget.onThemeChanged,
-                          isDarkMode: widget.isDarkMode,
-                        ),
+                    builder: (context) => docsdownviewpage(
+                      filePath: 'assets/images/Sarai Application.pdf',
+                      title: 'Sarai Application',
+                    ),
                   ),
                 );
               },
@@ -113,11 +103,8 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
               label: const Text('Registration Form'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueAccent,
-                foregroundColor: Colors.white, // BUTTON TEXT COLOR FIX
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
+                foregroundColor: Colors.white, // FIX TEXT COLOR
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 textStyle: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -129,28 +116,6 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
             ),
 
             const SizedBox(height: 20),
-
-            // Emergency Contact Button
-            ElevatedButton.icon(
-              onPressed: sanjbaticont,
-              icon: const Icon(Icons.contact_phone),
-              label: const Text('Emergency Contact'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white, // BUTTON TEXT COLOR FIX
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
           ],
         ),
       ),

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 //import 'package:bidhannagarpoliceapp/commingsoon.dart';
 import 'package:bidhannagarpoliceapp/allforms.dart';
-import 'package:bidhannagarpoliceapp/feedback.dart';
+//import 'package:bidhannagarpoliceapp/feedback.dart';
 import 'package:bidhannagarpoliceapp/contactscreen.dart';
 import 'package:bidhannagarpoliceapp/crimereport.dart';
 import 'package:bidhannagarpoliceapp/noticedetails.dart';
@@ -10,7 +10,7 @@ import 'package:bidhannagarpoliceapp/signuppage.dart';
 import 'package:bidhannagarpoliceapp/trafficreport.dart';
 //import 'package:bidhannagarpoliceapp/history.dart';
 import 'package:bidhannagarpoliceapp/imageviwer.dart';
-import 'package:bidhannagarpoliceapp/knowps.dart';
+//import 'package:bidhannagarpoliceapp/knowps.dart';
 import 'package:bidhannagarpoliceapp/login.dart';
 
 import 'package:bidhannagarpoliceapp/modelfetch.dart';
@@ -19,11 +19,12 @@ import 'package:bidhannagarpoliceapp/notification.dart';
 //import 'package:bidhannagarpoliceapp/notification.dart';
 
 import 'package:bidhannagarpoliceapp/profile.dart';
-import 'package:bidhannagarpoliceapp/saanjhbatipage.dart';
+//import 'package:bidhannagarpoliceapp/saanjhbatipage.dart';
 import 'package:bidhannagarpoliceapp/serviceapifetch.dart';
 import 'package:bidhannagarpoliceapp/tenantregistration.dart';
-import 'package:bidhannagarpoliceapp/trafficadvisari.dart';
+//import 'package:bidhannagarpoliceapp/trafficadvisari.dart';
 import 'package:bidhannagarpoliceapp/trafficguard.dart';
+import 'package:bidhannagarpoliceapp/webvieparking.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
@@ -59,63 +60,76 @@ class _homepageState extends State<homepage> {
   bool _scrollingForward = true;
 
   // Login and Signup Dialog
- void showLoginSignupDialog(
-  BuildContext context,
-  VoidCallback onLoginTap,
-  VoidCallback onSignupTap,
-) {
-  showDialog(
-    context: context,
-    barrierDismissible: true, // user must choose one
-    builder: (context) => AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title:  Text(
-        "Welcome!",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),textAlign: TextAlign.center,
-      ),
-      content: const Text(
-        "You need to log in or sign up to continue.",
-        style: TextStyle(fontSize: 16),
-      ),
-      actionsAlignment: MainAxisAlignment.spaceAround,
-      actions: [
-        SizedBox(
-          
-          child: TextButton.icon( style: TextButton.styleFrom(
-            backgroundColor: Colors.green,
+  void showLoginSignupDialog(
+    BuildContext context,
+    VoidCallback onLoginTap,
+    VoidCallback onSignupTap,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // user must choose one
+      builder:
+          (context) => AlertDialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              
             ),
+            title: Text(
+              "Welcome!",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+            content: const Text(
+              "You need to log in or sign up to continue.",
+              style: TextStyle(fontSize: 16),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceAround,
+            actions: [
+              SizedBox(
+                child: TextButton.icon(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  icon: const Icon(Icons.login, color: Colors.white),
+                  label: const Text(
+                    "Login",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onLoginTap();
+                  },
+                ),
+              ),
+              TextButton.icon(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                icon: const Icon(Icons.person_add, color: Colors.white),
+                label: const Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  onSignupTap();
+                },
+              ),
+            ],
           ),
-            icon: const Icon(Icons.login, color: Colors.white),
-            label: const Text("Login", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
-            onPressed: () {
-              Navigator.pop(context);
-              onLoginTap();
-            },
-          ),
-        ),
-        TextButton.icon( style: TextButton.styleFrom(
-          backgroundColor: Colors.blue,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            
-          ),
-
-        ),
-          icon: const Icon(Icons.person_add, color: Colors.white),
-          label: const Text("Sign Up", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
-          onPressed: () {
-            Navigator.pop(context);
-            onSignupTap();
-          },
-        ),
-       
-      ],
-    ),
-  );
-}
+    );
+  }
 
   void _startAutoScroll() {
     Future.delayed(const Duration(seconds: 1), () async {
@@ -155,22 +169,24 @@ class _homepageState extends State<homepage> {
       ).showSnackBar(SnackBar(content: Text("Could not open PDF")));
     }
   }
+
   // fetch slider image
-  List <dynamic> sliderImage = [];
+  List<dynamic> sliderImage = [];
   Future<void> fetchSliderImage() async {
-    final sliderurl = Uri.parse('https://bnpcdeveloper.co.in/bnpolice/app/fetch_slider.php',);
+    final sliderurl = Uri.parse(
+      'https://bnpcdeveloper.co.in/bnpolice/app/fetch_slider.php',
+    );
 
     try {
       final response = await http.get(sliderurl);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-       
 
         if (data['status'].toLowerCase() == 'success') {
           setState(() {
             sliderImage = data['data'];
           });
-           print("Slider Data: $sliderImage.length");
+          print("Slider Data: $sliderImage.length");
         } else {
           throw Exception("Failed: ${data['message']}");
         }
@@ -230,7 +246,6 @@ class _homepageState extends State<homepage> {
   //     ),
   //   );
   // }
-
 
   //logout
   Future<void> logout() async {
@@ -351,9 +366,17 @@ class _homepageState extends State<homepage> {
       },
       child: Scaffold(
         extendBody: true,
-        backgroundColor: widget.isDarkMode ? Colors.black : Color(0xFFe9e4de),
+        backgroundColor:
+            Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : const Color(0xFFe9e4de),
+
         drawer: Drawer(
-          backgroundColor: widget.isDarkMode ? Colors.black : Color(0xFFe9e4de),
+          backgroundColor:
+              Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black
+                  : const Color(0xFFe9e4de),
+
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
@@ -380,412 +403,411 @@ class _homepageState extends State<homepage> {
                 padding: const EdgeInsets.only(left: 15, right: 15),
                 child: Column(
                   children: [
-// SwitchListTile(
-//   title: Text(
-//     widget.isDarkMode ? "Dark Mode" : "Light Mode",
-//     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//   ),
-//   secondary: AnimatedSwitcher(
-//     duration: const Duration(milliseconds: 300),
-//     child: Icon(
-//       widget.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-//       key: ValueKey(widget.isDarkMode),
-//       color: widget.isDarkMode ? Colors.white : Colors.black87,
-//     ),
-//   ),
-//   activeThumbColor: Colors.amberAccent,
-//   value: widget.isDarkMode,
-//   onChanged: (value) async {
-//     widget.onThemeChanged(value); // call main.dart function
+                    // SwitchListTile(
+                    //   title: Text(
+                    //     widget.isDarkMode ? "Dark Mode" : "Light Mode",
+                    //     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    //   ),
+                    //   secondary: AnimatedSwitcher(
+                    //     duration: const Duration(milliseconds: 300),
+                    //     child: Icon(
+                    //       widget.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                    //       key: ValueKey(widget.isDarkMode),
+                    //       color: widget.isDarkMode ? Colors.white : Colors.black87,
+                    //     ),
+                    //   ),
+                    //   activeThumbColor: Colors.amberAccent,
+                    //   value: widget.isDarkMode,
+                    //   onChanged: (value) async {
+                    //     widget.onThemeChanged(value); // call main.dart function
 
-// //     await Future.delayed(const Duration(milliseconds: 100));
+                    // //     await Future.delayed(const Duration(milliseconds: 100));
 
-// //  showDialog(
-// //   context: context,
-// //   barrierDismissible: true,
-// //   builder: (context) => Dialog(
-// //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-// //     backgroundColor:
-// //         widget.isDarkMode ? Colors.grey[900] : Colors.white, // Adaptive color
-// //     child: Container(
-// //       padding: const EdgeInsets.all(20),
-// //       decoration: BoxDecoration(
-// //         borderRadius: BorderRadius.circular(20),
-// //         gradient: LinearGradient(
-// //           colors: widget.isDarkMode
-// //               ? [Colors.black87, Colors.grey[850]!]
-// //               : [Colors.white, Colors.grey[100]!],
-// //           begin: Alignment.topLeft,
-// //           end: Alignment.bottomRight,
-// //         ),
-// //         boxShadow: [
-// //           BoxShadow(
-// //             color: widget.isDarkMode
-// //                 ? Colors.black54
-// //                 : Colors.grey.withOpacity(0.3),
-// //             blurRadius: 15,
-// //             offset: const Offset(0, 6),
-// //           ),
-// //         ],
-// //       ),
-// //       child: Column(
-// //         mainAxisSize: MainAxisSize.min,
-// //         children: [
-// //           Icon(
-// //             widget.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-// //             color: widget.isDarkMode ? Colors.amberAccent : Colors.orangeAccent,
-// //             size: 50,
-// //           ),
-// //           const SizedBox(height: 15),
-// //           Text(
-// //             "Theme Updated 🎨",
-// //             style: TextStyle(
-// //               fontSize: 20,
-// //               fontWeight: FontWeight.bold,
-// //               color: widget.isDarkMode ? Colors.white : Colors.black87,
-// //             ),
-// //           ),
-// //           const SizedBox(height: 10),
-// //           Text(
-// //             "Please restart the app to fully apply the new theme.",
-// //             textAlign: TextAlign.center,
-// //             style: TextStyle(
-// //               fontSize: 15,
-// //               color: widget.isDarkMode
-// //                   ? Colors.grey[400]
-// //                   : Colors.grey[700],
-// //             ),
-// //           ),
-// //           const SizedBox(height: 20),
-// //           ElevatedButton(
-// //             style: ElevatedButton.styleFrom(
-// //               backgroundColor: widget.isDarkMode
-// //                   ? Colors.amberAccent
-// //                   : Colors.blueAccent,
-// //               shape: RoundedRectangleBorder(
-// //                   borderRadius: BorderRadius.circular(12)),
-// //               padding:
-// //                   const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-// //               elevation: 5,
-// //             ),
-// //             onPressed: () => Navigator.pop(context),
-// //             child: const Text(
-// //               "OK",
-// //               style: TextStyle(
-// //                 fontSize: 16,
-// //                 fontWeight: FontWeight.bold,
-// //                 color: Colors.white,
-// //               ),
-// //             ),
-// //           ),
-// //         ],
-// //       ),
-// //     ),
-// //   ),
-// // );
+                    // //  showDialog(
+                    // //   context: context,
+                    // //   barrierDismissible: true,
+                    // //   builder: (context) => Dialog(
+                    // //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    // //     backgroundColor:
+                    // //         widget.isDarkMode ? Colors.grey[900] : Colors.white, // Adaptive color
+                    // //     child: Container(
+                    // //       padding: const EdgeInsets.all(20),
+                    // //       decoration: BoxDecoration(
+                    // //         borderRadius: BorderRadius.circular(20),
+                    // //         gradient: LinearGradient(
+                    // //           colors: widget.isDarkMode
+                    // //               ? [Colors.black87, Colors.grey[850]!]
+                    // //               : [Colors.white, Colors.grey[100]!],
+                    // //           begin: Alignment.topLeft,
+                    // //           end: Alignment.bottomRight,
+                    // //         ),
+                    // //         boxShadow: [
+                    // //           BoxShadow(
+                    // //             color: widget.isDarkMode
+                    // //                 ? Colors.black54
+                    // //                 : Colors.grey.withOpacity(0.3),
+                    // //             blurRadius: 15,
+                    // //             offset: const Offset(0, 6),
+                    // //           ),
+                    // //         ],
+                    // //       ),
+                    // //       child: Column(
+                    // //         mainAxisSize: MainAxisSize.min,
+                    // //         children: [
+                    // //           Icon(
+                    // //             widget.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                    // //             color: widget.isDarkMode ? Colors.amberAccent : Colors.orangeAccent,
+                    // //             size: 50,
+                    // //           ),
+                    // //           const SizedBox(height: 15),
+                    // //           Text(
+                    // //             "Theme Updated 🎨",
+                    // //             style: TextStyle(
+                    // //               fontSize: 20,
+                    // //               fontWeight: FontWeight.bold,
+                    // //               color: widget.isDarkMode ? Colors.white : Colors.black87,
+                    // //             ),
+                    // //           ),
+                    // //           const SizedBox(height: 10),
+                    // //           Text(
+                    // //             "Please restart the app to fully apply the new theme.",
+                    // //             textAlign: TextAlign.center,
+                    // //             style: TextStyle(
+                    // //               fontSize: 15,
+                    // //               color: widget.isDarkMode
+                    // //                   ? Colors.grey[400]
+                    // //                   : Colors.grey[700],
+                    // //             ),
+                    // //           ),
+                    // //           const SizedBox(height: 20),
+                    // //           ElevatedButton(
+                    // //             style: ElevatedButton.styleFrom(
+                    // //               backgroundColor: widget.isDarkMode
+                    // //                   ? Colors.amberAccent
+                    // //                   : Colors.blueAccent,
+                    // //               shape: RoundedRectangleBorder(
+                    // //                   borderRadius: BorderRadius.circular(12)),
+                    // //               padding:
+                    // //                   const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    // //               elevation: 5,
+                    // //             ),
+                    // //             onPressed: () => Navigator.pop(context),
+                    // //             child: const Text(
+                    // //               "OK",
+                    // //               style: TextStyle(
+                    // //                 fontSize: 16,
+                    // //                 fontWeight: FontWeight.bold,
+                    // //                 color: Colors.white,
+                    // //               ),
+                    // //             ),
+                    // //           ),
+                    // //         ],
+                    // //       ),
+                    // //     ),
+                    // //   ),
+                    // // );
 
-//   },
-// ),
-
+                    //   },
+                    // ),
                     Card(
                       // 🔹 About Section
                       child: Column(
                         children: [
-                          _buildExpansionTile(
-                            icon: Icons.info,
-                            title: "About Us",
-                            children: [
-                              _buildDrawerItem(
-                                Icons.real_estate_agent_outlined,
-                                "Organisation Profile",
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => docsdownviewpage(
-                                            filePath: 'assets/images/Capture.pdf',
-                                            title: 'Organisation Profile',
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.policy_outlined,
-                                "Police Station Profile",
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => knowpspage(
-                                            onThemeChanged: widget.onThemeChanged,
-                                            isDarkMode: widget.isDarkMode,
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              // _buildDrawerItem(
-                              //   Icons.history_outlined,
-                              //   "History",
-                              //   onTap: () {
-                              //     Navigator.push(
-                              //       context,
-                              //       MaterialPageRoute(
-                              //         builder:
-                              //             (context) => HistoryPage(
-                              //               onThemeChanged: widget.onThemeChanged,
-                              //               isDarkMode: widget.isDarkMode,
-                              //             ),
-                              //       ),
-                              //     );
-                              //   },
-                              // ),
-                              _buildDrawerItem(
-                                Icons.receipt_long_outlined,
-                                " Police Station Jurisdiction Map",
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => docsdownviewpage(
-                                            filePath:
-                                                'assets/images/jurisdiction.pdf',
-                                            title: 'Jurisdiction Map',
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                          // _buildExpansionTile(
+                          //   icon: Icons.info,
+                          //   title: "About Us",
+                          //   children: [
+                          _buildDrawerItem(
+                            Icons.real_estate_agent_outlined,
+                            "Police Station Hierarchy",
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => docsdownviewpage(
+                                        filePath: 'assets/images/Capture.pdf',
+                                        title: 'Organisation Profile',
+                                      ),
+                                ),
+                              );
+                            },
                           ),
-                    
-                          // 🔹 Traffic Section
-                          _buildExpansionTile(
-                            icon: Icons.traffic_outlined,
-                            title: "Traffic",
-                            children: [
-                              _buildDrawerItem(
-                                Icons.map,
-                                'Traffic Hierarchy',
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => docsdownviewpage(
-                                            filePath:
-                                                'assets/images/Traffic Heirarchy.pdf',
-                                            title: 'Traffic Hierarchy ',
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                    
-                              _buildDrawerItem(
-                                Icons.person,
-                                "Traffic Guards Profile ",
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => TrafficContactsPage(
-                                            onThemeChanged: widget.onThemeChanged,
-                                            isDarkMode: widget.isDarkMode,
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.rule,
-                                'Traffic Rules',
-                                onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => docsdownviewpage(
-                                            filePath:
-                                                'assets/images/TrafficRules.pdf',
-                                            title: 'Traffic Rules',
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.kitesurfing_sharp,
-                                'Traffic Advisory',
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => trafficadvisary(
-                                            onThemeChanged: widget.onThemeChanged,
-                                            isDarkMode: widget.isDarkMode,
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                    
-                              _buildDrawerItem(
-                                Icons.shopping_bag_outlined,
-                                "Traffic Jurisdiction Map",
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => docsdownviewpage(
-                                            filePath:
-                                                'assets/images/Traffic Map.pdf',
-                                            title: 'Traffic Jurisdiction Map',
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+
+                          // _buildDrawerItem(
+                          //   Icons.policy_outlined,
+                          //   "Police Station Profile",
+                          //   onTap: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder:
+                          //             (context) => knowpspage(
+                          //               onThemeChanged: widget.onThemeChanged,
+                          //               isDarkMode: widget.isDarkMode,
+                          //             ),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+                          // _buildDrawerItem(
+                          //   Icons.history_outlined,
+                          //   "History",
+                          //   onTap: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder:
+                          //             (context) => HistoryPage(
+                          //               onThemeChanged: widget.onThemeChanged,
+                          //               isDarkMode: widget.isDarkMode,
+                          //             ),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+                          // _buildDrawerItem(
+                          //   Icons.receipt_long_outlined,
+                          //   " Police Station Jurisdiction Map",
+                          //   onTap: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder:
+                          //             (context) => docsdownviewpage(
+                          //               filePath:
+                          //                   'assets/images/jurisdiction.pdf',
+                          //               title: 'Jurisdiction Map',
+                          //             ),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+                          //   ],
+                          //  ),
+
+                          // // 🔹 Traffic Section
+                          // _buildExpansionTile(
+                          //   icon: Icons.traffic_outlined,
+                          //   title: "Traffic",
+                          //   children: [
+                          // _buildDrawerItem(
+                          //   Icons.map,
+                          //   'Traffic  Hierarchy',
+                          //   onTap: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder:
+                          //             (context) => docsdownviewpage(
+                          //               filePath:
+                          //                   'assets/images/Traffic Heirarchy.pdf',
+                          //               title: 'Traffic Hierarchy ',
+                          //             ),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+                          _buildDrawerItem(
+                            Icons.person,
+                            "Traffic Station Hierarchy ",
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => TrafficContactsPage(
+                                        onThemeChanged: widget.onThemeChanged,
+                                        isDarkMode: widget.isDarkMode,
+                                      ),
+                                ),
+                              );
+                            },
                           ),
-                    
+
+                          // _buildDrawerItem(
+                          //   Icons.rule,
+                          //   'Traffic Rules',
+                          //   onTap: () async {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder:
+                          //             (context) => docsdownviewpage(
+                          //               filePath:
+                          //                   'assets/images/TrafficRules.pdf',
+                          //               title: 'Traffic Rules',
+                          //             ),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+                          // _buildDrawerItem(
+                          //   Icons.kitesurfing_sharp,
+                          //   'Traffic Advisory',
+                          //   onTap: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder:
+                          //             (context) => trafficadvisary(
+                          //               onThemeChanged: widget.onThemeChanged,
+                          //               isDarkMode: widget.isDarkMode,
+                          //             ),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+
+                          // _buildDrawerItem(
+                          //   Icons.shopping_bag_outlined,
+                          //   "Traffic Jurisdiction Map",
+                          //   onTap: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder:
+                          //             (context) => docsdownviewpage(
+                          //               filePath:
+                          //                   'assets/images/Traffic Map.pdf',
+                          //               title: 'Traffic Jurisdiction Map',
+                          //             ),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
+                          //  ],
+                          //  ),
+
                           // 🔹 Links Section
-                          _buildExpansionTile(
-                            icon: Icons.link,
-                            title: "Related Websites",
-                            children: [
-                              _buildDrawerItem(
-                                Icons.policy,
-                                "West Bengal Police",
-                                onTap: () async {
-                                  const ur1 = 'http://policewb.gov.in/';
-                                  if (await canLaunchUrl(Uri.parse(ur1))) {
-                                    await launchUrl(
-                                      Uri.parse(ur1),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  } else {
-                                    debugPrint("Could not launch $ur1");
-                                  }
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.policy,
-                                "e-Courts",
-                                onTap: () async {
-                                  const ur1 = 'https://services.ecourts.gov.in/';
-                                  if (await canLaunchUrl(Uri.parse(ur1))) {
-                                    await launchUrl(
-                                      Uri.parse(ur1),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  } else {
-                                    debugPrint("Could not launch $ur1");
-                                  }
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.shield_outlined,
-                                "Report Cyber Crime ",
-                                onTap: () async {
-                                  const ur1 = 'https://cybercrime.gov.in/';
-                                  if (await canLaunchUrl(Uri.parse(ur1))) {
-                                    await launchUrl(
-                                      Uri.parse(ur1),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  } else {
-                                    debugPrint("Could not launch $ur1");
-                                  }
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.hide_source_rounded,
-                                "Missing Person",
-                                onTap: () async {
-                                  const ur1 =
-                                      'https://udcase.wb.gov.in/Citizen_search';
-                                  if (await canLaunchUrl(Uri.parse(ur1))) {
-                                    await launchUrl(
-                                      Uri.parse(ur1),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  } else {
-                                    debugPrint("Could not launch $ur1");
-                                  }
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.shield,
-                                'Missing Child ',
-                                onTap: () async {
-                                  const ur1 =
-                                      'https://missionvatsalya.wcd.gov.in/citizen-login';
-                                  if (await canLaunchUrl(Uri.parse(ur1))) {
-                                    await launchUrl(
-                                      Uri.parse(ur1),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  } else {
-                                    debugPrint("Could not launch $ur1");
-                                  }
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.account_balance_sharp,
-                                'Sorasori Mukhyomatri ',
-                                onTap: () async {
-                                  const ur1 = 'https://cmo.wb.gov.in/';
-                                  if (await canLaunchUrl(Uri.parse(ur1))) {
-                                    await launchUrl(
-                                      Uri.parse(ur1),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  } else {
-                                    debugPrint("Could not launch $ur1");
-                                  }
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.shield,
-                                'CID West Bengal ',
-                                onTap: () async {
-                                  const ur1 = 'https://cid.wb.gov.in/';
-                                  if (await canLaunchUrl(Uri.parse(ur1))) {
-                                    await launchUrl(
-                                      Uri.parse(ur1),
-                                      mode: LaunchMode.externalApplication,
-                                    );
-                                  } else {
-                                    debugPrint("Could not launch $ur1");
-                                  }
-                                },
-                              ),
-                              _buildDrawerItem(
-                                Icons.shield,
-                                'Kolkata Police ',
-                                onTap: () async {
-                                  const ur1 = 'https://kolkatapolice.gov.in/';
-                                  if (await canLaunchUrl(Uri.parse(ur1))) {
-                                    await launchUrl(Uri.parse(ur1));
-                                  } else {
-                                    debugPrint("Could not launch $ur1");
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                    
+                          // _buildExpansionTile(
+                          //   icon: Icons.link,
+                          //   title: "Related Websites",
+                          //   children: [
+                          //     _buildDrawerItem(
+                          //       Icons.policy,
+                          //       "West Bengal Police",
+                          //       onTap: () async {
+                          //         const ur1 = 'http://policewb.gov.in/';
+                          //         if (await canLaunchUrl(Uri.parse(ur1))) {
+                          //           await launchUrl(
+                          //             Uri.parse(ur1),
+                          //             mode: LaunchMode.externalApplication,
+                          //           );
+                          //         } else {
+                          //           debugPrint("Could not launch $ur1");
+                          //         }
+                          //       },
+                          //     ),
+                          //     _buildDrawerItem(
+                          //       Icons.policy,
+                          //       "e-Courts",
+                          //       onTap: () async {
+                          //         const ur1 = 'https://services.ecourts.gov.in/';
+                          //         if (await canLaunchUrl(Uri.parse(ur1))) {
+                          //           await launchUrl(
+                          //             Uri.parse(ur1),
+                          //             mode: LaunchMode.externalApplication,
+                          //           );
+                          //         } else {
+                          //           debugPrint("Could not launch $ur1");
+                          //         }
+                          //       },
+                          //     ),
+                          //     _buildDrawerItem(
+                          //       Icons.shield_outlined,
+                          //       "Report Cyber Crime ",
+                          //       onTap: () async {
+                          //         const ur1 = 'https://cybercrime.gov.in/';
+                          //         if (await canLaunchUrl(Uri.parse(ur1))) {
+                          //           await launchUrl(
+                          //             Uri.parse(ur1),
+                          //             mode: LaunchMode.externalApplication,
+                          //           );
+                          //         } else {
+                          //           debugPrint("Could not launch $ur1");
+                          //         }
+                          //       },
+                          //     ),
+                          //     _buildDrawerItem(
+                          //       Icons.hide_source_rounded,
+                          //       "Missing Person",
+                          //       onTap: () async {
+                          //         const ur1 =
+                          //             'https://udcase.wb.gov.in/Citizen_search';
+                          //         if (await canLaunchUrl(Uri.parse(ur1))) {
+                          //           await launchUrl(
+                          //             Uri.parse(ur1),
+                          //             mode: LaunchMode.externalApplication,
+                          //           );
+                          //         } else {
+                          //           debugPrint("Could not launch $ur1");
+                          //         }
+                          //       },
+                          //     ),
+                          //     _buildDrawerItem(
+                          //       Icons.shield,
+                          //       'Missing Child ',
+                          //       onTap: () async {
+                          //         const ur1 =
+                          //             'https://missionvatsalya.wcd.gov.in/citizen-login';
+                          //         if (await canLaunchUrl(Uri.parse(ur1))) {
+                          //           await launchUrl(
+                          //             Uri.parse(ur1),
+                          //             mode: LaunchMode.externalApplication,
+                          //           );
+                          //         } else {
+                          //           debugPrint("Could not launch $ur1");
+                          //         }
+                          //       },
+                          //     ),
+                          //     _buildDrawerItem(
+                          //       Icons.account_balance_sharp,
+                          //       'Sorasori Mukhyomatri ',
+                          //       onTap: () async {
+                          //         const ur1 = 'https://cmo.wb.gov.in/';
+                          //         if (await canLaunchUrl(Uri.parse(ur1))) {
+                          //           await launchUrl(
+                          //             Uri.parse(ur1),
+                          //             mode: LaunchMode.externalApplication,
+                          //           );
+                          //         } else {
+                          //           debugPrint("Could not launch $ur1");
+                          //         }
+                          //       },
+                          //     ),
+                          //     _buildDrawerItem(
+                          //       Icons.shield,
+                          //       'CID West Bengal ',
+                          //       onTap: () async {
+                          //         const ur1 = 'https://cid.wb.gov.in/';
+                          //         if (await canLaunchUrl(Uri.parse(ur1))) {
+                          //           await launchUrl(
+                          //             Uri.parse(ur1),
+                          //             mode: LaunchMode.externalApplication,
+                          //           );
+                          //         } else {
+                          //           debugPrint("Could not launch $ur1");
+                          //         }
+                          //       },
+                          //     ),
+                          //     _buildDrawerItem(
+                          //       Icons.shield,
+                          //       'Kolkata Police ',
+                          //       onTap: () async {
+                          //         const ur1 = 'https://kolkatapolice.gov.in/';
+                          //         if (await canLaunchUrl(Uri.parse(ur1))) {
+                          //           await launchUrl(Uri.parse(ur1));
+                          //         } else {
+                          //           debugPrint("Could not launch $ur1");
+                          //         }
+                          //       },
+                          //     ),
+                          //   ],
+                          // ),
                           const Divider(),
-                    
-                         // 🔹 Single Items
+
+                          // 🔹 Single Items
                           _buildDrawerItem(
                             Icons.assignment_outlined,
                             "Forms",
@@ -794,21 +816,7 @@ class _homepageState extends State<homepage> {
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (context) => formspage(onThemeChanged:widget. onThemeChanged, 
-                                      isDarkMode:widget. isDarkMode),
-                                ),
-                              );
-                            },
-                          ),
-                          _buildDrawerItem(
-                            Icons.feedback_outlined,
-                            "Feedback",
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => feedbackpage(
+                                      (context) => formspage(
                                         onThemeChanged: widget.onThemeChanged,
                                         isDarkMode: widget.isDarkMode,
                                       ),
@@ -816,7 +824,80 @@ class _homepageState extends State<homepage> {
                               );
                             },
                           ),
-                    
+
+                          //                 _buildDrawerItem(
+                          //                   Icons.feedback_outlined,
+                          //                   "Feedback",
+                          //                   onTap: () async {
+                          //                     SharedPreferences prefs =
+                          //                         await SharedPreferences.getInstance();
+                          //                         bool isloggedin= prefs.getBool('isloggedin') ?? false;
+
+                          //                           if (!isloggedin) {
+                          //   showLoginSignupDialog(
+                          //     context,
+                          //     // when user taps Login
+                          //     () {
+                          //       Navigator.pushReplacement(
+                          // context,
+                          // PageRouteBuilder(
+                          //   transitionDuration: const Duration(milliseconds: 500),
+                          //   pageBuilder: (context, animation, secondaryAnimation) => testlogin(
+                          //     onThemeChanged: widget.onThemeChanged,
+                          //     isDarkMode: widget.isDarkMode,
+                          //   ),
+                          //   transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          //     const begin = Offset(0.0, -1.0);
+                          //     const end = Offset.zero;
+                          //     var tween = Tween(begin: begin, end: end)
+                          //         .chain(CurveTween(curve: Curves.easeInOut));
+                          //     return SlideTransition(position: animation.drive(tween), child: child);
+                          //   },
+                          // ),
+                          //       );
+                          //     },
+                          //     // when user taps Signup
+                          //     () {
+                          //       Navigator.pushReplacement(
+                          // context,
+                          // PageRouteBuilder(
+                          //   transitionDuration: const Duration(milliseconds: 500),
+                          //   pageBuilder: (context, animation, secondaryAnimation) => signuppage(
+                          //     onThemeChanged: widget.onThemeChanged,
+                          //     isDarkMode: widget.isDarkMode,
+                          //   ),
+                          //   transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          //     const begin = Offset(0.0, -1.0);
+                          //     const end = Offset.zero;
+                          //     var tween = Tween(begin: begin, end: end)
+                          //         .chain(CurveTween(curve: Curves.easeInOut));
+                          //     return SlideTransition(position: animation.drive(tween), child: child);
+                          //   },
+                          // ),
+                          //       );
+                          //     },
+                          //   );
+                          // } else {
+                          //   Navigator.push(
+                          //     context,
+                          //     PageRouteBuilder(
+                          //       transitionDuration: const Duration(milliseconds: 1000),
+                          //       pageBuilder: (context, animation, secondaryAnimation) => feedbackpage(
+                          // onThemeChanged: widget.onThemeChanged,
+                          // isDarkMode: widget.isDarkMode,
+                          //       ),
+                          //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          // const begin = Offset(0.0, -1.0);
+                          // const end = Offset.zero;
+                          // var tween = Tween(begin: begin, end: end)
+                          //     .chain(CurveTween(curve: Curves.easeInOut));
+                          // return SlideTransition(position: animation.drive(tween), child: child);
+                          //       },
+                          //     ),
+                          //   );
+                          // }
+                          //                   },
+                          //                 ),
                           const Divider(),
                           //login area
                           // _buildExpansionTile(
@@ -889,7 +970,10 @@ class _homepageState extends State<homepage> {
                                     ),
                                     //  minimumSize: const Size.fromHeight(45),
                                   ),
-                                  icon: const Icon(Icons.call, color: Colors.white),
+                                  icon: const Icon(
+                                    Icons.call,
+                                    color: Colors.white,
+                                  ),
                                   label: const Text(
                                     "Police Helpline",
                                     style: TextStyle(
@@ -902,7 +986,7 @@ class _homepageState extends State<homepage> {
                                 ),
                                 const SizedBox(height: 10),
                                 //logout button
-                    
+
                                 //                                  ElevatedButton.icon(
                                 //                               style: ElevatedButton.styleFrom(
                                 //                                 backgroundColor: Colors.red,
@@ -924,7 +1008,7 @@ class _homepageState extends State<homepage> {
                                 //   // Pehle SharedPreferences clear karo
                                 //   final prefs = await SharedPreferences.getInstance();
                                 //   await prefs.clear();
-                    
+
                                 //   // Phir animated navigation
                                 //   Navigator.pushAndRemoveUntil(
                                 //     context,
@@ -948,9 +1032,9 @@ class _homepageState extends State<homepage> {
                                 //     (route) => false, // saare purane routes remove
                                 //   );
                                 // },
-                    
+
                                 //                             ),
-                    
+
                                 // ElevatedButton.icon(
                                 //   style: ElevatedButton.styleFrom(
                                 //     backgroundColor: Colors.red,
@@ -975,45 +1059,56 @@ class _homepageState extends State<homepage> {
                                 // ),
                                 // 🔹 Dark Mode Toggle (Logout के नीचे)
                                 SwitchListTile(
-                      title: Text(
-                        widget.isDarkMode ? "Dark Mode" : "Light Mode",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      secondary: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        child: Icon(
-                          widget.isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                          key: ValueKey(widget.isDarkMode),
-                          color: widget.isDarkMode ? Colors.white : Colors.black87,
-                        ),
-                      ),
-                      activeThumbColor: Colors.amberAccent,
-                      value: widget.isDarkMode,
-                      onChanged: widget.onThemeChanged, // ✅ Direct call — no need setState()
-                    ),
-                    
-                    
-                    
+                                  title: Text(
+                                    widget.isDarkMode
+                                        ? "Dark Mode"
+                                        : "Light Mode",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  secondary: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 300),
+                                    child: Icon(
+                                      widget.isDarkMode
+                                          ? Icons.dark_mode
+                                          : Icons.light_mode,
+                                      key: ValueKey(widget.isDarkMode),
+                                      color:
+                                          widget.isDarkMode
+                                              ? Colors.white
+                                              : Colors.black87,
+                                    ),
+                                  ),
+                                  activeThumbColor: Colors.amberAccent,
+                                  value: widget.isDarkMode,
+                                  onChanged: widget.onThemeChanged,
+                                ),
                               ],
                             ),
-                            
                           ),
-                          
                         ],
                       ),
                     ),
                   ],
                 ),
-            
               ),
             ],
           ),
         ),
 
         // ✅ AppBar
-        appBar: PreferredSize( preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.07),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(
+            MediaQuery.of(context).size.height * 0.07,
+          ),
           child: AppBar(
-            backgroundColor: widget.isDarkMode ? Colors.black : Color(0xFFe9e4de),
+            backgroundColor:
+                Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black
+                    : const Color(0xFFe9e4de),
+
             shadowColor: Colors.black,
             // elevation: 4,
             automaticallyImplyLeading: false,
@@ -1021,83 +1116,84 @@ class _homepageState extends State<homepage> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-             Expanded(
-            child: Row(
-              children: [
-           Builder(
-  builder: (context) => GestureDetector(
-    onTap: () => Scaffold.of(context).openDrawer(),
-    child: Row(
-      children: [
-        Text("☰", style: TextStyle(fontSize: 27)),
-        SizedBox(width: 12),
-        Image.asset(
-          'assets/images/BDN logo.png',
-          height: MediaQuery.of(context).size.height * 0.040,
-        ),
-      ],
-    ),
-  ),
-),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Builder(
+                        builder:
+                            (context) => GestureDetector(
+                              onTap: () => Scaffold.of(context).openDrawer(),
+                              child: Row(
+                                children: [
+                                  Text("☰", style: TextStyle(fontSize: 27)),
+                                  SizedBox(width: 12),
+                                  Image.asset(
+                                    'assets/images/BDN logo.png',
+                                    height:
+                                        MediaQuery.of(context).size.height *
+                                        0.040,
+                                  ),
+                                ],
+                              ),
+                            ),
+                      ),
 
-          
-                SizedBox(width: 12),
-          
-                Expanded(   
-          // child: Text(
-          //   "Bidhannagar Police",
-          //   style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),
+                      SizedBox(width: 12),
 
-          //  // maxLines: 1,
-          //   overflow: TextOverflow.ellipsis,
-          // )
-          
-          //  ⭐ IMPORTANT!
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Bidhannagar Police",
-                     style: TextStyle(
-             fontSize: 20,
-             fontWeight: FontWeight.bold,
-             height: 1.1,     // optional, makes text tighter
-          ),
-          
-                    ),
+                      Expanded(
+                        // child: Text(
+                        //   "Bidhannagar Police",
+                        //   style: TextStyle(fontSize: 16,fontWeight: FontWeight.w400),
+
+                        //  // maxLines: 1,
+                        //   overflow: TextOverflow.ellipsis,
+                        // )
+
+                        //  ⭐ IMPORTANT!
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Bidhannagar Police",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              height: 1.1, // optional, makes text tighter
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          
-                
-          
-               // Spacer(),
+
+                // Spacer(),
                 IconButton(
                   onPressed: () => callnumber2(),
                   icon: ImageIcon(
                     AssetImage('assets/images/sos_1894555.png'),
                     color: Colors.red,
-                    size: MediaQuery.of(  context).size.width * 0.08,
+                    size: MediaQuery.of(context).size.width * 0.08,
                   ),
                 ),
-          
+
                 FutureBuilder<List<NoticeModel>>(
                   future: _futureNotices,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      _notificationCount = snapshot.data!.length; // notice count
+                      _notificationCount =
+                          snapshot.data!.length; // notice count
                     }
-          
+
                     return IconButton(
                       icon: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                           Icon(
+                          Icon(
                             Icons.notifications_active_outlined,
-                            color:widget. isDarkMode ? Colors.white : Colors.black,
-                        size: MediaQuery.of(  context).size.width * 0.08,
+                            color:
+                                widget.isDarkMode ? Colors.white : Colors.black,
+                            size: MediaQuery.of(context).size.width * 0.08,
                           ),
                           if (_notificationCount > 0)
                             Positioned(
@@ -1130,73 +1226,123 @@ class _homepageState extends State<homepage> {
                         SharedPreferences prets =
                             await SharedPreferences.getInstance();
                         bool isloggedin = prets.getBool('isloggedin') ?? false;
-          
-                     if (!isloggedin) {
-            showLoginSignupDialog(
-              context,
-              // when user taps Login
-              () {
-                Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            transitionDuration: const Duration(milliseconds: 500),
-            pageBuilder: (context, animation, secondaryAnimation) => testlogin(
-              onThemeChanged: widget.onThemeChanged,
-              isDarkMode: widget.isDarkMode,
-            ),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, -1.0);
-              const end = Offset.zero;
-              var tween = Tween(begin: begin, end: end)
-                  .chain(CurveTween(curve: Curves.easeInOut));
-              return SlideTransition(position: animation.drive(tween), child: child);
-            },
-          ),
-                );
-              },
-              // when user taps Signup
-              () {
-                Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            transitionDuration: const Duration(milliseconds: 500),
-            pageBuilder: (context, animation, secondaryAnimation) => signuppage(
-              onThemeChanged: widget.onThemeChanged,
-              isDarkMode: widget.isDarkMode,
-            ),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, -1.0);
-              const end = Offset.zero;
-              var tween = Tween(begin: begin, end: end)
-                  .chain(CurveTween(curve: Curves.easeInOut));
-              return SlideTransition(position: animation.drive(tween), child: child);
-            },
-          ),
-                );
-              },
-            );
-          } else {
-            Navigator.push(
-              context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 1000),
-                pageBuilder: (context, animation, secondaryAnimation) => Notificationscreen(
-          onThemeChanged: widget.onThemeChanged,
-          isDarkMode: widget.isDarkMode,
-                ),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, -1.0);
-          const end = Offset.zero;
-          var tween = Tween(begin: begin, end: end)
-              .chain(CurveTween(curve: Curves.easeInOut));
-          return SlideTransition(position: animation.drive(tween), child: child);
-                },
-              ),
-            );
-          }
-          
-                        
-          
+
+                        if (!isloggedin) {
+                          showLoginSignupDialog(
+                            context,
+                            // when user taps Login
+                            () {
+                              Navigator.pushReplacement(
+                                context,
+                                PageRouteBuilder(
+                                  transitionDuration: const Duration(
+                                    milliseconds: 500,
+                                  ),
+                                  pageBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                      ) => testlogin(
+                                        onThemeChanged: widget.onThemeChanged,
+                                        isDarkMode: widget.isDarkMode,
+                                      ),
+                                  transitionsBuilder: (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child,
+                                  ) {
+                                    const begin = Offset(0.0, -1.0);
+                                    const end = Offset.zero;
+                                    var tween = Tween(
+                                      begin: begin,
+                                      end: end,
+                                    ).chain(
+                                      CurveTween(curve: Curves.easeInOut),
+                                    );
+                                    return SlideTransition(
+                                      position: animation.drive(tween),
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            // when user taps Signup
+                            () {
+                              Navigator.pushReplacement(
+                                context,
+                                PageRouteBuilder(
+                                  transitionDuration: const Duration(
+                                    milliseconds: 500,
+                                  ),
+                                  pageBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                      ) => signuppage(
+                                        onThemeChanged: widget.onThemeChanged,
+                                        isDarkMode: widget.isDarkMode,
+                                      ),
+                                  transitionsBuilder: (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child,
+                                  ) {
+                                    const begin = Offset(0.0, -1.0);
+                                    const end = Offset.zero;
+                                    var tween = Tween(
+                                      begin: begin,
+                                      end: end,
+                                    ).chain(
+                                      CurveTween(curve: Curves.easeInOut),
+                                    );
+                                    return SlideTransition(
+                                      position: animation.drive(tween),
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              transitionDuration: const Duration(
+                                milliseconds: 1000,
+                              ),
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      Notificationscreen(
+                                        onThemeChanged: widget.onThemeChanged,
+                                        isDarkMode: widget.isDarkMode,
+                                      ),
+                              transitionsBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                                child,
+                              ) {
+                                const begin = Offset(0.0, -1.0);
+                                const end = Offset.zero;
+                                var tween = Tween(
+                                  begin: begin,
+                                  end: end,
+                                ).chain(CurveTween(curve: Curves.easeInOut));
+                                return SlideTransition(
+                                  position: animation.drive(tween),
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        }
+
                         // 🔹 Reset counter after opening notification screen
                         setState(() {
                           _notificationCount = 0;
@@ -1205,90 +1351,130 @@ class _homepageState extends State<homepage> {
                     );
                   },
                 ),
-             GestureDetector(
-            onTap: () async {
-              // ✅ 1️⃣ Check login status
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              bool isloggedin = prefs.getBool('isloggedin') ?? false;
-          
-              // ✅ 2️⃣ If NOT logged in → show popup
-              if (!isloggedin) {
-                showLoginSignupDialog(
-          context,
-          // When user taps Login
-          () {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 500),
-                pageBuilder: (context, animation, secondaryAnimation) => testlogin(
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
+                GestureDetector(
+                  onTap: () async {
+                    // ✅ 1️⃣ Check login status
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    bool isloggedin = prefs.getBool('isloggedin') ?? false;
+
+                    // ✅ 2️⃣ If NOT logged in → show popup
+                    if (!isloggedin) {
+                      showLoginSignupDialog(
+                        context,
+                        // When user taps Login
+                        () {
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              transitionDuration: const Duration(
+                                milliseconds: 500,
+                              ),
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      testlogin(
+                                        onThemeChanged: widget.onThemeChanged,
+                                        isDarkMode: widget.isDarkMode,
+                                      ),
+                              transitionsBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                                child,
+                              ) {
+                                const begin = Offset(0.0, -1.0);
+                                const end = Offset.zero;
+                                var tween = Tween(
+                                  begin: begin,
+                                  end: end,
+                                ).chain(CurveTween(curve: Curves.easeInOut));
+                                return SlideTransition(
+                                  position: animation.drive(tween),
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        // When user taps Signup
+                        () {
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              transitionDuration: const Duration(
+                                milliseconds: 500,
+                              ),
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      signuppage(
+                                        onThemeChanged: widget.onThemeChanged,
+                                        isDarkMode: widget.isDarkMode,
+                                      ),
+                              transitionsBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                                child,
+                              ) {
+                                const begin = Offset(0.0, -1.0);
+                                const end = Offset.zero;
+                                var tween = Tween(
+                                  begin: begin,
+                                  end: end,
+                                ).chain(CurveTween(curve: Curves.easeInOut));
+                                return SlideTransition(
+                                  position: animation.drive(tween),
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    }
+                    // ✅ 3️⃣ If logged in → go to profile screen
+                    else {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(milliseconds: 600),
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  profilescreen(
+                                    onThemeChanged: widget.onThemeChanged,
+                                    isDarkMode: widget.isDarkMode,
+                                  ),
+                          transitionsBuilder: (
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                          ) {
+                            const begin = Offset(0.0, -1.0);
+                            const end = Offset.zero;
+                            var tween = Tween(
+                              begin: begin,
+                              end: end,
+                            ).chain(CurveTween(curve: Curves.easeInOut));
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+
+                  // ✅ 4️⃣ Profile Avatar UI
+                  child: CircleAvatar(
+                    radius: MediaQuery.of(context).size.height * 0.020,
+                    backgroundColor: Colors.white,
+                    child: Image(
+                      image: AssetImage('assets/images/man_4140037.png'),
+                    ),
+                  ),
                 ),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  const begin = Offset(0.0, -1.0);
-                  const end = Offset.zero;
-                  var tween = Tween(begin: begin, end: end)
-                      .chain(CurveTween(curve: Curves.easeInOut));
-                  return SlideTransition(position: animation.drive(tween), child: child);
-                },
-              ),
-            );
-          },
-          // When user taps Signup
-          () {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 500),
-                pageBuilder: (context, animation, secondaryAnimation) => signuppage(
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
-                ),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  const begin = Offset(0.0, -1.0);
-                  const end = Offset.zero;
-                  var tween = Tween(begin: begin, end: end)
-                      .chain(CurveTween(curve: Curves.easeInOut));
-                  return SlideTransition(position: animation.drive(tween), child: child);
-                },
-              ),
-            );
-          },
-                );
-              } 
-              // ✅ 3️⃣ If logged in → go to profile screen
-              else {
-                Navigator.push(
-          context,
-          PageRouteBuilder(
-            transitionDuration: const Duration(milliseconds: 600),
-            pageBuilder: (context, animation, secondaryAnimation) => profilescreen(
-              onThemeChanged: widget.onThemeChanged,
-              isDarkMode: widget.isDarkMode,
-            ),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, -1.0);
-              const end = Offset.zero;
-              var tween = Tween(begin: begin, end: end)
-                  .chain(CurveTween(curve: Curves.easeInOut));
-              return SlideTransition(position: animation.drive(tween), child: child);
-            },
-          ),
-                );
-              }
-            },
-          
-            // ✅ 4️⃣ Profile Avatar UI
-            child:  CircleAvatar(
-              radius: MediaQuery.of(context).size.height * 0.020,
-              backgroundColor: Colors.white,
-              child: Image(
-                image: AssetImage('assets/images/man_4140037.png'),
-              ),
-            ),
-          ),
-          
               ],
             ),
           ),
@@ -1306,33 +1492,40 @@ class _homepageState extends State<homepage> {
                   children: [
                     SizedBox(
                       height: 250,
-                      child: sliderImage.isEmpty? const Center(child: CircularProgressIndicator()):
-
-                      
-                      CarouselSlider(
-                        items: sliderImage.map((item) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              item['pic'],     // <-- Correct way
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey[300],
-                                  child: const Icon(Icons.broken_image, size: 40),
-                                );
-                              },
-                            ),
-                          );
-                        }
-                        ).toList(),
-                        options: CarouselOptions(
-                          height: 200,
-                          autoPlay: true,
-                          enlargeCenterPage: true,
-                        ),
-                      ),
+                      child:
+                          sliderImage.isEmpty
+                              ? const Center(child: CircularProgressIndicator())
+                              : CarouselSlider(
+                                items:
+                                    sliderImage.map((item) {
+                                      return ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: Image.network(
+                                          item['pic'], // <-- Correct way
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          errorBuilder: (
+                                            context,
+                                            error,
+                                            stackTrace,
+                                          ) {
+                                            return Container(
+                                              color: Colors.grey[300],
+                                              child: const Icon(
+                                                Icons.broken_image,
+                                                size: 40,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }).toList(),
+                                options: CarouselOptions(
+                                  height: 200,
+                                  autoPlay: true,
+                                  enlargeCenterPage: true,
+                                ),
+                              ),
                     ),
 
                     Positioned(
@@ -1403,17 +1596,15 @@ class _homepageState extends State<homepage> {
                           }
                         },
                       ),
-                          tilesButton(
+                      tilesButton(
                         title: ' Police\nContact ',
                         imagepath: 'assets/images/phone-book_7229022.png',
-                        onTap: () 
-                        {
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder:
-                                  (context) => 
-                                  contactscreen(
+                                  (context) => contactscreen(
                                     onThemeChanged: widget.onThemeChanged,
                                     isDarkMode: widget.isDarkMode,
                                   ),
@@ -1421,7 +1612,7 @@ class _homepageState extends State<homepage> {
                           );
                         },
                       ),
-                         tilesButton(
+                      tilesButton(
                         title: 'Lost Items\nRegistration',
                         imagepath: 'assets/images/lost-items.png',
                         onTap: () async {
@@ -1437,229 +1628,328 @@ class _homepageState extends State<homepage> {
                           }
                         },
                       ),
-                        tilesButton(
-                          title: 'Report \nCrime',
-                          imagepath: 'assets/images/crimereport.png',
-                          onTap: () async{
-                           SharedPreferences prefs = await SharedPreferences.getInstance();
-                            bool isLoggedIn = prefs.getBool('isloggedin') ?? false;
-                            if (!isLoggedIn) {
-                                  showLoginSignupDialog(
-          context,
-          // When user taps Login
-          () {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 500),
-                pageBuilder: (context, animation, secondaryAnimation) => testlogin(
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
-                ),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  const begin = Offset(0.0, -1.0);
-                  const end = Offset.zero;
-                  var tween = Tween(begin: begin, end: end)
-                      .chain(CurveTween(curve: Curves.easeInOut));
-                  return SlideTransition(position: animation.drive(tween), child: child);
-                },
-              ),
-            );
-          },
-          // When user taps Signup
-          () {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 500),
-                pageBuilder: (context, animation, secondaryAnimation) => signuppage(
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
-                ),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  const begin = Offset(0.0, -1.0);
-                  const end = Offset.zero;
-                  var tween = Tween(begin: begin, end: end)
-                      .chain(CurveTween(curve: Curves.easeInOut));
-                  return SlideTransition(position: animation.drive(tween), child: child);
-                },
-              ),
-            );
-          },
-                );
-              } 
-              // ✅ 3️⃣ If logged in → go to profile screen
-              else {
-                Navigator.push(
-          context,
-          PageRouteBuilder(
-            transitionDuration: const Duration(milliseconds: 600),
-            pageBuilder: (context, animation, secondaryAnimation) => crimereport(
-              onThemeChanged: widget.onThemeChanged,
-              isDarkMode: widget.isDarkMode,
-            ),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, -1.0);
-              const end = Offset.zero;
-              var tween = Tween(begin: begin, end: end)
-                  .chain(CurveTween(curve: Curves.easeInOut));
-              return SlideTransition(position: animation.drive(tween), child: child);
-            },
-          ),
-                );
-             
-                            }
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder:
-                            //         (context) => crimereport(
-                            //           onThemeChanged: widget.onThemeChanged,
-                            //           isDarkMode: widget.isDarkMode,
-                            //         ),
-                            //   ),
-                            // );
-                          },
-                        ),
-                         tilesButton(
-                          title: 'Report\nTraffic Incident',
-                          imagepath: 'assets/images/trafficindident.png',
-                          onTap: () async{
-                           SharedPreferences prefs = await SharedPreferences.getInstance();
-                            bool isLoggedIn = prefs.getBool('isloggedin') ?? false;
-                            if (!isLoggedIn) {
-                                  showLoginSignupDialog(
-          context,
-          // When user taps Login
-          () {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 500),
-                pageBuilder: (context, animation, secondaryAnimation) => testlogin(
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
-                ),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  const begin = Offset(0.0, -1.0);
-                  const end = Offset.zero;
-                  var tween = Tween(begin: begin, end: end)
-                      .chain(CurveTween(curve: Curves.easeInOut));
-                  return SlideTransition(position: animation.drive(tween), child: child);
-                },
-              ),
-            );
-          },
-          // When user taps Signup
-          () {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 500),
-                pageBuilder: (context, animation, secondaryAnimation) => signuppage(
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
-                ),
-                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  const begin = Offset(0.0, -1.0);
-                  const end = Offset.zero;
-                  var tween = Tween(begin: begin, end: end)
-                      .chain(CurveTween(curve: Curves.easeInOut));
-                  return SlideTransition(position: animation.drive(tween), child: child);
-                },
-              ),
-            );
-          },
-                );
-              } 
-              // ✅ 3️⃣ If logged in → go to profile screen
-              else {
-                Navigator.push(
-          context,
-          PageRouteBuilder(
-            transitionDuration: const Duration(milliseconds: 600),
-            pageBuilder: (context, animation, secondaryAnimation) => trafficreport(
-              onThemeChanged: widget.onThemeChanged,
-              isDarkMode: widget.isDarkMode,
-            ),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              const begin = Offset(0.0, -1.0);
-              const end = Offset.zero;
-              var tween = Tween(begin: begin, end: end)
-                  .chain(CurveTween(curve: Curves.easeInOut));
-              return SlideTransition(position: animation.drive(tween), child: child);
-            },
-          ),
-                );
-             
-                            }
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder:
-                            //         (context) => crimereport(
-                            //           onThemeChanged: widget.onThemeChanged,
-                            //           isDarkMode: widget.isDarkMode,
-                            //         ),
-                            //   ),
-                            // );
-                          },
-                        ),
-                        //       tilesButton(
-                        //   title: 'Report\nTraffic Incident',
-                        //   imagepath: 'assets/images/trafficindident.png',
-                        //   onTap: ()async {
-                        //    SharedPreferences prefs = await SharedPreferences.getInstance();
-                           
-                        //     Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder:
-                        //             (context) => trafficreport(
-                        //               onThemeChanged: widget.onThemeChanged,
-                        //               isDarkMode: widget.isDarkMode,
-                        //             ),
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
+                      tilesButton(
+                        title: 'Report \nCrime',
+                        imagepath: 'assets/images/crimereport.png',
+                        onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          bool isLoggedIn =
+                              prefs.getBool('isloggedin') ?? false;
+                          if (!isLoggedIn) {
+                            showLoginSignupDialog(
+                              context,
+                              // When user taps Login
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => testlogin(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              // When user taps Signup
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => signuppage(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          // ✅ 3️⃣ If logged in → go to profile screen
+                          else {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration: const Duration(
+                                  milliseconds: 600,
+                                ),
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        crimereport(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                transitionsBuilder: (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  const begin = Offset(0.0, -1.0);
+                                  const end = Offset.zero;
+                                  var tween = Tween(
+                                    begin: begin,
+                                    end: end,
+                                  ).chain(CurveTween(curve: Curves.easeInOut));
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder:
+                          //         (context) => crimereport(
+                          //           onThemeChanged: widget.onThemeChanged,
+                          //           isDarkMode: widget.isDarkMode,
+                          //         ),
+                          //   ),
+                          // );
+                        },
+                      ),
+                      tilesButton(
+                        title: 'Report\nTraffic Incident',
+                        imagepath: 'assets/images/trafficindident.png',
+                        onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          bool isLoggedIn =
+                              prefs.getBool('isloggedin') ?? false;
+                          if (!isLoggedIn) {
+                            showLoginSignupDialog(
+                              context,
+                              // When user taps Login
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => testlogin(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              // When user taps Signup
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => signuppage(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          // ✅ 3️⃣ If logged in → go to profile screen
+                          else {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration: const Duration(
+                                  milliseconds: 600,
+                                ),
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        trafficreport(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                transitionsBuilder: (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  const begin = Offset(0.0, -1.0);
+                                  const end = Offset.zero;
+                                  var tween = Tween(
+                                    begin: begin,
+                                    end: end,
+                                  ).chain(CurveTween(curve: Curves.easeInOut));
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder:
+                          //         (context) => crimereport(
+                          //           onThemeChanged: widget.onThemeChanged,
+                          //           isDarkMode: widget.isDarkMode,
+                          //         ),
+                          //   ),
+                          // );
+                        },
+                      ),
+                      //       tilesButton(
+                      //   title: 'Report\nTraffic Incident',
+                      //   imagepath: 'assets/images/trafficindident.png',
+                      //   onTap: ()async {
+                      //    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-
-
-                  
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder:
+                      //             (context) => trafficreport(
+                      //               onThemeChanged: widget.onThemeChanged,
+                      //               isDarkMode: widget.isDarkMode,
+                      //             ),
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
 
                       // 🔹 Extra buttons only when showMore is true
                       if (showMore) ...[
-                      
-                  
-                      tilesButton(
-                        title: ' Block Lost\n Mobile',
-                        imagepath: 'assets/images/missing.png',
-                        onTap: () async {
-                          const ur1 =
-                              'https://www.ceir.gov.in/Request/CeirUserBlockRequestDirect.jsp';
-                          if (await canLaunchUrl(Uri.parse(ur1))) {
-                            await launchUrl(Uri.parse(ur1));
-                          } else {
-                            debugPrint("Could not launch $ur1");
-                          }
-                        },
-                      ),
+                        tilesButton(
+                          title: ' Block Lost\n Mobile',
+                          imagepath: 'assets/images/missing.png',
+                          onTap: () async {
+                            const ur1 =
+                                'https://www.ceir.gov.in/Request/CeirUserBlockRequestDirect.jsp';
+                            if (await canLaunchUrl(Uri.parse(ur1))) {
+                              await launchUrl(Uri.parse(ur1));
+                            } else {
+                              debugPrint("Could not launch $ur1");
+                            }
+                          },
+                        ),
 
-                   
-                      tilesButton(
-                        title: 'Pay Traffic \nChallan',
-                        imagepath: 'assets/images/14897102.png',
-                        onTap: () async {
-                          const ur1 =
-                              'https://echallan.parivahan.gov.in/index/accused-challan';
-                          if (await canLaunchUrl(Uri.parse(ur1))) {
-                            await launchUrl(Uri.parse(ur1));
-                          } else {
-                            debugPrint("Could not launch $ur1");
-                          }
-                        },
-                      ),
+                        tilesButton(
+                          title: 'Pay Traffic \nChallan',
+                          imagepath: 'assets/images/14897102.png',
+                          onTap: () async {
+                            const ur1 =
+                                'https://echallan.parivahan.gov.in/index/accused-challan';
+                            if (await canLaunchUrl(Uri.parse(ur1))) {
+                              await launchUrl(Uri.parse(ur1));
+                            } else {
+                              debugPrint("Could not launch $ur1");
+                            }
+                          },
+                        ),
                         tilesButton(
                           title: 'Download \nFIR ',
                           imagepath: 'assets/images/firdownload.png',
@@ -1676,7 +1966,7 @@ class _homepageState extends State<homepage> {
                             }
                           },
                         ),
-                             tilesButton(
+                        tilesButton(
                           title: 'Apply for \nPCC',
                           imagepath: 'assets/images/2490354.png',
                           onTap: () async {
@@ -1700,7 +1990,7 @@ class _homepageState extends State<homepage> {
                         //     );
                         //   },
                         // ),
-                           tilesButton(
+                        tilesButton(
                           title: 'Forms',
                           imagepath:
                               'assets/images/authentication_14291356.png',
@@ -1709,18 +1999,19 @@ class _homepageState extends State<homepage> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => formspage(onThemeChanged:widget. onThemeChanged, isDarkMode:widget. isDarkMode)
-                                    // docsdownviewpage(
-                                    //   filePath:
-                                    //       'assets/images/Sarai Application.pdf',
-                                    //   title: 'Sarai Application',
-                                    // ),
+                                    (context) => formspage(
+                                      onThemeChanged: widget.onThemeChanged,
+                                      isDarkMode: widget.isDarkMode,
+                                    ),
+                                // docsdownviewpage(
+                                //   filePath:
+                                //       'assets/images/Sarai Application.pdf',
+                                //   title: 'Sarai Application',
+                                // ),
                               ),
                             );
                           },
                         ),
-
-
 
                         // tilesButton(
                         //   title: 'Tenant\nRegistration',
@@ -1755,10 +2046,6 @@ class _homepageState extends State<homepage> {
                         //     }
                         //   },
                         // ),
-                      
-                     
-                   
-
                         tilesButton(
                           title: 'Passport\nStatus',
                           imagepath: 'assets/images/620765.png',
@@ -1816,7 +2103,9 @@ class _homepageState extends State<homepage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       color:
-                          widget.isDarkMode ? Colors.black : Color(0xFFe9e4de),
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.black
+                              : const Color(0xFFe9e4de),
                     ),
 
                     child: Column(
@@ -1954,7 +2243,8 @@ class _homepageState extends State<homepage> {
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          widget.isDarkMode
+                                          Theme.of(context).brightness ==
+                                                  Brightness.dark
                                               ? Color(0xFF1A1A1A)
                                               : Color(0xfff7f2f9),
 
@@ -2010,7 +2300,8 @@ class _homepageState extends State<homepage> {
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          widget.isDarkMode
+                                          Theme.of(context).brightness ==
+                                                  Brightness.dark
                                               ? Color(0xFF1A1A1A)
                                               : Color(0xfff7f2f9),
 
@@ -2065,7 +2356,8 @@ class _homepageState extends State<homepage> {
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          widget.isDarkMode
+                                          Theme.of(context).brightness ==
+                                                  Brightness.dark
                                               ? Color(0xFF1A1A1A)
                                               : Color(0xfff7f2f9),
 
@@ -2121,7 +2413,8 @@ class _homepageState extends State<homepage> {
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          widget.isDarkMode
+                                          Theme.of(context).brightness ==
+                                                  Brightness.dark
                                               ? Color(0xFF1A1A1A)
                                               : Color(0xfff7f2f9),
 
@@ -2177,7 +2470,8 @@ class _homepageState extends State<homepage> {
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          widget.isDarkMode
+                                          Theme.of(context).brightness ==
+                                                  Brightness.dark
                                               ? Color(0xFF1A1A1A)
                                               : Color(0xfff7f2f9),
 
@@ -2239,7 +2533,8 @@ class _homepageState extends State<homepage> {
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
-                                          widget.isDarkMode
+                                          Theme.of(context).brightness ==
+                                                  Brightness.dark
                                               ? Color(0xFF1A1A1A)
                                               : Color(0xfff7f2f9),
 
@@ -2250,17 +2545,18 @@ class _homepageState extends State<homepage> {
                                       shadowColor: Colors.black,
                                       padding: EdgeInsets.zero,
                                     ),
-                                    onPressed: () async {
-                                      const ur1 =
-                                          'https://www.wbtrafficpolice.com/userfiles/file/Parking%20place%20of%20Bidhannagar%20PC.pdf'; // police help line
-                                      if (await canLaunchUrl(Uri.parse(ur1))) {
-                                        await launchUrl(
-                                          Uri.parse(ur1),
-                                          mode: LaunchMode.platformDefault,
-                                        );
-                                      } else {
-                                        debugPrint('Could Not Found $ur1');
-                                      }
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => webviewparkingpage(
+                                                onThemeChanged:
+                                                    widget.onThemeChanged,
+                                                isDarkMode: widget.isDarkMode,
+                                              ),
+                                        ),
+                                      );
                                     },
                                     child: Row(
                                       mainAxisAlignment:
@@ -2385,9 +2681,10 @@ class _homepageState extends State<homepage> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color:
-                            widget.isDarkMode
+                            Theme.of(context).brightness == Brightness.dark
                                 ? Colors.black
-                                : Color(0xFFe9e4de),
+                                : const Color(0xFFe9e4de),
+
                         borderRadius: BorderRadius.circular(15),
                         // boxShadow: [
                         //   BoxShadow(
@@ -2439,9 +2736,11 @@ class _homepageState extends State<homepage> {
                                         padding: const EdgeInsets.all(12),
                                         decoration: BoxDecoration(
                                           color:
-                                              widget.isDarkMode
+                                              Theme.of(context).brightness ==
+                                                      Brightness.dark
                                                   ? Color(0xFF1A1A1A)
                                                   : Color(0xfff7f2f9),
+
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
@@ -2665,9 +2964,11 @@ class _homepageState extends State<homepage> {
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     color:
-                                        widget.isDarkMode
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
                                             ? Color(0xFF1A1A1A)
-                                            : Colors.white,
+                                            : Color(0xfff7f2f9),
+
                                     child: Padding(
                                       padding: const EdgeInsets.all(
                                         12,
@@ -3055,7 +3356,11 @@ class ExpandableTextWidget extends StatefulWidget {
   final String text;
   final int maxLines;
 
-  const ExpandableTextWidget({super.key, required this.text, this.maxLines = 2});
+  const ExpandableTextWidget({
+    super.key,
+    required this.text,
+    this.maxLines = 2,
+  });
 
   @override
   _ExpandableTextWidgetState createState() => _ExpandableTextWidgetState();

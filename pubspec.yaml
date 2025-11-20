@@ -2,7 +2,7 @@ name: bidhannagarpoliceapp
 description: "A new Flutter project."
 publish_to: 'none' 
 
-version: 4.8.1+25
+version: 4.8.1+28
 
 environment:
   sdk: ^3.7.0
@@ -29,6 +29,8 @@ dependencies:
   image_picker: ^1.2.0
   file_picker: ^10.3.3
   geolocator: ^14.0.2
+  flutter_inappwebview: ^6.1.5
+  webview_flutter: ^4.13.0
  
  
   

@@ -202,7 +202,7 @@ Future<void> fetchpslist() async {
 
   /// 🖼 Pick Image
   Future<void> _pickImage() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final picked = await ImagePicker().pickImage(source: ImageSource.camera);
     if (picked != null) {
       setState(() => _photo = File(picked.path));
       debugPrint("📸 Image selected: ${picked.path}");
@@ -316,12 +316,16 @@ Future<void> fetchpslist() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          widget.isDarkMode ? Colors.black : const Color(0xFFe9e4de),
+    backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? Colors.black
+    : const Color(0xFFe9e4de),
+
       appBar: AppBar(
         title: const Text('Report Crime'),
-        backgroundColor:
-            widget.isDarkMode ? Colors.black : const Color(0xFFe9e4de),
+       backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? Colors.black
+    : const Color(0xFFe9e4de),
+
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -332,16 +336,33 @@ Future<void> fetchpslist() async {
               TextFormField(
                 controller: nameCtrl,
                 readOnly: isfieldname,
-                decoration: const InputDecoration(labelText: 'Name'),
-                //  validator: (v) => v!.isEmpty ? 'Enter name' : null,
+                decoration:  InputDecoration(label:RichText(text:
+                 TextSpan(text: 'Name',style: TextStyle(   
+                  color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,
+
+                 ),
+                 children: [
+                   TextSpan(text: "*", style: TextStyle(color: Colors.red),),
+                 ]
+                 ),),),
+                  validator: (v) => v!.isEmpty ? 'Enter name' : null,
                 
               ),
               TextFormField(
                 controller: phCtrl,
                 readOnly: isfieldname,
-                decoration: const InputDecoration(labelText: 'Phone'),
+                decoration:  InputDecoration(label: RichText(text:
+                 TextSpan(text: 'Phone',style: TextStyle(
+                    color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,),
+                 children: [
+                   TextSpan(text: "*", style: TextStyle(color: Colors.red),),
+                 ]),),),
                 keyboardType: TextInputType.phone,
-                // validator: (v) => v!.isEmpty ? 'Enter phone' : null,
+                 validator: (v) => v!.isEmpty ? 'Enter phone' : null,
               ),
               TextFormField(
                 controller: emailCtrl,
@@ -358,8 +379,16 @@ Future<void> fetchpslist() async {
               ),
               TextFormField(
                 controller: subCtrl,
-                decoration: const InputDecoration(labelText: 'Subject'),
-                //  validator: (v) => v!.isEmpty ? 'Enter subject' : null,
+                decoration:  InputDecoration(label: RichText(text: 
+                 TextSpan(text: 'Subject',style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,),
+                 children: [
+                   TextSpan(text: "*", style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,),),
+                 ])),),
+                  validator: (v) => v!.isEmpty ? 'Enter subject' : null,
               ),
 
 isLoading
@@ -376,10 +405,26 @@ isLoading
             psCtrl.text = value.toString();
           });
         },
-        decoration: InputDecoration(labelText: " Police Station*"),
-        validator: (value) => value == null ? 'Select P.S' : null,
-      ),
+        decoration: InputDecoration(label:RichText(text: TextSpan(text: 
+        "Police Station",style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,),
+        
+        children: [
+          TextSpan(text: "*", style: TextStyle(color: Colors.red),),
+          
+        ],
+        ),
+        
+        ),
+        
+        ),
+        validator: (value) =>
+            value == null || value.toString().isEmpty ? "Select Police Station" : null,
 
+      ),
+        
+       
 
               // TextFormField(
               //   controller: psCtrl,
@@ -389,9 +434,15 @@ isLoading
 
               TextFormField(
                 controller: desCtrl,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration:  InputDecoration(label: RichText(text:  
+                 TextSpan(text: 'Description',style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
+        ? Colors.white      // Dark Mode
+        : Colors.black87,),
+                 children: [
+                   TextSpan(text: "*", style: TextStyle(color: Colors.red),),
+                 ])),),
                 maxLines: 3,
-                //      validator: (v) => v!.isEmpty ? 'Enter discription' : null,
+                      validator: (v) => v!.isEmpty ? 'Enter discription' : null,
               ),
 
               const SizedBox(height: 20),
