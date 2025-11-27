@@ -1,23 +1,17 @@
-import 'package:bidhannagarpoliceapp/sarainewpage.dart';
-import 'package:bidhannagarpoliceapp/saraioldpage.dart';
-
+import 'package:bidhannagarpoliceapp/tenantregistration.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class saraipage extends StatefulWidget {
-  final Function(bool) onThemeChanged;
+class guidelinepage extends StatefulWidget {
+    final Function(bool) onThemeChanged;
   final bool isDarkMode;
-  const saraipage({
-    super.key,
-    required this.onThemeChanged,
-    required this.isDarkMode,
-  });
+  const guidelinepage({super.key, required this.onThemeChanged, required this.isDarkMode});
 
   @override
-  State<saraipage> createState() => _saraipageState();
+  State<guidelinepage> createState() => _guidelinepageState();
 }
 
-class _saraipageState extends State<saraipage> {
+class _guidelinepageState extends State<guidelinepage> {
   final Uri saanjbaatihelp = Uri(scheme: 'tel', path: '9748898933');
 
   Future<void> sanjbaticont() async {
@@ -32,10 +26,10 @@ class _saraipageState extends State<saraipage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context); // shortcut
 
     return Scaffold(
-      backgroundColor: isDark ? Colors.black : const Color(0xFFe9e4de),
+      backgroundColor: theme.scaffoldBackgroundColor, // AUTO THEME COLOR
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(left: 16, right: 16, top: 45),
@@ -44,7 +38,7 @@ class _saraipageState extends State<saraipage> {
           children: [
             // Card
             Card(
-              color: Theme.of(context).cardColor, // DARK/LIGHT AUTO
+              color: theme.cardColor, // DARK/LIGHT AUTO
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -57,22 +51,23 @@ class _saraipageState extends State<saraipage> {
                   children: [
                     Text(
                       'WELCOME TO',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      style: theme.textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                     ),
+                    SizedBox(height: 10,),
                     Text(
-                      'Sarai Application',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      'Guidelines',
+                      style: theme.textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      'An initiative by Bidhannagar Police',
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+               'An initiative by Bidhannagar Police',
+                      style: theme.textTheme.titleMedium!.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -98,23 +93,19 @@ class _saraipageState extends State<saraipage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) => saranewpage(
-                          onThemeChanged: widget.onThemeChanged,
-                          isDarkMode: widget.isDarkMode,
-                        ),
+                    builder: (context) => docsdownviewpage(
+                      filePath: 'assets/images/Guidelines for organising meetings_rallies_processions under Bidhannagar Police Commissionerate.pdf',
+                      title: 'Guidelines',
+                    ),
                   ),
                 );
               },
               icon: const Icon(Icons.app_registration),
-              label: const Text('New Application '),
+              label: const Text('Guidelines'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueAccent,
                 foregroundColor: Colors.white, // FIX TEXT COLOR
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 textStyle: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -126,37 +117,6 @@ class _saraipageState extends State<saraipage> {
             ),
 
             const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => saraioldpage(
-                          onThemeChanged: widget.onThemeChanged,
-                          isDarkMode: widget.isDarkMode,
-                        ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.app_registration),
-              label: const Text('Application for Renewal'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                foregroundColor: Colors.white, // FIX TEXT COLOR
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
           ],
         ),
       ),

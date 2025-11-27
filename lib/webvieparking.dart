@@ -17,7 +17,7 @@ class _webviewparkingpageState extends State<webviewparkingpage> {
     super.initState();
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse('https://bnpcdeveloper.co.in/bnpolice/parking/form.php'));
+      ..loadRequest(Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'));
   }
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class _webviewparkingpageState extends State<webviewparkingpage> {
             backgroundColor: Theme.of(context).brightness == Brightness.dark
               ? Colors.black
               : const Color(0xFFe9e4de),
-            title: Text('Parking Form'),
+            title: Text('Parking Capacity'),
             centerTitle: true,
           )),
       body: WebViewWidget(controller: controller),

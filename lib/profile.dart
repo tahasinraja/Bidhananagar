@@ -165,8 +165,9 @@ class _profilescreenState extends State<profilescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:
-          widget.isDarkMode ? Colors.black : const Color(0xFFe9e4de),
+     backgroundColor: Theme.of(context).brightness == Brightness.dark
+    ? Colors.black
+    : const Color(0xFFe9e4de),
           appBar: AppBar(
             
             title:Row(

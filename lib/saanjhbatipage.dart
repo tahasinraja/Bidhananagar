@@ -1,6 +1,9 @@
-import 'package:bidhannagarpoliceapp/tenantregistration.dart';
+
+import 'package:bidhannagarpoliceapp/login.dart';
+import 'package:bidhannagarpoliceapp/signuppage.dart';
 import 'package:bidhannagarpoliceapp/webviewsaanjhbati.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SaanjhBatiPage extends StatefulWidget {
@@ -29,13 +32,84 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
       );
     }
   }
+ // Login and Signup Dialog
+  void showLoginSignupDialog(
+    BuildContext context,
+    VoidCallback onLoginTap,
+    VoidCallback onSignupTap,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // user must choose one
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Text(
+              "Welcome!",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+            content: const Text(
+              "You need to log in or sign up to continue.",
+              style: TextStyle(fontSize: 16),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceAround,
+            actions: [
+              SizedBox(
+                child: TextButton.icon(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  icon: const Icon(Icons.login, color: Colors.white),
+                  label: const Text(
+                    "Login",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onLoginTap();
+                  },
+                ),
+              ),
+              TextButton.icon(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                icon: const Icon(Icons.person_add, color: Colors.white),
+                label: const Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  onSignupTap();
+                },
+              ),
+            ],
+          ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // shorthand
+   final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor, // AUTO THEME COLOR
+      backgroundColor: isDark ? Colors.black : const Color(0xFFe9e4de),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(left: 16, right: 16, top: 45),
@@ -44,7 +118,7 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
           children: [
             // Card for description
             Card(
-              color: theme.cardColor, // AUTO THEME CARD COLOR
+              color: Theme.of(context).cardColor, // AUTO THEME CARD COLOR
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -57,14 +131,14 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
                   children: [
                     Text(
                       'WELCOME TO',
-                      style: theme.textTheme.titleLarge!.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                     ),
                     Text(
                       'SAANJ BAATI',
-                      style: theme.textTheme.titleLarge!.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
@@ -72,7 +146,7 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
                     const SizedBox(height: 15),
                     Text(
                       'An initiative of Bidhannagar Police for elderly citizens',
-                      style: theme.textTheme.titleMedium!.copyWith(
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -83,7 +157,7 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
                       'And, to reach out to these people - for not only their safety and security, but also to take care of their health and happiness - '
                       'the Bidhannagar City Police, along with OFFER, a non-profit organisation, came up with Saanjhbaati, '
                       'a community policing project for elderly persons living alone in this jurisdiction.',
-                      style: theme.textTheme.bodyMedium!.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontSize: 16,
                         height: 1.5,
                       ),
@@ -98,17 +172,140 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
             // PDF Button
             ElevatedButton.icon(
               onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => Webviewsaanjhbati(
-                          onThemeChanged: widget.onThemeChanged,
-                          isDarkMode: widget.isDarkMode,
-                        ),
-                  ),
-                );
-              },
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          bool isLoggedIn =
+                              prefs.getBool('isloggedin') ?? false;
+                          if (!isLoggedIn) {
+                            showLoginSignupDialog(
+                              context,
+                              // When user taps Login
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => testlogin(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              // When user taps Signup
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => signuppage(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          // ✅ 3️⃣ If logged in → go to profile screen
+                          else {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration: const Duration(
+                                  milliseconds: 600,
+                                ),
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        Webviewsaanjhbati(onThemeChanged:widget. onThemeChanged,
+                                         isDarkMode:widget. isDarkMode),
+                                transitionsBuilder: (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  const begin = Offset(0.0, -1.0);
+                                  const end = Offset.zero;
+                                  var tween = Tween(
+                                    begin: begin,
+                                    end: end,
+                                  ).chain(CurveTween(curve: Curves.easeInOut));
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                       
+                        },
+              
+              // () async {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder:
+              //           (context) => Webviewsaanjhbati(
+              //             onThemeChanged: widget.onThemeChanged,
+              //             isDarkMode: widget.isDarkMode,
+              //           ),
+              //     ),
+              //   );
+              // },
               icon: const Icon(Icons.app_registration),
               label: const Text('Registration Form'),
               style: ElevatedButton.styleFrom(

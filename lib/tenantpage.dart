@@ -1,6 +1,9 @@
 
+import 'package:bidhannagarpoliceapp/login.dart';
+import 'package:bidhannagarpoliceapp/signuppage.dart';
 import 'package:bidhannagarpoliceapp/webviewtenantpage.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class tenantpage extends StatefulWidget {
@@ -28,7 +31,77 @@ class _tenantpageState extends State<tenantpage> {
       );
     }
   }
-
+  // Login and Signup Dialog
+  void showLoginSignupDialog(
+    BuildContext context,
+    VoidCallback onLoginTap,
+    VoidCallback onSignupTap,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // user must choose one
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Text(
+              "Welcome!",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+            content: const Text(
+              "You need to log in or sign up to continue.",
+              style: TextStyle(fontSize: 16),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceAround,
+            actions: [
+              SizedBox(
+                child: TextButton.icon(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  icon: const Icon(Icons.login, color: Colors.white),
+                  label: const Text(
+                    "Login",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    onLoginTap();
+                  },
+                ),
+              ),
+              TextButton.icon(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                icon: const Icon(Icons.person_add, color: Colors.white),
+                label: const Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  onSignupTap();
+                },
+              ),
+            ],
+          ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -77,7 +150,7 @@ class _tenantpageState extends State<tenantpage> {
                     const SizedBox(height: 15),
 
                     Text(
-                      'An initiative of Bidhannagar Police for elderly citizens',
+                      'An initiative by Bidhannagar Police',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -87,14 +160,14 @@ class _tenantpageState extends State<tenantpage> {
 
                     const SizedBox(height: 12),
 
-                    Text(
-                      'No description available.....',
-                      style: TextStyle(
-                        fontSize: 16,
-                        height: 1.5,
-                        color: isDark ? Colors.white70 : Colors.black87,
-                      ),
-                    ),
+                    // Text(
+                    //   'No description available.....',
+                    //   style: TextStyle(
+                    //     fontSize: 16,
+                    //     height: 1.5,
+                    //     color: isDark ? Colors.white70 : Colors.black87,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -106,18 +179,141 @@ class _tenantpageState extends State<tenantpage> {
             //   REGISTRATION FORM BUTTON
             // ---------------------------------------------------
             ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => webviewtennatpage(
-                          onThemeChanged: widget.onThemeChanged,
-                          isDarkMode: widget.isDarkMode,
-                        ),
-                  ),
-                );
-              },
+              onPressed: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          bool isLoggedIn =
+                              prefs.getBool('isloggedin') ?? false;
+                          if (!isLoggedIn) {
+                            showLoginSignupDialog(
+                              context,
+                              // When user taps Login
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => testlogin(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              // When user taps Signup
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => signuppage(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          // ✅ 3️⃣ If logged in → go to profile screen
+                          else {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration: const Duration(
+                                  milliseconds: 600,
+                                ),
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        webviewtennatpage(onThemeChanged:widget. onThemeChanged,
+                                         isDarkMode:widget. isDarkMode),
+                                transitionsBuilder: (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  const begin = Offset(0.0, -1.0);
+                                  const end = Offset.zero;
+                                  var tween = Tween(
+                                    begin: begin,
+                                    end: end,
+                                  ).chain(CurveTween(curve: Curves.easeInOut));
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                       
+                        },
+              
+              // onPressed: () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder:
+              //           (context) => webviewtennatpage(
+              //             onThemeChanged: widget.onThemeChanged,
+              //             isDarkMode: widget.isDarkMode,
+              //           ),
+              //     ),
+              //   );
+              // },
 
               icon: const Icon(Icons.app_registration),
               label: const Text(

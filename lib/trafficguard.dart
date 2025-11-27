@@ -22,7 +22,7 @@ class TrafficContactsPage extends StatelessWidget {
        backgroundColor:isDarkMode ? Colors.black : Color(0xFFe9e4de),
       appBar: AppBar(
          backgroundColor:isDarkMode ? Colors.black : Color(0xFFe9e4de),
-        title: const Text("Traffic Guard Offices"),
+        title: const Text("Traffic Police Hierarchy"),
  
       ),
       body: SingleChildScrollView(
@@ -45,7 +45,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the DCP (Traffic)",
               number: "2324-1073",
-              mail: "dctrafficbdn@gmail.com",
+              mail: "dctrfbdn@policewb.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -55,7 +55,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the ACP (Traffic-I)",
               number: "2367-0063",
-              mail: "acptraffic2bdn@gmail.com",
+              mail: "acp-traffic1@policewb.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -65,7 +65,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the TI Bidhannagar TG",
               number: "8583933445",
-              mail: "bidhannagartraffic@gmail.com",
+              mail: "octg_bdn@mail.wbpolice.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -74,7 +74,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the TI Nabadiganta TG",
               number: "9062018399",
-              mail: "nabadigantatraffic@gmail.com",
+              mail: "octgnabadiganta_bdn@mail.wbpolice.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -84,7 +84,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the TI New Town TG",
               number: "2324-6088",
-              mail: "newtowntraffic2012@gmail.com",
+              mail: "octgnewtown_bdn@mail.wbpolice.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -93,7 +93,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the Eco Park STG",
               number: "6291781544",
-              mail: "ecoparkstg@gmail.com",
+              mail: "oc.ecoparkps-bdn@policewb.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -102,7 +102,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the Rajarhat TG",
               number: "9874477734",
-              mail: "tirajarhat.tg@gmail.com",
+              mail: "octgrajarhat_bdn@mail.wbpolice.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -125,7 +125,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the ACP (Traffic-II)",
               number: "8945535071",
-              mail: "acptraffic1bdn@gmail.com",
+              mail: "acptraffic2bdn@mail.wbpolice.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -135,7 +135,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the Baguiati TG",
               number: "2591-0061",
-              mail: "baguiatitg@gmail.com",
+              mail: "octgbaguiati_bdn@mail.wbpolice.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -145,7 +145,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the Lake Town TG",
               number: "25212262",
-              mail: "lkttrafficlkt@gmail.com",
+              mail: "octglaketown_bdn@mail.wbpolice.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -155,7 +155,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the Airport TG",
               number: "8910782826",
-              mail: "tiairporttgbdn@gmail.com",
+              mail: "octgairport_bdn@mail.wbpolice.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -175,7 +175,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the NSCBI STG",
               number: "9051418134",
-              mail: "tinscbiairporttgbdn@gmail.com",
+              mail: "	psnscbi@policewb.gov.in",
               h: h,
               w: w,
               mapurl:
@@ -185,7 +185,7 @@ class TrafficContactsPage extends StatelessWidget {
               context,
               title: "Office of the Narayanpur TG",
               number: "9051122860",
-              mail: "narayanpurtgbdn@gmail.com",
+              mail: "octgnarayanpur_bdn@mail.wopolice.gov.in",
               h: h,
               w: w,
               mapurl:

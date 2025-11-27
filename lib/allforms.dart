@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:bidhannagarpoliceapp/formsdemo.dart';
+import 'package:bidhannagarpoliceapp/guideline.dart';
+import 'package:bidhannagarpoliceapp/noc.dart';
 import 'package:bidhannagarpoliceapp/saanjhbatipage.dart';
 import 'package:bidhannagarpoliceapp/saraipage.dart';
 import 'package:bidhannagarpoliceapp/tenantpage.dart';
-import 'package:bidhannagarpoliceapp/tenantregistration.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -148,6 +148,34 @@ backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black 
                             );
                           },
                         ),
+                        //     tilesButton(
+                        //   title: 'NOC',
+                        //   imagepath: 'assets/images/authentication_14291356.png',
+                          
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => nocpage(onThemeChanged:widget. onThemeChanged,
+                        //          isDarkMode:widget. isDarkMode)
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        //     tilesButton(
+                        //   title: 'Guidelines ',
+                        //   imagepath: 'assets/images/authentication_14291356.png',
+                          
+                        //   onTap: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => guidelinepage(onThemeChanged:widget. onThemeChanged,
+                        //          isDarkMode:widget. isDarkMode)
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                      
             
           ]

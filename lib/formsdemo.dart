@@ -88,10 +88,11 @@ class _TenantFormPageState extends State<TenantFormPage> {
     );
     if (picked != null) {
       setState(() {
-        if (isStart)
+        if (isStart) {
           _leaseStart = picked;
-        else
+        } else {
           _leaseEnd = picked;
+        }
       });
     }
   }
@@ -306,10 +307,12 @@ class _TenantFormPageState extends State<TenantFormPage> {
                                       prefixIcon: Icon(Icons.phone),
                                     ),
                                     validator: (v) {
-                                      if (v == null || v.trim().isEmpty)
+                                      if (v == null || v.trim().isEmpty) {
                                         return 'Enter mobile';
-                                      if (v.trim().length < 8)
+                                      }
+                                      if (v.trim().length < 8) {
                                         return 'Invalid mobile';
+                                      }
                                       return null;
                                     },
                                   ),
@@ -367,7 +370,7 @@ class _TenantFormPageState extends State<TenantFormPage> {
                                           ? (constraints.maxWidth - spacing) / 2
                                           : constraints.maxWidth,
                                   child: DropdownButtonFormField<String>(
-                                    value: _propertyType,
+                                    initialValue: _propertyType,
                                     items: const [
                                       DropdownMenuItem(
                                         value: 'Flat',

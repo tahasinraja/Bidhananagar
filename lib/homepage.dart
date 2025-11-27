@@ -2,6 +2,7 @@ import 'dart:convert';
 
 //import 'package:bidhannagarpoliceapp/commingsoon.dart';
 import 'package:bidhannagarpoliceapp/allforms.dart';
+import 'package:bidhannagarpoliceapp/allparkingmape.dart';
 //import 'package:bidhannagarpoliceapp/feedback.dart';
 import 'package:bidhannagarpoliceapp/contactscreen.dart';
 import 'package:bidhannagarpoliceapp/crimereport.dart';
@@ -23,14 +24,10 @@ import 'package:bidhannagarpoliceapp/profile.dart';
 import 'package:bidhannagarpoliceapp/serviceapifetch.dart';
 import 'package:bidhannagarpoliceapp/tenantregistration.dart';
 //import 'package:bidhannagarpoliceapp/trafficadvisari.dart';
-import 'package:bidhannagarpoliceapp/trafficguard.dart';
-import 'package:bidhannagarpoliceapp/webvieparking.dart';
+import 'package:bidhannagarpoliceapp/webviewlost.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -55,6 +52,13 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
+  void loadSavedCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notificationCount = prefs.getInt("unread_count") ?? 0;
+    });
+  }
+
   //notice scroller
   final ScrollController _scrollController = ScrollController();
   bool _scrollingForward = true;
@@ -325,6 +329,7 @@ class _homepageState extends State<homepage> {
     fetchSliderImage();
     //_futureNotices = ApiService.fetchNotices();
     _loadNotices();
+    loadSavedCount();
     // selectedfeedback = "facebook"; // 👈 Default Facebook select
     // _fbController =
     //     WebViewController()
@@ -518,7 +523,7 @@ class _homepageState extends State<homepage> {
                           //   title: "About Us",
                           //   children: [
                           _buildDrawerItem(
-                            Icons.real_estate_agent_outlined,
+                            Icons.security_outlined,
                             "Police Station Hierarchy",
                             onTap: () {
                               Navigator.push(
@@ -527,7 +532,7 @@ class _homepageState extends State<homepage> {
                                   builder:
                                       (context) => docsdownviewpage(
                                         filePath: 'assets/images/Capture.pdf',
-                                        title: 'Organisation Profile',
+                                        title: 'Police Station Hierarchy',
                                       ),
                                 ),
                               );
@@ -610,15 +615,16 @@ class _homepageState extends State<homepage> {
                           // ),
                           _buildDrawerItem(
                             Icons.person,
-                            "Traffic Station Hierarchy ",
+                            "Traffic Police Hierarchy ",
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (context) => TrafficContactsPage(
-                                        onThemeChanged: widget.onThemeChanged,
-                                        isDarkMode: widget.isDarkMode,
+                                      (context) => docsdownviewpage(
+                                        filePath:
+                                            'assets/images/Traffic Heirarchy.pdf',
+                                        title: 'Traffic Police Hierarchy',
                                       ),
                                 ),
                               );
@@ -962,28 +968,28 @@ class _homepageState extends State<homepage> {
                             ),
                             child: Column(
                               children: [
-                                ElevatedButton.icon(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    //  minimumSize: const Size.fromHeight(45),
-                                  ),
-                                  icon: const Icon(
-                                    Icons.call,
-                                    color: Colors.white,
-                                  ),
-                                  label: const Text(
-                                    "Police Helpline",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  onPressed: callnumber2,
-                                ),
+                                // ElevatedButton.icon(
+                                //   style: ElevatedButton.styleFrom(
+                                //     backgroundColor: Colors.red,
+                                //     shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(12),
+                                //     ),
+                                //     //  minimumSize: const Size.fromHeight(45),
+                                //   ),
+                                //   icon: const Icon(
+                                //     Icons.call,
+                                //     color: Colors.white,
+                                //   ),
+                                //   label: const Text(
+                                //     "Police Helpline",
+                                //     style: TextStyle(
+                                //       fontSize: 16,
+                                //       color: Colors.white,
+                                //       fontWeight: FontWeight.bold,
+                                //     ),
+                                //   ),
+                                //   onPressed: callnumber2,
+                                // ),
                                 const SizedBox(height: 10),
                                 //logout button
 
@@ -1191,8 +1197,8 @@ class _homepageState extends State<homepage> {
                         children: [
                           Icon(
                             Icons.notifications_active_outlined,
-                            color:
-                                widget.isDarkMode ? Colors.white : Colors.black,
+                            color:Colors.red,
+                               // widget.isDarkMode ? Colors.white : Colors.black,
                             size: MediaQuery.of(context).size.width * 0.08,
                           ),
                           if (_notificationCount > 0)
@@ -1344,6 +1350,7 @@ class _homepageState extends State<homepage> {
                         }
 
                         // 🔹 Reset counter after opening notification screen
+                        prets.setInt("unread_count", 0);
                         setState(() {
                           _notificationCount = 0;
                         });
@@ -1615,18 +1622,140 @@ class _homepageState extends State<homepage> {
                       tilesButton(
                         title: 'Lost Items\nRegistration',
                         imagepath: 'assets/images/lost-items.png',
-                        onTap: () async {
-                          const ur1 =
-                              'https://services.bidhannagarcitypolice.gov.in/aspx/signin.aspx?form=cpegd';
-                          if (await canLaunchUrl(Uri.parse(ur1))) {
-                            await launchUrl(
-                              Uri.parse(ur1),
-                              mode: LaunchMode.externalApplication,
+                       onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          bool isLoggedIn =
+                              prefs.getBool('isloggedin') ?? false;
+                          if (!isLoggedIn) {
+                            showLoginSignupDialog(
+                              context,
+                              // When user taps Login
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => testlogin(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              // When user taps Signup
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => signuppage(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                             );
-                          } else {
-                            debugPrint("Could not launch $ur1");
                           }
+                          // ✅ 3️⃣ If logged in → go to profile screen
+                          else {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration: const Duration(
+                                  milliseconds: 600,
+                                ),
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        webviewlostpage(onThemeChanged:widget. onThemeChanged,
+                                         isDarkMode:widget. isDarkMode),
+                                transitionsBuilder: (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  const begin = Offset(0.0, -1.0);
+                                  const end = Offset.zero;
+                                  var tween = Tween(
+                                    begin: begin,
+                                    end: end,
+                                  ).chain(CurveTween(curve: Curves.easeInOut));
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                         // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder:
+                            //         (context) =>webviewlostpage(
+                            //       onThemeChanged: widget.onThemeChanged,
+                            //       isDarkMode: widget.isDarkMode,
+                            //     ),
+                            //   ),
+                            // );
                         },
+                           
+                        
+                        
                       ),
                       tilesButton(
                         title: 'Report \nCrime',
@@ -2545,12 +2674,31 @@ class _homepageState extends State<homepage> {
                                       shadowColor: Colors.black,
                                       padding: EdgeInsets.zero,
                                     ),
-                                    onPressed: () {
+                                    onPressed: ()async {
+
+                                      // if (await canLaunchUrl(
+                                      //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                      //   )
+                                      
+                                      // ) {
+                                      //   await launchUrl(
+                                      //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                      //     mode: LaunchMode.platformDefault,
+                                      //   );
+                                      // }
+                                            
+                                        
+                                      
+                                      
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder:
-                                              (context) => webviewparkingpage(
+                                              (context) => 
+                                          //   webviewparkingpage
+                                         AllParkingMap
+                                             (
                                                 onThemeChanged:
                                                     widget.onThemeChanged,
                                                 isDarkMode: widget.isDarkMode,
@@ -3431,5 +3579,56 @@ class _BlinkingContainerState extends State<_BlinkingContainer>
   @override
   Widget build(BuildContext context) {
     return FadeTransition(opacity: _controller, child: widget.child);
+  }
+}
+
+class SettingsPage extends StatefulWidget {
+  final bool isDarkMode;
+  final Function(bool) onThemeChanged;
+
+  const SettingsPage({
+    super.key,
+    required this.isDarkMode,
+    required this.onThemeChanged,
+  });
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  late bool localDarkMode;
+
+  @override
+  void initState() {
+    super.initState();
+    localDarkMode = widget.isDarkMode; // sync initial
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SwitchListTile(
+      title: Text(
+        localDarkMode ? "Dark Mode" : "Light Mode",
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+
+      secondary: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: Icon(
+          localDarkMode ? Icons.dark_mode : Icons.light_mode,
+          key: ValueKey(localDarkMode),
+          color: localDarkMode ? Colors.white : Colors.black87,
+        ),
+      ),
+
+      activeThumbColor: Colors.amberAccent,
+      value: localDarkMode,
+
+      onChanged: (value) {
+        setState(() => localDarkMode = value); // instant UI update
+        widget.onThemeChanged(value); // notify parent
+      },
+    );
   }
 }

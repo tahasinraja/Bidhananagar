@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool('isloggedin') ?? false;
   bool isDarkMode = prefs.getBool('isDarkMode') ?? false;
@@ -53,14 +54,14 @@ class _MyAppState extends State<MyApp> {
     await prefs.setBool('isDarkMode', value);
 
   //  Optional SnackBar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          value ? "🌙 Dark Mode Enabled" : "☀️ Light Mode Enabled",
-        ),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     content: Text(
+    //       value ? "🌙 Dark Mode Enabled" : "☀️ Light Mode Enabled",
+    //     ),
+    //     duration: const Duration(seconds: 1),
+    //   ),
+    // );
   }
 
   @override
@@ -142,9 +143,11 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: SizedBox.expand(
         child: Container(
-          decoration: const BoxDecoration(
+          height: double.infinity,
+          width: double.infinity,
+          decoration:  BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/images/app login.jpg"),
+              image: AssetImage("assets/images/app_login.jpg"),
               fit: BoxFit.cover,
             ),
           ),

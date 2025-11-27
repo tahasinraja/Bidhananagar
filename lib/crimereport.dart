@@ -28,58 +28,56 @@ class _crimereportState extends State<crimereport> {
   bool isLoading = false;
   String phone = '';
   Map<String, dynamic>? profile;
-//fetch ps list
-   List< dynamic> locationlist = [
-  // 'Airport PS',
-  // 'Baguiati PS',
-  // 'Bidhannagar East PS',
-  // 'Bidhannagar North PS',
-  // 'Cyber Crime PS',
-  // 'Bidhannagar South PS',
-  // 'Electronic Complex PS',
-  // 'Eco Park PS',
-  // 'Lakes PS',
-  // 'Nabadiganta PS',
-  // 'New Town PS',
-  // 'Narayanpur PS',
-  // 'Rajarhat PS',
-  // 'Salt Lake PS',
-  // 'Techno City PS',
-  // 'Women PS'
-
+  //fetch ps list
+  List<dynamic> locationlist = [
+    // 'Airport PS',
+    // 'Baguiati PS',
+    // 'Bidhannagar East PS',
+    // 'Bidhannagar North PS',
+    // 'Cyber Crime PS',
+    // 'Bidhannagar South PS',
+    // 'Electronic Complex PS',
+    // 'Eco Park PS',
+    // 'Lakes PS',
+    // 'Nabadiganta PS',
+    // 'New Town PS',
+    // 'Narayanpur PS',
+    // 'Rajarhat PS',
+    // 'Salt Lake PS',
+    // 'Techno City PS',
+    // 'Women PS'
   ];
 
-Future<void> fetchpslist() async {
-  final url = Uri.parse("https://bnpcdeveloper.co.in/bnpolice/app/fetch_policestation.php");
+  Future<void> fetchpslist() async {
+    final url = Uri.parse(
+      "https://bnpcdeveloper.co.in/bnpolice/app/fetch_policestation.php",
+    );
 
-  try {
-    final response = await http.get(url);
+    try {
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-      if (data['status'].toLowerCase() == 'success') {
-        setState(() {
-          locationlist = List<String>.from(
-            data['data'].map((item) => item['ps']?? ''),
-          );
-          isLoading = false;
-        });
+        if (data['status'].toLowerCase() == 'success') {
+          setState(() {
+            locationlist = List<String>.from(
+              data['data'].map((item) => item['ps'] ?? ''),
+            );
+            isLoading = false;
+          });
 
-        print('locationlist: $locationlist');
+          print('locationlist: $locationlist');
+        } else {
+          throw Exception("Fetch Failed: ${data['message']}");
+        }
       } else {
-        throw Exception("Fetch Failed: ${data['message']}");
+        throw Exception("Server Error");
       }
-    } else {
-      throw Exception("Server Error");
+    } catch (e) {
+      print("Error fetching list → $e");
     }
-  } catch (e) {
-    print("Error fetching list → $e");
   }
-}
-
-
-
 
   //fetch data function
   Future<void> fetchProfile(String phoneNumber) async {
@@ -99,11 +97,15 @@ Future<void> fetchpslist() async {
           setState(() {
             profile = P;
             nameCtrl.text = P!['name'] ?? '';
-            isfieldname = nameCtrl.text.isNotEmpty; // Check if nameCtrl.text is not empty
+            isfieldname =
+                nameCtrl.text.isNotEmpty; // Check if nameCtrl.text is not empty
             phCtrl.text = P!['ph'] ?? '';
             emailCtrl.text = P!['email'] ?? '';
-           isfieldemail = emailCtrl.text.isNotEmpty; // Check if emailCtrl.text is not empty
-           // psCtrl.text = P!['ps'] ?? '';
+            isfieldemail =
+                emailCtrl
+                    .text
+                    .isNotEmpty; // Check if emailCtrl.text is not empty
+            // psCtrl.text = P!['ps'] ?? '';
             profile!['address'] ?? '';
             profile!['blood'] ?? '';
 
@@ -153,8 +155,8 @@ Future<void> fetchpslist() async {
     fetchpslist();
     _getLocation(); // auto get location
     _loadPhoneAndFetchProfile();
-      emailCtrl.addListener(() => setState(() {})); // 👈 this line is key
-  nameCtrl.addListener(() => setState(() {}));
+    emailCtrl.addListener(() => setState(() {})); // 👈 this line is key
+    nameCtrl.addListener(() => setState(() {}));
   }
 
   /// 🔹 Load phone from SharedPreferences then fetch profile
@@ -164,8 +166,16 @@ Future<void> fetchpslist() async {
     if (phone.isNotEmpty) {
       fetchProfile(phone);
     } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder:
-       (context) => testlogin(onThemeChanged: widget.onThemeChanged, isDarkMode: widget.isDarkMode,)));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => testlogin(
+                onThemeChanged: widget.onThemeChanged,
+                isDarkMode: widget.isDarkMode,
+              ),
+        ),
+      );
     }
   }
 
@@ -200,7 +210,7 @@ Future<void> fetchpslist() async {
     debugPrint("✅ Location fetched: lat=$latitude, long=$longitude");
   }
 
-  /// 🖼 Pick Image
+  /// 🖼 Pick Image camera
   Future<void> _pickImage() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.camera);
     if (picked != null) {
@@ -209,9 +219,27 @@ Future<void> fetchpslist() async {
     }
   }
 
-  /// 🎥 Pick Video
+  // pick image from gallery
+  Future<void> _pickImagegallery() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _photo = File(picked.path));
+      debugPrint("📸 Image selected: ${picked.path}");
+    }
+  }
+
+  /// 🎥 Pick Video from gallery
   Future<void> _pickVideo() async {
     final picked = await ImagePicker().pickVideo(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _video = File(picked.path));
+      debugPrint("🎬 Video selected: ${picked.path}");
+    }
+  }
+
+  //pick video from camera
+  Future<void> _pickVideocamera() async {
+    final picked = await ImagePicker().pickVideo(source: ImageSource.camera);
     if (picked != null) {
       setState(() => _video = File(picked.path));
       debugPrint("🎬 Video selected: ${picked.path}");
@@ -316,16 +344,17 @@ Future<void> fetchpslist() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Theme.of(context).brightness == Brightness.dark
-    ? Colors.black
-    : const Color(0xFFe9e4de),
+      backgroundColor:
+          Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : const Color(0xFFe9e4de),
 
       appBar: AppBar(
         title: const Text('Report Crime'),
-       backgroundColor: Theme.of(context).brightness == Brightness.dark
-    ? Colors.black
-    : const Color(0xFFe9e4de),
-
+        backgroundColor:
+            Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : const Color(0xFFe9e4de),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -336,41 +365,61 @@ Future<void> fetchpslist() async {
               TextFormField(
                 controller: nameCtrl,
                 readOnly: isfieldname,
-                decoration:  InputDecoration(label:RichText(text:
-                 TextSpan(text: 'Name',style: TextStyle(   
-                  color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,
-
-                 ),
-                 children: [
-                   TextSpan(text: "*", style: TextStyle(color: Colors.red),),
-                 ]
-                 ),),),
-                  validator: (v) => v!.isEmpty ? 'Enter name' : null,
-                
+                decoration: InputDecoration(
+                  label: RichText(
+                    text: TextSpan(
+                      text: 'Name',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors
+                                    .white // Dark Mode
+                                : Colors.black87,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "*",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                validator: (v) => v!.isEmpty ? 'Enter name' : null,
               ),
               TextFormField(
                 controller: phCtrl,
                 readOnly: isfieldname,
-                decoration:  InputDecoration(label: RichText(text:
-                 TextSpan(text: 'Phone',style: TextStyle(
-                    color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,),
-                 children: [
-                   TextSpan(text: "*", style: TextStyle(color: Colors.red),),
-                 ]),),),
+                decoration: InputDecoration(
+                  label: RichText(
+                    text: TextSpan(
+                      text: 'Phone',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors
+                                    .white // Dark Mode
+                                : Colors.black87,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "*",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 keyboardType: TextInputType.phone,
-                 validator: (v) => v!.isEmpty ? 'Enter phone' : null,
+                validator: (v) => v!.isEmpty ? 'Enter phone' : null,
               ),
               TextFormField(
                 controller: emailCtrl,
-                readOnly: isfieldemail,//agar emty ho fill kare
+                readOnly: isfieldemail, //agar emty ho fill kare
                 decoration: const InputDecoration(labelText: 'Email'),
                 //    validator: (v) => v!.isEmpty ? 'Enter email' : null,
               ),
-               TextFormField(
+              TextFormField(
                 controller: uidCtrl,
                 decoration: const InputDecoration(labelText: 'Aadhar Number'),
                 keyboardType: TextInputType.phone,
@@ -379,70 +428,107 @@ Future<void> fetchpslist() async {
               ),
               TextFormField(
                 controller: subCtrl,
-                decoration:  InputDecoration(label: RichText(text: 
-                 TextSpan(text: 'Subject',style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,),
-                 children: [
-                   TextSpan(text: "*", style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,),),
-                 ])),),
-                  validator: (v) => v!.isEmpty ? 'Enter subject' : null,
+                decoration: InputDecoration(
+                  label: RichText(
+                    text: TextSpan(
+                      text: 'Subject',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors
+                                    .white // Dark Mode
+                                : Colors.black87,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "*",
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors
+                                        .white // Dark Mode
+                                    : Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                validator: (v) => v!.isEmpty ? 'Enter subject' : null,
               ),
 
-isLoading
-    ? CircularProgressIndicator()
-    : DropdownButtonFormField(
-        items: locationlist
-            .map((ps) => DropdownMenuItem(
-                  value: ps,
-                  child: Text(ps),
-                ))
-            .toList(),
-        onChanged: (value) {
-          setState(() {
-            psCtrl.text = value.toString();
-          });
-        },
-        decoration: InputDecoration(label:RichText(text: TextSpan(text: 
-        "Police Station",style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,),
-        
-        children: [
-          TextSpan(text: "*", style: TextStyle(color: Colors.red),),
-          
-        ],
-        ),
-        
-        ),
-        
-        ),
-        validator: (value) =>
-            value == null || value.toString().isEmpty ? "Select Police Station" : null,
+              isLoading
+                  ? CircularProgressIndicator()
+                  : DropdownButtonFormField(
+                    items:
+                        locationlist
+                            .map(
+                              (ps) =>
+                                  DropdownMenuItem(value: ps, child: Text(ps)),
+                            )
+                            .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        psCtrl.text = value.toString();
+                      });
+                    },
+                    decoration: InputDecoration(
+                      label: RichText(
+                        text: TextSpan(
+                          text: "Police Station",
+                          style: TextStyle(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors
+                                        .white // Dark Mode
+                                    : Colors.black87,
+                          ),
 
-      ),
-        
-       
+                          children: [
+                            TextSpan(
+                              text: "*",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    validator:
+                        (value) =>
+                            value == null || value.toString().isEmpty
+                                ? "Select Police Station"
+                                : null,
+                  ),
 
               // TextFormField(
               //   controller: psCtrl,
               //   decoration: const InputDecoration(labelText: 'Police Station'),
               //   validator: (v) => v!.isEmpty ? 'Enter P.S' : null,
               // ),
-
               TextFormField(
                 controller: desCtrl,
-                decoration:  InputDecoration(label: RichText(text:  
-                 TextSpan(text: 'Description',style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,),
-                 children: [
-                   TextSpan(text: "*", style: TextStyle(color: Colors.red),),
-                 ])),),
+                decoration: InputDecoration(
+                  label: RichText(
+                    text: TextSpan(
+                      text: 'Description',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors
+                                    .white // Dark Mode
+                                : Colors.black87,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "*",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 maxLines: 3,
-                      validator: (v) => v!.isEmpty ? 'Enter discription' : null,
+                validator: (v) => v!.isEmpty ? 'Enter discription' : null,
               ),
 
               const SizedBox(height: 20),
@@ -457,7 +543,34 @@ isLoading
                     Column(
                       children: [
                         ElevatedButton.icon(
-                          onPressed: _pickImage,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Select Image Source'),
+                                  content: Row(
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ElevatedButton.icon(
+                                        onPressed: _pickImagegallery,
+                                        icon: const Icon(Icons.image),
+                                        label: Text('Gallery'),
+                                      ),
+                                      SizedBox(width: 6),
+
+                                      ElevatedButton.icon(
+                                        onPressed: _pickImage,
+                                        icon: const Icon(Icons.camera_alt),
+                                        label: Text('Camera'),
+                                      ),
+                                      
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
                           icon: const Icon(Icons.image),
                           label: const Text('Pick Photo'),
                         ),
@@ -465,49 +578,58 @@ isLoading
 
                         // 📸 Image Preview
                         if (_photo != null)
-                          Column(
-                            children: [
-                              const Text(
-                                "🖼️ Selected Image:",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 8),
-                              Image.file(
-                                _photo!,
-                                height: 50,
-                                width: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            ],
-                          ),
+                        Icon(Icons.check_circle, color: Colors.green),
+                    
                       ],
                     ),
-SizedBox(width: 20,),
+                    SizedBox(width: 20),
                     Column(
                       children: [
                         ElevatedButton.icon(
-                          onPressed: _pickVideo,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Select Video Source'),
+                                  content: Row(
+                                    children: [
+                                      ElevatedButton.icon(onPressed: _pickVideo,
+                                      icon: const Icon(Icons.video_file),
+                                       label: const Text('Gallery'),),
+                                       SizedBox(width: 6),
+                                             SizedBox(width: 6),
+                                      ElevatedButton.icon(onPressed: _pickVideocamera,
+                                      icon: const Icon(Icons.video_call),
+                                       label: Text('Video'),),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
                           icon: const Icon(Icons.video_file),
                           label: const Text('Pick Video'),
                         ),
                         const SizedBox(height: 20),
                         if (_video != null)
-                          Column(
-                            children: [
-                              const Text(
-                                "🎬 Selected Video:",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                _video!.path.split('/').last,
-                                style: const TextStyle(
-                                  color: Colors.blueGrey,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
+                        Icon(Icons.check_circle, color: Colors.green),
+                          // Column(
+                          //   children: [
+                          //     const Text(
+                          //       "🎬 Selected Video:",
+                          //       style: TextStyle(fontWeight: FontWeight.bold),
+                          //     ),
+                          //     SizedBox(height: 10),
+                          //     Text(
+                          //       _video!.path.split('/').last,
+                          //       style: const TextStyle(
+                          //         color: Colors.blueGrey,
+                          //         overflow: TextOverflow.ellipsis,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                       ],
                     ),
                   ],

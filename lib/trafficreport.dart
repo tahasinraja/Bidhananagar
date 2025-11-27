@@ -28,26 +28,23 @@ class _trafficreportState extends State<trafficreport> {
   //fetch function
   String phone = '';
   Map<String, dynamic>? profile;
-    final List<String>? locationlist = [
- 
- 
-  'Airport PS',
-  'Baguiati PS',
-  'Bidhannagar East PS',
-  'Bidhannagar North PS',
-  'Cyber Crime PS',
-  'Bidhannagar South PS',
-  'Electronic Complex PS',
-  'Eco Park PS',
-  'Lakes PS',
-  'Nabadiganta PS',
-  'New Town PS',
-  'Narayanpur PS',
-  'Rajarhat PS',
-  'Salt Lake PS',
-  'Techno City PS',
-  'Women PS'
-
+  final List<String>? locationlist = [
+    'Airport PS',
+    'Baguiati PS',
+    'Bidhannagar East PS',
+    'Bidhannagar North PS',
+    'Cyber Crime PS',
+    'Bidhannagar South PS',
+    'Electronic Complex PS',
+    'Eco Park PS',
+    'Lakes PS',
+    'Nabadiganta PS',
+    'New Town PS',
+    'Narayanpur PS',
+    'Rajarhat PS',
+    'Salt Lake PS',
+    'Techno City PS',
+    'Women PS',
   ];
   //fetch data function
   Future<void> fetchProfile(String phoneNumber) async {
@@ -113,9 +110,9 @@ class _trafficreportState extends State<trafficreport> {
   @override
   void initState() {
     super.initState();
-    _getLocation(); 
-    _loadprofiledata();// auto get location
-     nameCtrl.addListener(() => setState(() {}));
+    _getLocation();
+    _loadprofiledata(); // auto get location
+    nameCtrl.addListener(() => setState(() {}));
   }
 
   Future<void> _loadprofiledata() async {
@@ -124,8 +121,16 @@ class _trafficreportState extends State<trafficreport> {
     if (phone.isNotEmpty) {
       fetchProfile(phone);
     } else {
-       Navigator.pushReplacement(context, MaterialPageRoute(builder:
-       (context) => testlogin(onThemeChanged: widget.onThemeChanged, isDarkMode: widget.isDarkMode,)));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => testlogin(
+                onThemeChanged: widget.onThemeChanged,
+                isDarkMode: widget.isDarkMode,
+              ),
+        ),
+      );
     }
   }
 
@@ -160,7 +165,7 @@ class _trafficreportState extends State<trafficreport> {
     debugPrint("✅ Location fetched: lat=$latitude, long=$longitude");
   }
 
-  /// 🖼 Pick Image
+  /// 🖼 Pick Image from camera
   Future<void> _pickImage() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.camera);
     if (picked != null) {
@@ -169,9 +174,28 @@ class _trafficreportState extends State<trafficreport> {
     }
   }
 
-  /// 🎥 Pick Video
+  // pick image from gallery
+  Future<void> _pickImagegallery() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _photo = File(picked.path));
+      debugPrint("📸 Image selected: ${picked.path}");
+    }
+  }
+
+  /// 🎥 Pick Video from galley
   Future<void> _pickVideo() async {
     final picked = await ImagePicker().pickVideo(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _video = File(picked.path));
+      debugPrint("🎬 Video selected: ${picked.path}");
+    }
+  }
+
+  //pick video from camera
+  /// 🎥 Pick Video
+  Future<void> _pickVideocamera() async {
+    final picked = await ImagePicker().pickVideo(source: ImageSource.camera);
     if (picked != null) {
       setState(() => _video = File(picked.path));
       debugPrint("🎬 Video selected: ${picked.path}");
@@ -194,7 +218,7 @@ class _trafficreportState extends State<trafficreport> {
     request.fields['latitude'] = latitude?.toString() ?? '';
     request.fields['longitude'] = longitude?.toString() ?? '';
     request.fields['des'] = desCtrl.text;
-  request.fields['uid'] = uidCtrl.text;
+    request.fields['uid'] = uidCtrl.text;
     debugPrint("🧾 Fields Sent: ${request.fields}");
 
     if (_photo != null) {
@@ -275,16 +299,17 @@ class _trafficreportState extends State<trafficreport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     backgroundColor: Theme.of(context).brightness == Brightness.dark
-    ? Colors.black
-    : const Color(0xFFe9e4de),
+      backgroundColor:
+          Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : const Color(0xFFe9e4de),
 
       appBar: AppBar(
         title: const Text('Report Traffic Incident'),
-       backgroundColor: Theme.of(context).brightness == Brightness.dark
-    ? Colors.black
-    : const Color(0xFFe9e4de),
-
+        backgroundColor:
+            Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : const Color(0xFFe9e4de),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -295,31 +320,57 @@ class _trafficreportState extends State<trafficreport> {
               TextFormField(
                 controller: nameCtrl,
                 readOnly: isnamefilled,
-              //  readOnly: nameCtrl.text.isNotEmpty,// agar emty mile to edit ho jaaye
-                decoration:  InputDecoration(label:RichText(text:   
-                TextSpan(text: "Name",style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,),
-                children: [
-                  TextSpan(text: "*", style: TextStyle(color: Colors.red),),
-                ]),),),
-                
-                 validator: (v) => v!.isEmpty ? 'Enter name' : null,
+                //  readOnly: nameCtrl.text.isNotEmpty,// agar emty mile to edit ho jaaye
+                decoration: InputDecoration(
+                  label: RichText(
+                    text: TextSpan(
+                      text: "Name",
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors
+                                    .white // Dark Mode
+                                : Colors.black87,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "*",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                validator: (v) => v!.isEmpty ? 'Enter name' : null,
               ),
               TextFormField(
                 controller: phCtrl,
                 readOnly: true,
-                decoration:  InputDecoration(label: RichText(text:  TextSpan(text: "Phone",
-                 style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,),
-                 children: [
-                   TextSpan(text: "*", style: TextStyle(color: Colors.red),),
-                 ]),),),
+                decoration: InputDecoration(
+                  label: RichText(
+                    text: TextSpan(
+                      text: "Phone",
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors
+                                    .white // Dark Mode
+                                : Colors.black87,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "*",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 keyboardType: TextInputType.phone,
-                 validator: (v) => v!.isEmpty ? 'Enter phone' : null,
+                validator: (v) => v!.isEmpty ? 'Enter phone' : null,
               ),
-                TextFormField(
+              TextFormField(
                 controller: uidCtrl,
                 //readOnly: true,
                 decoration: const InputDecoration(labelText: 'Aadhar Number'),
@@ -329,33 +380,52 @@ class _trafficreportState extends State<trafficreport> {
               ),
               TextFormField(
                 controller: localityCtrl,
-                decoration:  InputDecoration(label: RichText(text:  TextSpan(text: "Locality",
-                
-                style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,),
-                children: [
-                  TextSpan(text: "*", style: TextStyle(color: Colors.red),),
-                  
-                ]
-                  ),
+                decoration: InputDecoration(
+                  label: RichText(
+                    text: TextSpan(
+                      text: "Locality",
 
-                   ),
-                   
-          
-                   ),
-                   
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors
+                                    .white // Dark Mode
+                                : Colors.black87,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "*",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
                 validator: (v) => v!.isEmpty ? 'Enter locality' : null,
-              
               ),
               TextFormField(
                 controller: desCtrl,
-                decoration:  InputDecoration(label:RichText(text: 
-                TextSpan(text: "Description",
-                 style: TextStyle(   color: Theme.of(context).brightness == Brightness.dark
-        ? Colors.white      // Dark Mode
-        : Colors.black87,),
-                 children: [TextSpan(text: "*", style: TextStyle(color: Colors.red),)]) ),),
+                decoration: InputDecoration(
+                  label: RichText(
+                    text: TextSpan(
+                      text: "Description",
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors
+                                    .white // Dark Mode
+                                : Colors.black87,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "*",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 maxLines: 3,
                 validator: (v) => v!.isEmpty ? 'Enter description' : null,
               ),
@@ -366,18 +436,100 @@ class _trafficreportState extends State<trafficreport> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton.icon(
-                    onPressed: _pickImage,
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            title: Text(
+                              'Select Image Source',
+                              style: TextStyle(
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors
+                                            .white // Dark Mode
+                                        : Colors.black87,
+                              ),
+                            ),
+                            content: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: _pickImagegallery,
+                                  icon: const Icon(Icons.image),
+                                  label: const Text('Gallery'),
+                                ),
+                                SizedBox(width: 6),
+                                ElevatedButton.icon(
+                                  onPressed: _pickImage,
+                                  icon: const Icon(Icons.video_file),
+                                  label: const Text('Camera'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+
+                    // _pickImage,
                     icon: const Icon(Icons.image),
                     label: const Text('Pick Photo'),
                   ),
                   ElevatedButton.icon(
-                    onPressed: _pickVideo,
+                    onPressed: () {
+                      showDialog(context: context, builder: (context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          title: Text(
+                            'Select Video Source',
+                            style: TextStyle(
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors
+                                          .white // Dark Mode
+                                      : Colors.black87,
+                            ),
+                          ),
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton.icon(
+                                onPressed: _pickVideocamera,
+                                icon: const Icon(Icons.video_file),
+                                label: const Text('Camera'),
+                              ),
+                              SizedBox(width: 6),
+                              ElevatedButton.icon(
+                                onPressed: _pickVideo,
+                                icon: const Icon(Icons.video_file),
+                                label: const Text('Gallery'),
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                    },
                     icon: const Icon(Icons.video_file),
                     label: const Text('Pick Video'),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+               SizedBox(height: 20),
+              if (_photo != null)
+              Icon(Icons.check_circle,
+               color: Colors.green),
+
+               if (_video != null)
+               Icon(Icons.check_circle,
+               color: Colors.green),
               isloading
                   ? const Center(child: CircularProgressIndicator())
                   : ElevatedButton(
@@ -389,7 +541,10 @@ class _trafficreportState extends State<trafficreport> {
                         vertical: 12,
                       ),
                     ),
-                    child: const Text('Submit', style: TextStyle(fontSize: 16,color: Colors.white)),
+                    child: const Text(
+                      'Submit',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
             ],
           ),
