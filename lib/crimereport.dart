@@ -601,7 +601,7 @@ class _crimereportState extends State<crimereport> {
                                              SizedBox(width: 6),
                                       ElevatedButton.icon(onPressed: _pickVideocamera,
                                       icon: const Icon(Icons.video_call),
-                                       label: Text('Video'),),
+                                       label: Text('Camera'),),
                                     ],
                                   ),
                                 );

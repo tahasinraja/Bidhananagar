@@ -146,7 +146,7 @@ class _AllParkingMapState extends State<AllParkingMap> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Parking Availability', style: TextStyle(fontSize: 18,fontWeight: FontWeight.w500),
+              Text('Parking Details', style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),
               
               ),
             ],
@@ -157,7 +157,7 @@ Row(
   mainAxisAlignment: MainAxisAlignment.spaceBetween,
   children: [
     Text("Vehicle Type",style: TextStyle(fontWeight: FontWeight.bold),),
-    Text("Present",style: TextStyle(fontWeight: FontWeight.bold),),
+    Text("Capacity",style: TextStyle(fontWeight: FontWeight.bold),),
     Text("Available",style: TextStyle(fontWeight: FontWeight.bold),),
   ],
 ),
@@ -166,12 +166,15 @@ Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 
-                Text("2-Wheeler: ",
+                Text("2-Wheeler",
                     style: TextStyle(fontSize: 15)),
                      Text("${list['rate_2w']}",
                     style: TextStyle(fontSize: 15)),
                    // SizedBox(width: 30,),
-                    Text(':${list['arate_2w']}'),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 25),
+                      child: Text('${list['arate_2w']}'),
+                    ),
               ],
             ),
             SizedBox(height: 6),
@@ -179,12 +182,15 @@ Row(
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("4-Wheeler:",
+                Text("4-Wheeler",
                     style: TextStyle(fontSize: 15)),
                      Text("${list['rate_4w']}",
                     style: TextStyle(fontSize: 15)),
                    // SizedBox(width: 30,),
-                    Text(':${list['arate_4w']}'),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 25),
+                      child: Text('${list['arate_4w']}'),
+                    ),
               ],
             ),
             SizedBox(height: 6),

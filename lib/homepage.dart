@@ -8,6 +8,7 @@ import 'package:bidhannagarpoliceapp/contactscreen.dart';
 import 'package:bidhannagarpoliceapp/crimereport.dart';
 import 'package:bidhannagarpoliceapp/noticedetails.dart';
 import 'package:bidhannagarpoliceapp/signuppage.dart';
+import 'package:bidhannagarpoliceapp/lostitempage.dart';
 import 'package:bidhannagarpoliceapp/trafficreport.dart';
 //import 'package:bidhannagarpoliceapp/history.dart';
 import 'package:bidhannagarpoliceapp/imageviwer.dart';
@@ -24,7 +25,6 @@ import 'package:bidhannagarpoliceapp/profile.dart';
 import 'package:bidhannagarpoliceapp/serviceapifetch.dart';
 import 'package:bidhannagarpoliceapp/tenantregistration.dart';
 //import 'package:bidhannagarpoliceapp/trafficadvisari.dart';
-import 'package:bidhannagarpoliceapp/webviewlost.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -322,12 +322,13 @@ class _homepageState extends State<homepage> {
   }
 
   @override
+
   void initState() {
     super.initState();
     newsfetch();
     _startAutoScroll();
     fetchSliderImage();
-    //_futureNotices = ApiService.fetchNotices();
+  //  _futureNotices = ApiService.fetchNotices();
     _loadNotices();
     loadSavedCount();
     // selectedfeedback = "facebook"; // 👈 Default Facebook select
@@ -1197,8 +1198,8 @@ class _homepageState extends State<homepage> {
                         children: [
                           Icon(
                             Icons.notifications_active_outlined,
-                            color:Colors.red,
-                               // widget.isDarkMode ? Colors.white : Colors.black,
+                            color: Colors.red,
+                            // widget.isDarkMode ? Colors.white : Colors.black,
                             size: MediaQuery.of(context).size.width * 0.08,
                           ),
                           if (_notificationCount > 0)
@@ -1622,7 +1623,7 @@ class _homepageState extends State<homepage> {
                       tilesButton(
                         title: 'Lost Items\nRegistration',
                         imagepath: 'assets/images/lost-items.png',
-                       onTap: () async {
+                        onTap: () async {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                           bool isLoggedIn =
@@ -1720,8 +1721,10 @@ class _homepageState extends State<homepage> {
                                 ),
                                 pageBuilder:
                                     (context, animation, secondaryAnimation) =>
-                                        webviewlostpage(onThemeChanged:widget. onThemeChanged,
-                                         isDarkMode:widget. isDarkMode),
+                                        lostitempage(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
                                 transitionsBuilder: (
                                   context,
                                   animation,
@@ -1742,20 +1745,17 @@ class _homepageState extends State<homepage> {
                               ),
                             );
                           }
-                         // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder:
-                            //         (context) =>webviewlostpage(
-                            //       onThemeChanged: widget.onThemeChanged,
-                            //       isDarkMode: widget.isDarkMode,
-                            //     ),
-                            //   ),
-                            // );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder:
+                          //         (context) =>webviewlostpage(
+                          //       onThemeChanged: widget.onThemeChanged,
+                          //       isDarkMode: widget.isDarkMode,
+                          //     ),
+                          //   ),
+                          // );
                         },
-                           
-                        
-                        
                       ),
                       tilesButton(
                         title: 'Report \nCrime',
@@ -2674,31 +2674,25 @@ class _homepageState extends State<homepage> {
                                       shadowColor: Colors.black,
                                       padding: EdgeInsets.zero,
                                     ),
-                                    onPressed: ()async {
-
+                                    onPressed: () async {
                                       // if (await canLaunchUrl(
                                       //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
                                       //   )
-                                      
+
                                       // ) {
                                       //   await launchUrl(
                                       //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
                                       //     mode: LaunchMode.platformDefault,
                                       //   );
                                       // }
-                                            
-                                        
-                                      
-                                      
 
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder:
-                                              (context) => 
-                                          //   webviewparkingpage
-                                         AllParkingMap
-                                             (
+                                              (context) =>
+                                              //   webviewparkingpage
+                                              AllParkingMap(
                                                 onThemeChanged:
                                                     widget.onThemeChanged,
                                                 isDarkMode: widget.isDarkMode,

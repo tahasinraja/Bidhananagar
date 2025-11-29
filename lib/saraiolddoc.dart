@@ -72,7 +72,7 @@ backgroundColor: isDark ? Colors.black : const Color(0xFFe9e4de),
       children: [
         Text("$number. ",
             style: const TextStyle(fontWeight: FontWeight.w600)),
-        Expanded(child: Text(text)),
+        Expanded(child: Text(text,style: TextStyle(fontSize: 14))),
       ],
     ),
   );

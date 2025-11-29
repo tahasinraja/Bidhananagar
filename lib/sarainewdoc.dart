@@ -45,7 +45,7 @@ backgroundColor: isDark ? Colors.black : const Color(0xFFe9e4de),
           buildDocItem(2, "Photograph of the Sarai"),
           buildDocItem(3, "Trade License u/s 201 of WBMA 1993"),
           buildDocItem(4, "Fire Safety Certificate from Fire Department"),
-          buildDocItem(5, "Consent to Operate from West Bengal Pollution Control Board (WBPCB)"),
+          buildDocItem(5, "Consent to Operate from of West Bengal Pollution Control Board (WBPCB)"),
           buildDocItem(6, "Income Tax clearance certificate"),
           buildDocItem(7, "GST payment update"),
           buildDocItem(8, "Enrolment of Professional Tax"),
@@ -53,16 +53,16 @@ backgroundColor: isDark ? Colors.black : const Color(0xFFe9e4de),
           buildDocItem(10, "Site Plan / Layout (Hard Copy and Soft Copy Both)"),
           buildDocItem(11, "Details of security measures including CCTV installation (Hard Copy and Soft Copy Both)"),
           buildDocItem(12, "Installation of C-Form and I-Form software from Technix India"),
-          buildDocItem(13, "NOC from land owner (in case rented house or Lease Deed)"),
+          buildDocItem(13, "NOC from land owner in case rented house or Lease Deed"),
           buildDocItem(14, "Electrical System Fitness Certificate"),
-          buildDocItem(15, "Police Clearance Certificate (PCC) from Residential Area of Owner"),
+          buildDocItem(15, "Police Clearance Certificate (PCC) from Residential Area of Owner of the Sarai"),
           buildDocItem(16, "Declaration of Parking Availability"),
         
           const SizedBox(height: 10),
         
           /// Sub-section
           const Text(
-            "17. Declaration Form with stamp paper of Rs 10:",
+            "17. Declaration Form with stamp paper of Rs 10*: Points are",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -72,10 +72,10 @@ backgroundColor: isDark ? Colors.black : const Color(0xFFe9e4de),
           const SizedBox(height: 6),
         
           /// Sub points
-          buildSubPoint("i", "Whether any part of the building is used as residence or not? (Yes/No)"),
-          buildSubPoint("ii", "Whether the applicant is ready to perform the duties of a Sarai Keeper as per Sec. 7 of Sarais Act, 1867? (Yes)"),
-          buildSubPoint("iii", "Whether the applicant is ready to maintain a register of lodgers as per Sec. 5 of the Act? (Yes)"),
-          buildSubPoint("iv", "Whether the applicant is ready to produce a certificate of character from a Gazetted Officer as per Sec. 6 of the Act? (Yes)"),
+          buildSubPoint("i", "Whether any part of the building, in which the Sarais situated is use as residence or not? (Yes / No)"),
+          buildSubPoint("ii", "Whether the applicant is ready to perform the duties of a Sarai Keeper as prescribed by Sec. 7 of the Sarais Act, 1867?	(Yes)"),
+          buildSubPoint("iii", "Whether the applicant is ready to maintain a register of lodgers as in Sec. 5 of the Sarais Act, 1867?     (Yes)"),
+          buildSubPoint("iv", "Whether the applicant is ready to produce a certificate of character from a Gazetted Officer or not (Sec 6 of the Act) ?	(Yes)"),
         ],
             ),
           ),
@@ -96,7 +96,7 @@ backgroundColor: isDark ? Colors.black : const Color(0xFFe9e4de),
       children: [
         Text("$number. ",
             style: const TextStyle(fontWeight: FontWeight.w600)),
-        Expanded(child: Text(text)),
+        Expanded(child: Text(text,style: TextStyle(),)),
       ],
     ),
   );
@@ -110,7 +110,7 @@ Widget buildSubPoint(String no, String text) {
       children: [
         Text("$no) ",
             style: const TextStyle(fontWeight: FontWeight.w600)),
-        Expanded(child: Text(text)),
+        Expanded(child: Text(text,style: TextStyle(fontSize: 14),)),
       ],
     ),
   );

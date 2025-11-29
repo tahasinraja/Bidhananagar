@@ -241,7 +241,8 @@ emails: ['psbaguiati@policewb.gov.in'],
               emails: ["acp-traffic1@policewb.gov.in"], h: h, w: w),
 
               _buildHelplineCard("Assistant Commissioner of Police - II, Traffic", numbers: ["9147889486"],
-              emails: ["acptraffic2bdn@mail.\nwbpolice.gov.in"], h: h, w: w),
+              // emails: ["acptraffic2bdn@mail.\nwbpolice.gov.in"],
+               h: h, w: w),
            
               
               

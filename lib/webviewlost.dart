@@ -1,3 +1,4 @@
+import 'package:bidhannagarpoliceapp/lostitempage.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 class webviewlostpage extends StatefulWidget {
@@ -30,7 +31,17 @@ class _webviewlostpageState extends State<webviewlostpage> {
          backgroundColor: Theme.of(context).brightness == Brightness.dark
           ? Colors.black
           : const Color(0xFFe9e4de),
-title: Text('Lost Form'),centerTitle: true,
+title: Row(
+
+  children: [
+    Text('Lost Form'),
+   // Spacer(),
+    // TextButton(onPressed: (){Navigator.push(context,
+    //  MaterialPageRoute(builder: (context) =>statuspage (onThemeChanged:widget.onThemeChanged,
+    //   isDarkMode:widget.isDarkMode),));}, child: Text(' Check Status',
+    //   style: TextStyle(color: Colors.red,fontSize: 20),)),
+ ],
+)
 
       )),
       body: WebViewWidget(controller: controller)
