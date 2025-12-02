@@ -49,11 +49,12 @@ class _lostitempageState extends State<lostitempage> {
   ];
 
   Future<void> _datetimepicker(BuildContext context) async {
+    DateTime today=DateTime.now();
     DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      initialDate: today,
+      firstDate: DateTime(1900),
+      lastDate: today,
     );
 
     if (pickedDate != null) {
@@ -65,20 +66,33 @@ class _lostitempageState extends State<lostitempage> {
       });
     }
   }
+//timer pickup
+ Future<void> _timePicker(BuildContext context) async {
+  TimeOfDay now = TimeOfDay.now();
 
-  //time
-  Future<void> _timePicker(BuildContext context) async {
-    TimeOfDay? time = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
+  TimeOfDay? pickedTime = await showTimePicker(
+    context: context,
+    initialTime: now,
+  );
 
-    if (time != null) {
-      setState(() {
-        losstimeCtrlCtrl.text = time.format(context);
-      });
+  if (pickedTime != null) {
+    // Compare hour & minute
+    if (pickedTime.hour > now.hour ||
+        (pickedTime.hour == now.hour && pickedTime.minute > now.minute)) {
+      // Selected time > current time (NOT ALLOWED)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("⚠️ You cannot select a future time")),
+      );
+      return;
     }
+
+    // If valid time
+    setState(() {
+      losstimeCtrlCtrl.text = pickedTime.format(context);
+    });
   }
+}
+
 
   Future<void> fetchpslist() async {
     final url = Uri.parse(
@@ -305,6 +319,9 @@ class _lostitempageState extends State<lostitempage> {
     request.fields['address'] = addressCtrlCtrl.text;
     request.fields['date_filing'] = currentCtrlCtrl.text;
     debugPrint("🧾 Fields Sent: ${request.fields}");
+    setState(() {
+      phCtrl.text = 'userid';
+    });
 
     // if (_photo != null) {
     //   request.files.add(await http.MultipartFile.fromPath('pic', _photo!.path));
@@ -392,7 +409,7 @@ class _lostitempageState extends State<lostitempage> {
       Theme.of(context).brightness == Brightness.dark
           ? Colors.black
           : const Color(0xFFe9e4de),
-  title: const Text("Lost Form"),
+  title: const Text("Report Lost Item"),
   actions: [
     TextButton(
       onPressed: () {
@@ -438,7 +455,7 @@ class _lostitempageState extends State<lostitempage> {
                     ),
                     SizedBox(height: 15),
                     Text(
-                      'Document Missing Form',
+                      'Report Lost Item',
                       style: TextStyle(
                         fontSize: 20,
 
@@ -456,7 +473,7 @@ class _lostitempageState extends State<lostitempage> {
                 decoration: InputDecoration(
                   label: RichText(
                     text: TextSpan(
-                      text: 'Loss/Missing Item',
+                      text: 'Lost/Missing Item',
                       style: TextStyle(
                         color:
                             Theme.of(context).brightness == Brightness.dark
@@ -501,32 +518,32 @@ class _lostitempageState extends State<lostitempage> {
                 validator: (v) => v!.isEmpty ? 'Enter name' : null,
               ),
 
-              TextFormField(
-                controller: phCtrl,
-                readOnly: isfieldname,
-                decoration: InputDecoration(
-                  label: RichText(
-                    text: TextSpan(
-                      text: 'Phone',
-                      style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.dark
-                                ? Colors
-                                    .white // Dark Mode
-                                : Colors.black87,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "*",
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                keyboardType: TextInputType.phone,
-                validator: (v) => v!.isEmpty ? 'Enter phone' : null,
-              ),
+              // TextFormField(
+              //   controller: phCtrl,
+              //   readOnly: isfieldname,
+              //   decoration: InputDecoration(
+              //     label: RichText(
+              //       text: TextSpan(
+              //         text: 'Phone',
+              //         style: TextStyle(
+              //           color:
+              //               Theme.of(context).brightness == Brightness.dark
+              //                   ? Colors
+              //                       .white // Dark Mode
+              //                   : Colors.black87,
+              //         ),
+              //         children: [
+              //           TextSpan(
+              //             text: "*",
+              //             style: TextStyle(color: Colors.red),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              //   keyboardType: TextInputType.phone,
+              //   validator: (v) => v!.isEmpty ? 'Enter phone' : null,
+              // ),
 
               TextFormField(
                 controller: relationCtrl,
@@ -643,8 +660,24 @@ class _lostitempageState extends State<lostitempage> {
               ),
               TextFormField(
                 controller: locationlstkCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Location of loss* ',
+                decoration:  InputDecoration(
+                  label: RichText(text: TextSpan(
+                    text: 'Location of loss',
+                     style: TextStyle(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors
+                                    .white // Dark Mode
+                                : Colors.black87,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "*",
+                          style: TextStyle(color: Colors.red),
+                        )
+                      ]
+                  ))
+                 // labelText: 'Location of loss',
                 ),
 
                 validator: (v) => v!.isEmpty ? 'Enter Location' : null,
@@ -713,7 +746,7 @@ class _lostitempageState extends State<lostitempage> {
                                 Theme.of(context).brightness == Brightness.dark
                                     ? Colors
                                         .white // Dark Mode
-                                    : Colors.black87,
+                                    : Colors.red,
                           ),
                         ),
                       ],

@@ -1,5 +1,6 @@
 
 import 'package:bidhannagarpoliceapp/login.dart';
+import 'package:bidhannagarpoliceapp/registerotppage.dart';
 import 'package:bidhannagarpoliceapp/signuppage.dart';
 import 'package:bidhannagarpoliceapp/webviewsaanjhbati.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class SaanjhBatiPage extends StatefulWidget {
 }
 
 class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
+   final TextEditingController phoneController = TextEditingController();
   final Uri saanjbaatihelp = Uri(scheme: 'tel', path: '9748898933');
 
   Future<void> sanjbaticont() async {
@@ -153,10 +155,10 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Since its initial days, Salt Lake City, or Bidhannagar, has had a significant population of senior citizens who live alone. '
-                      'And, to reach out to these people - for not only their safety and security, but also to take care of their health and happiness - '
-                      'the Bidhannagar City Police, along with OFFER, a non-profit organisation, came up with Saanjhbaati, '
-                      'a community policing project for elderly persons living alone in this jurisdiction.',
+                   'Since its initial days, Salt Lake, or Bidhannagar, has had a significant population of senior citizens who live alone. And, to reach out to these people for not only their safety and security,'
+                   ' but also to take care of their health and happiness -'
+                   '  Bidhannagar Police, along with OFFER, a non-profit organisation,'
+                     ' came up with Saanjhbaati, a community policing project for elderly persons living in the commissionerate area..',
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontSize: 16,
                         height: 1.5,
@@ -231,9 +233,10 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
                                           context,
                                           animation,
                                           secondaryAnimation,
-                                        ) => signuppage(
+                                        ) => SendOtpPage(
                                           onThemeChanged: widget.onThemeChanged,
                                           isDarkMode: widget.isDarkMode,
+                                         // phone: phoneController.text,
                                         ),
                                     transitionsBuilder: (
                                       context,

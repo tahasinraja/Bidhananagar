@@ -33,15 +33,16 @@ class _saranewpageState extends State<saranewpage> {
     final phone = phoneController.text.trim();
     final address = addressController.text.trim();
    const status = "new";  // 🔥 always send "new"
+ if (name.isEmpty) {
+      _showMessage("❌ Enter name");
+      return;
+    }
 
     if (phone.isEmpty || phone.isEmpty) {
       _showMessage("❌ Enter mobile number");
       return;
     }
-    if (name.isEmpty) {
-      _showMessage("❌ Enter name");
-      return;
-    }
+   
     if (address.isEmpty) {
       _showMessage("❌ Enter address");
       return;

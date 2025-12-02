@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:bidhannagarpoliceapp/forgetpage.dart';
+import 'package:bidhannagarpoliceapp/registerotppage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,8 +59,10 @@ class _testloginState extends State<testlogin> {
       if (loginStatus.toLowerCase() == 'success') {
         await prefs.setString('ph', phone);
         await prefs.setBool('isloggedin', true);
-
-        _showMessage("✅ $loginMessage");
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Login Succesfully')));
+        //  _showMessage("✅ $loginMessage");
 
         Navigator.pushReplacement(
           context,
@@ -74,7 +77,8 @@ class _testloginState extends State<testlogin> {
       } else {
         // new user → create profile
         final createUrl = Uri.parse(
-          "https://bnpcdeveloper.co.in/bnpolice/app/profile_create.php",
+          "https://bnpcdeveloper.co.in/bnpolice/app/verify_otp.php",
+          // "https://bnpcdeveloper.co.in/bnpolice/app/profile_create.php",
         );
         final createResponse = await http.post(
           createUrl,
@@ -234,15 +238,52 @@ class _testloginState extends State<testlogin> {
                                 ),
                               ),
                     ),
-                    
                   ),
                   Center(
-                    child: TextButton(onPressed: (){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: 
-                      (context) => forgetpage(onThemeChanged:widget. onThemeChanged, isDarkMode:widget. isDarkMode),));
-                    }, child: Text('Forgot MPIN?',style: TextStyle(color: Colors.red),)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => forgetpage(
+                                      onThemeChanged: widget.onThemeChanged,
+                                      isDarkMode: widget.isDarkMode,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Forgot MPIN?',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => SendOtpPage(
+                                      onThemeChanged: widget.onThemeChanged,
+                                      isDarkMode: widget.isDarkMode,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'New Registration?',
+                            style: TextStyle(color: Colors.blue.shade800),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                   SizedBox(height: 10),
+
+                  //   SizedBox(height: 10),
                   Center(
                     child: Column(
                       children: [
@@ -260,8 +301,7 @@ class _testloginState extends State<testlogin> {
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (_) => 
-                                      homepage(
+                                      (_) => homepage(
                                         onThemeChanged: widget.onThemeChanged,
                                         isDarkMode: widget.isDarkMode,
                                       ),

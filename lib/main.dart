@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:bidhannagarpoliceapp/homepage.dart';
+import 'package:bidhannagarpoliceapp/login.dart';
+import 'package:bidhannagarpoliceapp/registerotppage.dart';
 import 'package:bidhannagarpoliceapp/signuppage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -119,10 +121,15 @@ class _SplashScreenState extends State<SplashScreen> {
       context,
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 900),
-        pageBuilder: (context, animation, secondaryAnimation) => signuppage(
-          onThemeChanged: widget.onThemeChanged,
-          isDarkMode: widget.isDarkMode,
-        ),
+        pageBuilder: (context, animation, secondaryAnimation) =>testlogin(
+          onThemeChanged:widget. onThemeChanged,
+           isDarkMode:widget. isDarkMode
+        
+           ),
+        //  signuppage(
+        //   onThemeChanged: widget.onThemeChanged,
+        //   isDarkMode: widget.isDarkMode,
+        // ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(-1.0, 0.0);
           const end = Offset.zero;

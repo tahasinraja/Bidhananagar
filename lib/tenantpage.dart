@@ -1,5 +1,6 @@
 
 import 'package:bidhannagarpoliceapp/login.dart';
+import 'package:bidhannagarpoliceapp/registerotppage.dart';
 import 'package:bidhannagarpoliceapp/signuppage.dart';
 import 'package:bidhannagarpoliceapp/webviewtenantpage.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class tenantpage extends StatefulWidget {
 }
 
 class _tenantpageState extends State<tenantpage> {
+   final TextEditingController phoneController = TextEditingController();
   final Uri saanjbaatihelp = Uri(scheme: 'tel', path: '9748898933');
 
   Future<void> sanjbaticont() async {
@@ -160,14 +162,18 @@ class _tenantpageState extends State<tenantpage> {
 
                     const SizedBox(height: 12),
 
-                    // Text(
-                    //   'No description available.....',
-                    //   style: TextStyle(
-                    //     fontSize: 16,
-                    //     height: 1.5,
-                    //     color: isDark ? Colors.white70 : Colors.black87,
-                    //   ),
-                    // ),
+                    Text(
+                      'Tenant Registration with Bidhannagar Police aims to enhance the safety and security of residents within the Commissionerate area.' 
+                     ' \nAll landlords/owners letting out residential or commercial premises are requested to furnish accurate details of their tenants through this form for police records and verification purposes.'
+                      ' The information provided will be used only for law and order, crime prevention, and verification, and will be treated with utmost confidentiality as per existing laws.'
+
+'Landlords are requested to ensure timely submission of this form, preferably before handover of possession, and to intimate any subsequent change of tenancy or occupants without delay.',
+                      style: TextStyle(
+                        fontSize: 16,
+                        height: 1.5,
+                        color: isDark ? Colors.white70 : Colors.black87,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -239,9 +245,10 @@ class _tenantpageState extends State<tenantpage> {
                                           context,
                                           animation,
                                           secondaryAnimation,
-                                        ) => signuppage(
+                                        ) => SendOtpPage(
                                           onThemeChanged: widget.onThemeChanged,
                                           isDarkMode: widget.isDarkMode,
+                                        
                                         ),
                                     transitionsBuilder: (
                                       context,

@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:bidhannagarpoliceapp/guideline.dart';
-import 'package:bidhannagarpoliceapp/noc.dart';
 import 'package:bidhannagarpoliceapp/saanjhbatipage.dart';
 import 'package:bidhannagarpoliceapp/saraipage.dart';
 import 'package:bidhannagarpoliceapp/tenantpage.dart';
@@ -135,7 +133,7 @@ backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black 
                           },
                         ),
                             tilesButton(
-                          title: 'Sarai \nApplication',
+                          title: 'Sarai\nRegistration',
                           imagepath: 'assets/images/authentication_14291356.png',
                           
                           onTap: () {

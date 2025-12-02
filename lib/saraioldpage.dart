@@ -33,15 +33,16 @@ class _saraioldpageState extends State<saraioldpage> {
     final phone = phoneController.text.trim();
     final address = addressController.text.trim();
    const status = "old";  // 🔥 always send "new"
-
+   
+ if (name.isEmpty) {
+      _showMessage("❌ Enter name");
+      return;
+    }
     if (phone.isEmpty || phone.isEmpty) {
       _showMessage("❌ Enter mobile number");
       return;
     }
-    if (name.isEmpty) {
-      _showMessage("❌ Enter name");
-      return;
-    }
+   
     if (address.isEmpty) {
       _showMessage("❌ Enter address");
       return;

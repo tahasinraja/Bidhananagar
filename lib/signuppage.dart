@@ -6,6 +6,7 @@ import 'homepage.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class signuppage extends StatefulWidget {
+  final String phone;
   final Function(bool) onThemeChanged;
   final bool isDarkMode;
 
@@ -13,96 +14,150 @@ class signuppage extends StatefulWidget {
     super.key,
     required this.onThemeChanged,
     required this.isDarkMode,
+    required this.phone,
   });
 
   @override
   _signuppageState createState() => _signuppageState();
+
+
 }
 
 class _signuppageState extends State<signuppage> {
+
+  
+  final TextEditingController otpController = TextEditingController();
+  final TextEditingController mpinController = TextEditingController();
+  bool otpVerified = false;
+
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController pinController = TextEditingController();
+
   bool isLoading = false;
 
   Future<void> submit() async {
-    final phone = phoneController.text.trim();
-    final pin = pinController.text.trim();
+   if (otpController.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Enter OTP")));
+      return;
+    }
+        if (mpinController.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Enter MPIN")));
+      return;
+    }
+    // final phone = phoneController.text.trim();
+    // final pin = pinController.text.trim();
 
-    if (phone.isEmpty || pin.isEmpty) {
-      _showMessage("❌ Enter mobile number and PIN");
-      return;
-    }
-    if (pin.length != 4) {
-      _showMessage("❌ PIN must be 4 digits");
-      return;
-    }
+    // if (phone.isEmpty || pin.isEmpty) {
+    //   _showMessage("❌ Enter mobile number and PIN");
+    //   return;
+    // }
+
+    // if (pin.length != 4) {
+    //   _showMessage("❌ PIN must be 4 digits");
+    //   return;
+    // }
 
     setState(() => isLoading = true);
 
     try {
-      final loginUrl = Uri.parse(
-        "https://bnpcdeveloper.co.in/bnpolice/app/profile_login_check.php",
+      final loginUrl = Uri.parse("https://bnpcdeveloper.co.in/bnpolice/app/verify_otp.php"
+      //  "https://bnpcdeveloper.co.in/bnpolice/app/profile_login_check.php",
       );
       final loginResponse = await http.post(
         loginUrl,
-        body: {"ph": phone, "mpin": pin},
-      );
+       headers: {"Content-Type": "application/json"},
+    body: jsonEncode({
+          "ph": widget.phone,
+          "otp": otpController.text,
+          "mpin": mpinController.text,
+        }),
 
-      final loginData = json.decode(loginResponse.body);
-      final loginStatus = loginData['status'] ?? '';
-      final loginMessage = loginData['message'] ?? '';
+        // body: {"ph": phone, 
+        // "mpin": pin},
+      );
+         final data = jsonDecode(loginResponse.body);
+      print("🔽 VERIFY RESPONSE: ${loginResponse.body}");
+
+      // final loginData = json.decode(loginResponse.body);
+      // final loginStatus = loginData['status'] ?? '';
+      // final loginMessage = loginData['message'] ?? '';
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      if (loginStatus.toLowerCase() == 'success') {
-        await prefs.setString('ph', phone);
+           if (data['status'].toLowerCase() == 'success') {
+               await prefs.setString('ph', widget.phone);
         await prefs.setBool('isloggedin', true);
-
-        _showMessage("✅ $loginMessage");
-
-        Navigator.pushReplacement(
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("OTP & MPIN Verified ✔")));
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder:
-                (_) => homepage(
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
-                ),
-          ),
-        );
-      } else {
-        // new user → create profile
-        final createUrl = Uri.parse(
-          "https://bnpcdeveloper.co.in/bnpolice/app/profile_create.php",
-        );
-        final createResponse = await http.post(
-          createUrl,
-          body: {"ph": phone, "mpin": pin},
-        );
-
-        final createData = json.decode(createResponse.body);
-        final createStatus = createData['status'] ?? '';
-        final createMessage = createData['message'] ?? '';
-
-        if (createStatus.toLowerCase() == 'success') {
-          await prefs.setString('ph', phone);
-          await prefs.setBool('isloggedin', true);
-          _showMessage("✅ $createMessage");
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (_) => homepage(
+                (context) => homepage(
                     onThemeChanged: widget.onThemeChanged,
                     isDarkMode: widget.isDarkMode,
                   ),
-            ),
-          );
-        } else {
-          _showMessage("❌ $createMessage");
-        }
+          ),
+        );
+        // Navigate to Signup or Home page
       }
+
+      // if (loginResponse.toLowerCase() == 'success') {
+      //   await prefs.setString('ph', phone);
+      //   await prefs.setBool('isloggedin', true);
+
+      //   _showMessage("✅ $loginMessage");
+
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder:
+      //           (_) => homepage(
+      //             onThemeChanged: widget.onThemeChanged,
+      //             isDarkMode: widget.isDarkMode,
+      //           ),
+      //     ),
+      //   );
+      // } else {
+
+      //  new user → create profile
+      
+        // final createUrl = Uri.parse(
+        //   "https://bnpcdeveloper.co.in/bnpolice/app/profile_create.php",
+        // );
+        // final createResponse = await http.post(
+        //   createUrl,
+        //   body: {"ph": widget.phone, "mpin": mpinController},
+        // );
+
+        // final createData = json.decode(createResponse.body);
+        // final createStatus = createData['status'] ?? '';
+        // final createMessage = createData['message'] ?? '';
+
+        // if (createStatus.toLowerCase() == 'success') {
+        //   await prefs.setString('ph', widget.phone);
+        //   await prefs.setBool('isloggedin', true);
+        //   _showMessage("✅ $createMessage");
+
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder:
+          //         (_) => homepage(
+          //           onThemeChanged: widget.onThemeChanged,
+          //           isDarkMode: widget.isDarkMode,
+          //         ),
+          //   ),
+          // );
+       // }
+        //  else {
+        //   _showMessage("❌ $createMessage");
+        // }
+      
     } catch (e) {
       _showMessage("❌ Error: $e");
     } finally {
@@ -158,20 +213,52 @@ class _signuppageState extends State<signuppage> {
                     ),
                   ),
                   SizedBox(height: h * 0.1),
-                  TextField(
-                    controller: phoneController,
-                    keyboardType: TextInputType.phone,
-                    maxLength: 10,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                  // TextField(
+                  //   controller: phoneController,
+                  //   keyboardType: TextInputType.phone,
+                  //   maxLength: 10,
+                  //   style: const TextStyle(
+                  //     fontSize: 22,
+                  //     fontWeight: FontWeight.w500,
+                  //     color: Colors.black,
+                  //   ),
+                  //   decoration: const InputDecoration(
+                  //     hintText: "Enter Mobile Number",
+                  //     counterText: '',
+                  //     prefixText: '+91',
+                  //   ),
+                  // ),
+                  Center(
+                    child: Text(
+                        "ENTER OTP",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade800,
+                        ), textAlign: TextAlign.center,
+                      ),
+                  ),
+                    PinCodeTextField(
+                    appContext: context,
+                    length: 6,
+                    controller: otpController,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    animationType: AnimationType.fade,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    pinTheme: PinTheme(
+                      shape: PinCodeFieldShape.box,
+                      borderRadius: BorderRadius.circular(8),
+                      fieldHeight: 55,
+                      fieldWidth: 55,
+                      activeFillColor: Colors.white,
+                      selectedFillColor: Colors.grey.shade200,
+                      inactiveFillColor: Colors.grey.shade100,
+                      activeColor: Colors.blue,
+                      selectedColor: Colors.blueAccent,
+                      inactiveColor: Colors.grey,
                     ),
-                    decoration: const InputDecoration(
-                      hintText: "Enter Mobile Number",
-                      counterText: '',
-                      prefixText: '+91',
-                    ),
+                    onChanged: (value) {},
                   ),
                   const SizedBox(height: 10),
                   Center(
@@ -188,7 +275,7 @@ class _signuppageState extends State<signuppage> {
                   PinCodeTextField(
                     appContext: context,
                     length: 4,
-                    controller: pinController,
+                    controller: mpinController,
                     keyboardType: TextInputType.number,
                     obscureText: true,
                     animationType: AnimationType.fade,

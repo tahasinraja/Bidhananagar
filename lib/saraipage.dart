@@ -78,13 +78,15 @@ class _saraipageState extends State<saraipage> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    // Text(
-                    //   'No description available.....',
-                    //   style: theme.textTheme.bodyMedium!.copyWith(
-                    //     fontSize: 16,
-                    //     height: 1.5,
-                    //   ),
-                    // ),
+                    Text(
+                      'Registration of Sarai within the jurisdiction of Bidhannagar Police Commissionerate is mandatory under the Sarais Act,'
+                      ' 1867. All owners/keepers of hotels, lodges, guest houses, dormitories and similar establishments are required to furnish accurate details of their premises,'
+                      ' management and occupants through this form for regulatory, security and law-and-order purposes. The information collected will be used for licensing and verification,'
+                     '  and will be stored with utmost confidentiality. '
+
+                     'Owners/keepers are requested to submit this form promptly and renew registration within the prescribed time or whenever there is any material change in ownership or use of the premises.'
+                      
+                    ),
                   ],
                 ),
               ),

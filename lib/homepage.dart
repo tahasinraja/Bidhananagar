@@ -6,7 +6,9 @@ import 'package:bidhannagarpoliceapp/allparkingmape.dart';
 //import 'package:bidhannagarpoliceapp/feedback.dart';
 import 'package:bidhannagarpoliceapp/contactscreen.dart';
 import 'package:bidhannagarpoliceapp/crimereport.dart';
+import 'package:bidhannagarpoliceapp/messipage.dart';
 import 'package:bidhannagarpoliceapp/noticedetails.dart';
+import 'package:bidhannagarpoliceapp/registerotppage.dart';
 import 'package:bidhannagarpoliceapp/signuppage.dart';
 import 'package:bidhannagarpoliceapp/lostitempage.dart';
 import 'package:bidhannagarpoliceapp/trafficreport.dart';
@@ -52,6 +54,7 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
+  final TextEditingController phoneController = TextEditingController();
   void loadSavedCount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -817,7 +820,7 @@ class _homepageState extends State<homepage> {
                           // 🔹 Single Items
                           _buildDrawerItem(
                             Icons.assignment_outlined,
-                            "Forms",
+                            " Registration Forms",
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -1289,9 +1292,10 @@ class _homepageState extends State<homepage> {
                                         context,
                                         animation,
                                         secondaryAnimation,
-                                      ) => signuppage(
+                                      ) => SendOtpPage(
                                         onThemeChanged: widget.onThemeChanged,
                                         isDarkMode: widget.isDarkMode,
+                                       // phone: phoneController.text,
                                       ),
                                   transitionsBuilder: (
                                     context,
@@ -1414,9 +1418,10 @@ class _homepageState extends State<homepage> {
                               ),
                               pageBuilder:
                                   (context, animation, secondaryAnimation) =>
-                                      signuppage(
+                                      SendOtpPage(
                                         onThemeChanged: widget.onThemeChanged,
                                         isDarkMode: widget.isDarkMode,
+                                      //  phone: phoneController.text,
                                       ),
                               transitionsBuilder: (
                                 context,
@@ -1604,24 +1609,22 @@ class _homepageState extends State<homepage> {
                           }
                         },
                       ),
+                           tilesButton(
+                          title: ' Report Missing\nMobile',
+                          imagepath: 'assets/images/missing.png',
+                          onTap: () async {
+                            const ur1 =
+                                'https://www.ceir.gov.in/Request/CeirUserBlockRequestDirect.jsp';
+                            if (await canLaunchUrl(Uri.parse(ur1))) {
+                              await launchUrl(Uri.parse(ur1));
+                            } else {
+                              debugPrint("Could not launch $ur1");
+                            }
+                          },
+                        ),
+                    
                       tilesButton(
-                        title: ' Police\nContact ',
-                        imagepath: 'assets/images/phone-book_7229022.png',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => contactscreen(
-                                    onThemeChanged: widget.onThemeChanged,
-                                    isDarkMode: widget.isDarkMode,
-                                  ),
-                            ),
-                          );
-                        },
-                      ),
-                      tilesButton(
-                        title: 'Lost Items\nRegistration',
+                        title: 'Report Lost\nProperty',
                         imagepath: 'assets/images/lost-items.png',
                         onTap: () async {
                           SharedPreferences prefs =
@@ -1683,9 +1686,10 @@ class _homepageState extends State<homepage> {
                                           context,
                                           animation,
                                           secondaryAnimation,
-                                        ) => signuppage(
+                                        ) => SendOtpPage(
                                           onThemeChanged: widget.onThemeChanged,
                                           isDarkMode: widget.isDarkMode,
+                                         // phone: phoneController.text,
                                         ),
                                     transitionsBuilder: (
                                       context,
@@ -1820,9 +1824,10 @@ class _homepageState extends State<homepage> {
                                           context,
                                           animation,
                                           secondaryAnimation,
-                                        ) => signuppage(
+                                        ) => SendOtpPage(
                                           onThemeChanged: widget.onThemeChanged,
                                           isDarkMode: widget.isDarkMode,
+                                         // phone: phoneController.text,
                                         ),
                                     transitionsBuilder: (
                                       context,
@@ -1957,9 +1962,10 @@ class _homepageState extends State<homepage> {
                                           context,
                                           animation,
                                           secondaryAnimation,
-                                        ) => signuppage(
+                                        ) => SendOtpPage(
                                           onThemeChanged: widget.onThemeChanged,
                                           isDarkMode: widget.isDarkMode,
+                                         // phone: phoneController.text,
                                         ),
                                     transitionsBuilder: (
                                       context,
@@ -2052,19 +2058,7 @@ class _homepageState extends State<homepage> {
 
                       // 🔹 Extra buttons only when showMore is true
                       if (showMore) ...[
-                        tilesButton(
-                          title: ' Block Lost\n Mobile',
-                          imagepath: 'assets/images/missing.png',
-                          onTap: () async {
-                            const ur1 =
-                                'https://www.ceir.gov.in/Request/CeirUserBlockRequestDirect.jsp';
-                            if (await canLaunchUrl(Uri.parse(ur1))) {
-                              await launchUrl(Uri.parse(ur1));
-                            } else {
-                              debugPrint("Could not launch $ur1");
-                            }
-                          },
-                        ),
+                   
 
                         tilesButton(
                           title: 'Pay Traffic \nChallan',
@@ -2119,8 +2113,21 @@ class _homepageState extends State<homepage> {
                         //     );
                         //   },
                         // ),
+                              tilesButton(
+                          title: 'Passport\nStatus',
+                          imagepath: 'assets/images/620765.png',
+                          onTap: () async {
+                            const ur1 =
+                                'https://www.passportindia.gov.in/psp/trackApplicationService';
+                            if (await canLaunchUrl(Uri.parse(ur1))) {
+                              await launchUrl(Uri.parse(ur1));
+                            } else {
+                              debugPrint("Could not launch $ur1");
+                            }
+                          },
+                        ),
                         tilesButton(
-                          title: 'Forms',
+                          title: 'Registration\nForms',
                           imagepath:
                               'assets/images/authentication_14291356.png',
                           onTap: () {
@@ -2141,6 +2148,22 @@ class _homepageState extends State<homepage> {
                             );
                           },
                         ),
+                          tilesButton(
+                        title: ' Police\nContact ',
+                        imagepath: 'assets/images/phone-book_7229022.png',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => contactscreen(
+                                    onThemeChanged: widget.onThemeChanged,
+                                    isDarkMode: widget.isDarkMode,
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
 
                         // tilesButton(
                         //   title: 'Tenant\nRegistration',
@@ -2175,19 +2198,7 @@ class _homepageState extends State<homepage> {
                         //     }
                         //   },
                         // ),
-                        tilesButton(
-                          title: 'Passport\nStatus',
-                          imagepath: 'assets/images/620765.png',
-                          onTap: () async {
-                            const ur1 =
-                                'https://www.passportindia.gov.in/psp/trackApplicationService';
-                            if (await canLaunchUrl(Uri.parse(ur1))) {
-                              await launchUrl(Uri.parse(ur1));
-                            } else {
-                              debugPrint("Could not launch $ur1");
-                            }
-                          },
-                        ),
+                  
 
                         // ServiceButton(
                         //   title: 'Traffic Rules',
@@ -2242,499 +2253,660 @@ class _homepageState extends State<homepage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 2),
-                          child: Text(
-                            'Enquiry Center',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          // child: Text(
+                          //   'Find My Parking',
+                          //   style: TextStyle(
+                          //     fontSize: 16,
+                          //     fontWeight: FontWeight.bold,
+                          //   ),
+                          // ),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height:10),
 
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 5, left: 2),
-                            child: Row(
-                              children: [
-                                // SizedBox(
-                                //   height:
-                                //       MediaQuery.of(context).size.height * 0.065,
-                                //   width:
-                                //       MediaQuery.of(context).size.height * 0.19,
-                                //   child: ElevatedButton(
-                                //     style: ElevatedButton.styleFrom(
-                                //       backgroundColor: Colors.white,
+                        // SingleChildScrollView(
+                        //   scrollDirection: Axis.horizontal,
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.only(bottom: 5, left: 2),
+                        //     child: Row(
+                        //       children: [
+                        //         // SizedBox(
+                        //         //   height:
+                        //         //       MediaQuery.of(context).size.height * 0.065,
+                        //         //   width:
+                        //         //       MediaQuery.of(context).size.height * 0.19,
+                        //         //   child: ElevatedButton(
+                        //         //     style: ElevatedButton.styleFrom(
+                        //         //       backgroundColor: Colors.white,
 
-                                //       elevation: 2,
-                                //       shape: RoundedRectangleBorder(
-                                //         borderRadius: BorderRadius.circular(15),
-                                //       ),
-                                //       shadowColor: Colors.black,
-                                //       padding: EdgeInsets.zero,
-                                //     ),
-                                //     onPressed: (){
-                                //       Navigator.push(context,
-                                //       MaterialPageRoute(builder: (context) => docsdownviewpage(filePath: 'assets/images/Untitled_compressed.pdf', title: 'DURGA PUJA 2025'),));
-                                //     },
-                                //     child: Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Image.asset(
-                                //           'assets/images/durga icon.png',
-                                //           height: 35,
-                                //         ),
-                                //         SizedBox(width: 10),
-                                //         Column(
-                                //           mainAxisSize: MainAxisSize.min,
-                                //           children: [
-                                //             Text(
-                                //               'Durga Puja',
-                                //               style: TextStyle(
-                                //                 fontWeight: FontWeight.w500,
-                                //                 fontSize:
-                                //                     MediaQuery.of(
-                                //                       context,
-                                //                     ).size.height *
-                                //                     0.013,
-                                //               ),
-                                //             ),
-                                //             Text(
-                                //               'Guide Map',
-                                //               style: TextStyle(fontSize: 8),
-                                //             ),
-                                //           ],
-                                //         ),
-                                //       ],
-                                //     ),
-                                //   ),
-                                // ),
-                                //   SizedBox(width: 10),
-                                //durga puja map
-                                //                           SizedBox(
-                                //   height: MediaQuery.of(context).size.height * 0.065,
-                                //   width: MediaQuery.of(context).size.height * 0.19,
-                                //   child: ElevatedButton(
-                                //     style: ElevatedButton.styleFrom(
-                                //       backgroundColor: Colors.white,
-                                //       elevation: 2,
-                                //       shape: RoundedRectangleBorder(
-                                //         borderRadius: BorderRadius.circular(15),
-                                //       ),
-                                //       shadowColor: Colors.black,
-                                //       padding: EdgeInsets.zero,
-                                //     ),
-                                //     onPressed: () async {
-                                //       final Uri url = Uri.parse('https://www.google.com/maps/search/Durga+Puja+2025+nearby/');
-                                //       if (await canLaunchUrl(url)) {
-                                //         await launchUrl(url, mode: LaunchMode.externalApplication);
-                                //       } else {
-                                //         ScaffoldMessenger.of(context).showSnackBar(
-                                //           const SnackBar(content: Text('Could not open map')),
-                                //         );
-                                //       }
-                                //     },
-                                //     child: Row(
-                                //       mainAxisAlignment: MainAxisAlignment.center,
-                                //       children: [
-                                //         Image.asset(
-                                //           'assets/images/temple_1183161.png',
-                                //           height: 35,
-                                //         ),
-                                //         const SizedBox(width: 10),
-                                //         Column(
-                                //           mainAxisSize: MainAxisSize.min,
-                                //           children: [
-                                //             Text(
-                                //               'Durga Puja',
-                                //               style: TextStyle(
-                                //                 fontWeight: FontWeight.w500,
-                                //                 fontSize: MediaQuery.of(context).size.height * 0.013,
-                                //               ),
-                                //             ),
-                                //             const Text(
-                                //               'Nearby Pandel',
-                                //               style: TextStyle(fontSize: 8),
-                                //             ),
-                                //           ],
-                                //         ),
-                                //       ],
-                                //     ),
-                                //   ),
-                                // ),
-                                SizedBox(width: 10),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height *
+                        //         //       elevation: 2,
+                        //         //       shape: RoundedRectangleBorder(
+                        //         //         borderRadius: BorderRadius.circular(15),
+                        //         //       ),
+                        //         //       shadowColor: Colors.black,
+                        //         //       padding: EdgeInsets.zero,
+                        //         //     ),
+                        //         //     onPressed: (){
+                        //         //       Navigator.push(context,
+                        //         //       MaterialPageRoute(builder: (context) => docsdownviewpage(filePath: 'assets/images/Untitled_compressed.pdf', title: 'DURGA PUJA 2025'),));
+                        //         //     },
+                        //         //     child: Row(
+                        //         //       mainAxisAlignment: MainAxisAlignment.center,
+                        //         //       children: [
+                        //         //         Image.asset(
+                        //         //           'assets/images/durga icon.png',
+                        //         //           height: 35,
+                        //         //         ),
+                        //         //         SizedBox(width: 10),
+                        //         //         Column(
+                        //         //           mainAxisSize: MainAxisSize.min,
+                        //         //           children: [
+                        //         //             Text(
+                        //         //               'Durga Puja',
+                        //         //               style: TextStyle(
+                        //         //                 fontWeight: FontWeight.w500,
+                        //         //                 fontSize:
+                        //         //                     MediaQuery.of(
+                        //         //                       context,
+                        //         //                     ).size.height *
+                        //         //                     0.013,
+                        //         //               ),
+                        //         //             ),
+                        //         //             Text(
+                        //         //               'Guide Map',
+                        //         //               style: TextStyle(fontSize: 8),
+                        //         //             ),
+                        //         //           ],
+                        //         //         ),
+                        //         //       ],
+                        //         //     ),
+                        //         //   ),
+                        //         // ),
+                        //         //   SizedBox(width: 10),
+                        //         //durga puja map
+                        //         //                           SizedBox(
+                        //         //   height: MediaQuery.of(context).size.height * 0.065,
+                        //         //   width: MediaQuery.of(context).size.height * 0.19,
+                        //         //   child: ElevatedButton(
+                        //         //     style: ElevatedButton.styleFrom(
+                        //         //       backgroundColor: Colors.white,
+                        //         //       elevation: 2,
+                        //         //       shape: RoundedRectangleBorder(
+                        //         //         borderRadius: BorderRadius.circular(15),
+                        //         //       ),
+                        //         //       shadowColor: Colors.black,
+                        //         //       padding: EdgeInsets.zero,
+                        //         //     ),
+                        //         //     onPressed: () async {
+                        //         //       final Uri url = Uri.parse('https://www.google.com/maps/search/Durga+Puja+2025+nearby/');
+                        //         //       if (await canLaunchUrl(url)) {
+                        //         //         await launchUrl(url, mode: LaunchMode.externalApplication);
+                        //         //       } else {
+                        //         //         ScaffoldMessenger.of(context).showSnackBar(
+                        //         //           const SnackBar(content: Text('Could not open map')),
+                        //         //         );
+                        //         //       }
+                        //         //     },
+                        //         //     child: Row(
+                        //         //       mainAxisAlignment: MainAxisAlignment.center,
+                        //         //       children: [
+                        //         //         Image.asset(
+                        //         //           'assets/images/temple_1183161.png',
+                        //         //           height: 35,
+                        //         //         ),
+                        //         //         const SizedBox(width: 10),
+                        //         //         Column(
+                        //         //           mainAxisSize: MainAxisSize.min,
+                        //         //           children: [
+                        //         //             Text(
+                        //         //               'Durga Puja',
+                        //         //               style: TextStyle(
+                        //         //                 fontWeight: FontWeight.w500,
+                        //         //                 fontSize: MediaQuery.of(context).size.height * 0.013,
+                        //         //               ),
+                        //         //             ),
+                        //         //             const Text(
+                        //         //               'Nearby Pandel',
+                        //         //               style: TextStyle(fontSize: 8),
+                        //         //             ),
+                        //         //           ],
+                        //         //         ),
+                        //         //       ],
+                        //         //     ),
+                        //         //   ),
+                        //         // ),
+                        //         SizedBox(width: 10),
+                        //         SizedBox(
+                        //           height:
+                        //               MediaQuery.of(context).size.height *
+                        //               0.065,
+                        //           width: w * 0.19,
+                        //           child: ElevatedButton(
+                        //             style: ElevatedButton.styleFrom(
+                        //               backgroundColor:
+                        //                   Theme.of(context).brightness ==
+                        //                           Brightness.dark
+                        //                       ? Color(0xFF1A1A1A)
+                        //                       : Color(0xfff7f2f9),
+
+                        //               elevation: 2,
+                        //               shape: RoundedRectangleBorder(
+                        //                 borderRadius: BorderRadius.circular(15),
+                        //               ),
+                        //               shadowColor: Colors.black,
+                        //               padding: EdgeInsets.zero,
+                        //             ),
+                        //             onPressed: callnumber,
+                        //             child: Row(
+                        //               mainAxisAlignment:
+                        //                   MainAxisAlignment.center,
+                        //               children: [
+                        //                 Image.asset(
+                        //                   'assets/images/dials.png',
+                        //                   height: 35,
+                        //                 ),
+                        //                 SizedBox(width: 10),
+                        //                 Column(
+                        //                   mainAxisSize: MainAxisSize.min,
+                        //                   children: [
+                        //                     Text(
+                        //                       'Dial 100',
+                        //                       style: TextStyle(
+                        //                         fontWeight: FontWeight.w500,
+                        //                         fontSize:
+                        //                             MediaQuery.of(
+                        //                               context,
+                        //                             ).size.height *
+                        //                             0.013,
+                        //                       ),
+                        //                     ),
+                        //                     Text(
+                        //                       'Police Helpline',
+                        //                       style: TextStyle(fontSize: 8),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         ),
+
+                        //         SizedBox(width: 10),
+                        //         SizedBox(
+                        //           height:
+                        //               MediaQuery.of(context).size.height *
+                        //               0.065,
+                        //           width:
+                        //               MediaQuery.of(context).size.height * 0.19,
+                        //           child: ElevatedButton(
+                        //             style: ElevatedButton.styleFrom(
+                        //               backgroundColor:
+                        //                   Theme.of(context).brightness ==
+                        //                           Brightness.dark
+                        //                       ? Color(0xFF1A1A1A)
+                        //                       : Color(0xfff7f2f9),
+
+                        //               elevation: 2,
+                        //               shape: RoundedRectangleBorder(
+                        //                 borderRadius: BorderRadius.circular(15),
+                        //               ),
+                        //               shadowColor: Colors.black,
+                        //               padding: EdgeInsets.zero,
+                        //             ),
+                        //             onPressed: callnumber1,
+                        //             child: Row(
+                        //               mainAxisAlignment:
+                        //                   MainAxisAlignment.center,
+                        //               children: [
+                        //                 Image.asset(
+                        //                   'assets/images/hotline_7833545.png',
+                        //                   height: 35,
+                        //                 ),
+                        //                 SizedBox(width: 10),
+                        //                 Column(
+                        //                   mainAxisSize: MainAxisSize.min,
+                        //                   children: [
+                        //                     Text(
+                        //                       'Dial 101',
+                        //                       style: TextStyle(
+                        //                         fontWeight: FontWeight.w500,
+                        //                         fontSize:
+                        //                             MediaQuery.of(
+                        //                               context,
+                        //                             ).size.height *
+                        //                             0.013,
+                        //                       ),
+                        //                     ),
+                        //                     Text(
+                        //                       'Fire Helpline',
+                        //                       style: TextStyle(fontSize: 8),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         SizedBox(width: 10),
+                        //         SizedBox(
+                        //           height:
+                        //               MediaQuery.of(context).size.height *
+                        //               0.065,
+                        //           width:
+                        //               MediaQuery.of(context).size.height * 0.19,
+                        //           child: ElevatedButton(
+                        //             style: ElevatedButton.styleFrom(
+                        //               backgroundColor:
+                        //                   Theme.of(context).brightness ==
+                        //                           Brightness.dark
+                        //                       ? Color(0xFF1A1A1A)
+                        //                       : Color(0xfff7f2f9),
+
+                        //               elevation: 2,
+                        //               shape: RoundedRectangleBorder(
+                        //                 borderRadius: BorderRadius.circular(15),
+                        //               ),
+                        //               shadowColor: Colors.black,
+                        //               padding: EdgeInsets.zero,
+                        //             ),
+                        //             onPressed: callnumber3,
+                        //             child: Row(
+                        //               mainAxisAlignment:
+                        //                   MainAxisAlignment.center,
+                        //               children: [
+                        //                 Image.asset(
+                        //                   'assets/images/ambulance.png',
+                        //                   height: 35,
+                        //                 ),
+                        //                 SizedBox(width: 10),
+                        //                 Column(
+                        //                   mainAxisSize: MainAxisSize.min,
+                        //                   children: [
+                        //                     Text(
+                        //                       'Dial 102',
+                        //                       style: TextStyle(
+                        //                         fontWeight: FontWeight.w500,
+                        //                         fontSize:
+                        //                             MediaQuery.of(
+                        //                               context,
+                        //                             ).size.height *
+                        //                             0.013,
+                        //                       ),
+                        //                     ),
+                        //                     Text(
+                        //                       'Ambulance',
+                        //                       style: TextStyle(fontSize: 8),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         ),
+
+                        //         SizedBox(width: 10),
+                        //         SizedBox(
+                        //           height:
+                        //               MediaQuery.of(context).size.height *
+                        //               0.065,
+                        //           width:
+                        //               MediaQuery.of(context).size.height * 0.19,
+                        //           child: ElevatedButton(
+                        //             style: ElevatedButton.styleFrom(
+                        //               backgroundColor:
+                        //                   Theme.of(context).brightness ==
+                        //                           Brightness.dark
+                        //                       ? Color(0xFF1A1A1A)
+                        //                       : Color(0xfff7f2f9),
+
+                        //               elevation: 2,
+                        //               shape: RoundedRectangleBorder(
+                        //                 borderRadius: BorderRadius.circular(15),
+                        //               ),
+                        //               shadowColor: Colors.black,
+                        //               padding: EdgeInsets.zero,
+                        //             ),
+                        //             onPressed: callnumber4,
+                        //             child: Row(
+                        //               mainAxisAlignment:
+                        //                   MainAxisAlignment.center,
+                        //               children: [
+                        //                 Image.asset(
+                        //                   'assets/images/hacker.png',
+                        //                   height: 35,
+                        //                 ),
+                        //                 SizedBox(width: 10),
+                        //                 Column(
+                        //                   mainAxisSize: MainAxisSize.min,
+                        //                   children: [
+                        //                     Text(
+                        //                       'Dial 1930',
+                        //                       style: TextStyle(
+                        //                         fontWeight: FontWeight.w500,
+                        //                         fontSize:
+                        //                             MediaQuery.of(
+                        //                               context,
+                        //                             ).size.height *
+                        //                             0.013,
+                        //                       ),
+                        //                     ),
+                        //                     Text(
+                        //                       'Report Cyber Crime ',
+                        //                       style: TextStyle(fontSize: 8),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         SizedBox(width: 10),
+
+                        //         SizedBox(
+                        //           height:
+                        //               MediaQuery.of(context).size.height *
+                        //               0.065,
+                        //           width:
+                        //               MediaQuery.of(context).size.height * 0.19,
+                        //           child: ElevatedButton(
+                        //             style: ElevatedButton.styleFrom(
+                        //               backgroundColor:
+                        //                   Theme.of(context).brightness ==
+                        //                           Brightness.dark
+                        //                       ? Color(0xFF1A1A1A)
+                        //                       : Color(0xfff7f2f9),
+
+                        //               elevation: 2,
+                        //               shape: RoundedRectangleBorder(
+                        //                 borderRadius: BorderRadius.circular(15),
+                        //               ),
+                        //               shadowColor: Colors.black,
+                        //               padding: EdgeInsets.zero,
+                        //             ),
+                        //             onPressed: () async {
+                        //               const ur1 =
+                        //                   'https://www.aai.aero/en/airports/flights-schedule/kolkata'; // police help line
+                        //               if (await canLaunchUrl(Uri.parse(ur1))) {
+                        //                 await launchUrl(
+                        //                   Uri.parse(ur1),
+                        //                   mode: LaunchMode.platformDefault,
+                        //                 );
+                        //               } else {
+                        //                 debugPrint('Could Not Found $ur1');
+                        //               }
+                        //             },
+                        //             child: Row(
+                        //               mainAxisAlignment:
+                        //                   MainAxisAlignment.center,
+                        //               children: [
+                        //                 Image.asset(
+                        //                   'assets/images/airport.png',
+                        //                   height: 35,
+                        //                 ),
+                        //                 SizedBox(width: 10),
+                        //                 Column(
+                        //                   mainAxisSize: MainAxisSize.min,
+                        //                   children: [
+                        //                     Text(
+                        //                       'Airport',
+                        //                       style: TextStyle(
+                        //                         fontWeight: FontWeight.w500,
+                        //                         fontSize:
+                        //                             MediaQuery.of(
+                        //                               context,
+                        //                             ).size.height *
+                        //                             0.013,
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         SizedBox(width: 10),
+                        //         SizedBox(
+                        //           height:
+                        //               MediaQuery.of(context).size.height *
+                        //               0.065,
+                        //           width:
+                        //               MediaQuery.of(context).size.height * 0.19,
+                        //           child: ElevatedButton(
+                        //             style: ElevatedButton.styleFrom(
+                        //               backgroundColor:
+                        //                   Theme.of(context).brightness ==
+                        //                           Brightness.dark
+                        //                       ? Color(0xFF1A1A1A)
+                        //                       : Color(0xfff7f2f9),
+
+                        //               elevation: 2,
+                        //               shape: RoundedRectangleBorder(
+                        //                 borderRadius: BorderRadius.circular(15),
+                        //               ),
+                        //               shadowColor: Colors.black,
+                        //               padding: EdgeInsets.zero,
+                        //             ),
+                        //             onPressed: () async {
+                        //               // if (await canLaunchUrl(
+                        //               //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                        //               //   )
+
+                        //               // ) {
+                        //               //   await launchUrl(
+                        //               //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                        //               //     mode: LaunchMode.platformDefault,
+                        //               //   );
+                        //               // }
+
+                        //               Navigator.push(
+                        //                 context,
+                        //                 MaterialPageRoute(
+                        //                   builder:
+                        //                       (context) =>
+                        //                       //   webviewparkingpage
+                        //                       AllParkingMap(
+                        //                         onThemeChanged:
+                        //                             widget.onThemeChanged,
+                        //                         isDarkMode: widget.isDarkMode,
+                        //                       ),
+                        //                 ),
+                        //               );
+                        //             },
+                        //             child: Row(
+                        //               mainAxisAlignment:
+                        //                   MainAxisAlignment.center,
+                        //               children: [
+                        //                 Image.asset(
+                        //                   'assets/images/parking-area.png',
+                        //                   height: 35,
+                        //                 ),
+                        //                 SizedBox(width: 10),
+                        //                 Column(
+                        //                   mainAxisSize: MainAxisSize.min,
+                        //                   children: [
+                        //                     Text(
+                        //                       'Parking',
+                        //                       style: TextStyle(
+                        //                         fontWeight: FontWeight.w500,
+                        //                         fontSize:
+                        //                             MediaQuery.of(
+                        //                               context,
+                        //                             ).size.height *
+                        //                             0.013,
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         ),
+
+                        //         SizedBox(width: 10),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                                 SizedBox(
+                                         height:
+                                     MediaQuery.of(context).size.height *
                                       0.065,
-                                  width: w * 0.19,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Color(0xFF1A1A1A)
-                                              : Color(0xfff7f2f9),
-
-                                      elevation: 2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      shadowColor: Colors.black,
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    onPressed: callnumber,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/dials.png',
-                                          height: 35,
+                                   width:
+                                       MediaQuery.of(context).size.height * 0.21,
+                                      
+                                      
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Theme.of(context).brightness ==
+                                                      Brightness.dark
+                                                  ? Color(0xFF1A1A1A)
+                                                  : Color(0xfff7f2f9),
+                              
+                                          elevation: 2,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          shadowColor: Colors.black,
+                                          padding: EdgeInsets.zero,
                                         ),
-                                        SizedBox(width: 10),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'Dial 100',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize:
-                                                    MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.013,
-                                              ),
+                                        onPressed: () async {
+                                          // if (await canLaunchUrl(
+                                          //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                          //   )
+                              
+                                          // ) {
+                                          //   await launchUrl(
+                                          //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                          //     mode: LaunchMode.platformDefault,
+                                          //   );
+                                          // }
+                              
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) =>
+                                                  //   webviewparkingpage
+                                                  Messipage(
+                                                    onThemeChanged:
+                                                        widget.onThemeChanged,
+                                                    isDarkMode: widget.isDarkMode,
+                                                  ),
                                             ),
-                                            Text(
-                                              'Police Helpline',
-                                              style: TextStyle(fontSize: 8),
+                                          );
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/messiicons.png',
+                                              height: 35,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  'Welcome MESSI',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize:
+                                                        MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.013,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox(width: 10),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height *
-                                      0.065,
-                                  width:
-                                      MediaQuery.of(context).size.height * 0.19,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Color(0xFF1A1A1A)
-                                              : Color(0xfff7f2f9),
-
-                                      elevation: 2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
                                       ),
-                                      shadowColor: Colors.black,
-                                      padding: EdgeInsets.zero,
                                     ),
-                                    onPressed: callnumber1,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/hotline_7833545.png',
-                                          height: 35,
+                                    SizedBox(width: 10),
+                              SizedBox(
+                                 height:    MediaQuery.of(context).size.height *
+                                      0.065,
+                                   width:
+                                       MediaQuery.of(context).size.height * 0.21,
+                                        //  MediaQuery.of(context).size.height * 0.19,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Theme.of(context).brightness ==
+                                                      Brightness.dark
+                                                  ? Color(0xFF1A1A1A)
+                                                  : Color(0xfff7f2f9),
+                              
+                                          elevation: 2,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          shadowColor: Colors.black,
+                                          padding: EdgeInsets.zero,
                                         ),
-                                        SizedBox(width: 10),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'Dial 101',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize:
-                                                    MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.013,
-                                              ),
+                                        onPressed: () async {
+                                          // if (await canLaunchUrl(
+                                          //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                          //   )
+                              
+                                          // ) {
+                                          //   await launchUrl(
+                                          //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                          //     mode: LaunchMode.platformDefault,
+                                          //   );
+                                          // }
+                              
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) =>
+                                                  //   webviewparkingpage
+                                                  AllParkingMap(
+                                                    onThemeChanged:
+                                                        widget.onThemeChanged,
+                                                    isDarkMode: widget.isDarkMode,
+                                                  ),
                                             ),
-                                            Text(
-                                              'Fire Helpline',
-                                              style: TextStyle(fontSize: 8),
+                                          );
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/parking-area.png',
+                                              height: 35,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  ' Find My Parking',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize:
+                                                        MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.013,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height *
-                                      0.065,
-                                  width:
-                                      MediaQuery.of(context).size.height * 0.19,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Color(0xFF1A1A1A)
-                                              : Color(0xfff7f2f9),
-
-                                      elevation: 2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
                                       ),
-                                      shadowColor: Colors.black,
-                                      padding: EdgeInsets.zero,
                                     ),
-                                    onPressed: callnumber3,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/ambulance.png',
-                                          height: 35,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'Dial 102',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize:
-                                                    MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.013,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Ambulance',
-                                              style: TextStyle(fontSize: 8),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox(width: 10),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height *
-                                      0.065,
-                                  width:
-                                      MediaQuery.of(context).size.height * 0.19,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Color(0xFF1A1A1A)
-                                              : Color(0xfff7f2f9),
-
-                                      elevation: 2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      shadowColor: Colors.black,
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    onPressed: callnumber4,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/hacker.png',
-                                          height: 35,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'Dial 1930',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize:
-                                                    MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.013,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Report Cyber Crime ',
-                                              style: TextStyle(fontSize: 8),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height *
-                                      0.065,
-                                  width:
-                                      MediaQuery.of(context).size.height * 0.19,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Color(0xFF1A1A1A)
-                                              : Color(0xfff7f2f9),
-
-                                      elevation: 2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      shadowColor: Colors.black,
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    onPressed: () async {
-                                      const ur1 =
-                                          'https://www.aai.aero/en/airports/flights-schedule/kolkata'; // police help line
-                                      if (await canLaunchUrl(Uri.parse(ur1))) {
-                                        await launchUrl(
-                                          Uri.parse(ur1),
-                                          mode: LaunchMode.platformDefault,
-                                        );
-                                      } else {
-                                        debugPrint('Could Not Found $ur1');
-                                      }
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/airport.png',
-                                          height: 35,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'Airport',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize:
-                                                    MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.013,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height *
-                                      0.065,
-                                  width:
-                                      MediaQuery.of(context).size.height * 0.19,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Color(0xFF1A1A1A)
-                                              : Color(0xfff7f2f9),
-
-                                      elevation: 2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      shadowColor: Colors.black,
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    onPressed: () async {
-                                      // if (await canLaunchUrl(
-                                      //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
-                                      //   )
-
-                                      // ) {
-                                      //   await launchUrl(
-                                      //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
-                                      //     mode: LaunchMode.platformDefault,
-                                      //   );
-                                      // }
-
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                              //   webviewparkingpage
-                                              AllParkingMap(
-                                                onThemeChanged:
-                                                    widget.onThemeChanged,
-                                                isDarkMode: widget.isDarkMode,
-                                              ),
-                                        ),
-                                      );
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/parking-area.png',
-                                          height: 35,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'Parking',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize:
-                                                    MediaQuery.of(
-                                                      context,
-                                                    ).size.height *
-                                                    0.013,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox(width: 10),
-                              ],
-                            ),
+                            ],
                           ),
-                        ),
                       ],
                     ),
                   ),
