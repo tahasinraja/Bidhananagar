@@ -31,7 +31,7 @@ class _testloginState extends State<testlogin> {
     final pin = pinController.text.trim();
 
     if (phone.isEmpty || pin.isEmpty) {
-      _showMessage("❌ Enter mobile number and PIN");
+      _showMessage("❌ Enter mobile number and MPIN");
       return;
     }
     if (pin.length != 4) {
@@ -92,7 +92,10 @@ class _testloginState extends State<testlogin> {
         if (createStatus.toLowerCase() == 'success') {
           await prefs.setString('ph', phone);
           await prefs.setBool('isloggedin', true);
-          _showMessage("✅ $createMessage");
+            ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('New User Succesfully Registered')));
+        //  _showMessage("✅ $createMessage");
 
           Navigator.pushReplacement(
             context,
@@ -105,7 +108,10 @@ class _testloginState extends State<testlogin> {
             ),
           );
         } else {
-          _showMessage("❌ $createMessage");
+            ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Phone Number is not registered')));
+         // _showMessage("❌ $createMessage");
         }
       }
     } catch (e) {
@@ -162,13 +168,34 @@ class _testloginState extends State<testlogin> {
                       color: Colors.red,
                     ),
                   ),
-                  SizedBox(height: h * 0.1),
+                //  Divider(thickness: 10,),
+                SizedBox(height: 20,),
+                Center(
+  child: ShaderMask(
+    shaderCallback: (Rect bounds) {
+      return LinearGradient(
+        colors: [Colors.blue.shade800, Colors.lightBlueAccent],
+      ).createShader(bounds);
+    },
+    child: Text(
+      "Login",
+      style: TextStyle(
+        fontSize: h * 0.035,
+        fontWeight: FontWeight.w900,
+        color: Colors.white,
+        letterSpacing: 1.5,
+      ),
+    ),
+  ),
+),
+
+                  SizedBox(height: h * 0.04),
                   TextField(
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
                     maxLength: 10,
                     style: const TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                     ),
@@ -176,6 +203,7 @@ class _testloginState extends State<testlogin> {
                       hintText: "Enter Mobile Number",
                       counterText: '',
                       prefixText: '+91',
+                      prefixIcon: Icon(Icons.phone_android,color:   Color.fromRGBO(21, 101, 192, 1)  ,),
                     ),
                   ),
                   const SizedBox(height: 10),

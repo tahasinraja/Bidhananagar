@@ -1,34 +1,33 @@
 import 'dart:async';
 import 'package:bidhannagarpoliceapp/homepage.dart';
 import 'package:bidhannagarpoliceapp/login.dart';
-import 'package:bidhannagarpoliceapp/registerotppage.dart';
-import 'package:bidhannagarpoliceapp/signuppage.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp();
+  try {
+    await Firebase.initializeApp();
+    print("🔥 Firebase Connected Successfully!");
+  } catch (e) {
+    print("❌ Firebase Connection Failed: $e");
+  }
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool('isloggedin') ?? false;
   bool isDarkMode = prefs.getBool('isDarkMode') ?? false;
 
-  runApp(MyApp(
-    isLoggedIn: isLoggedIn,
-    isDarkMode: isDarkMode,
-  ));
+  runApp(MyApp(isLoggedIn: isLoggedIn, isDarkMode: isDarkMode));
 }
 
 class MyApp extends StatefulWidget {
   final bool isLoggedIn;
   final bool isDarkMode;
 
-  const MyApp({
-    super.key,
-    required this.isLoggedIn,
-    required this.isDarkMode,
-  });
+  const MyApp({super.key, required this.isLoggedIn, required this.isDarkMode});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -55,7 +54,7 @@ class _MyAppState extends State<MyApp> {
 
     await prefs.setBool('isDarkMode', value);
 
-  //  Optional SnackBar
+    //  Optional SnackBar
     // ScaffoldMessenger.of(context).showSnackBar(
     //   SnackBar(
     //     content: Text(
@@ -77,15 +76,13 @@ class _MyAppState extends State<MyApp> {
       darkTheme: ThemeData.dark(),
 
       // Page control
-      home: isLoggedIn
-          ? homepage(
-              onThemeChanged: _toggleTheme,
-              isDarkMode: isDarkMode,
-            )
-          : SplashScreen(
-              onThemeChanged: _toggleTheme,
-              isDarkMode: isDarkMode,
-            ),
+      home:
+          isLoggedIn
+              ? homepage(onThemeChanged: _toggleTheme, isDarkMode: isDarkMode)
+              : SplashScreen(
+                onThemeChanged: _toggleTheme,
+                isDarkMode: isDarkMode,
+              ),
     );
   }
 }
@@ -121,20 +118,23 @@ class _SplashScreenState extends State<SplashScreen> {
       context,
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 900),
-        pageBuilder: (context, animation, secondaryAnimation) =>testlogin(
-          onThemeChanged:widget. onThemeChanged,
-           isDarkMode:widget. isDarkMode
-        
-           ),
+        pageBuilder:
+            (context, animation, secondaryAnimation) => testlogin(
+              onThemeChanged: widget.onThemeChanged,
+              isDarkMode: widget.isDarkMode,
+            ),
         //  signuppage(
         //   onThemeChanged: widget.onThemeChanged,
         //   isDarkMode: widget.isDarkMode,
+        //   phone: '',
         // ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(-1.0, 0.0);
           const end = Offset.zero;
-          var tween = Tween(begin: begin, end: end)
-              .chain(CurveTween(curve: Curves.easeInOut));
+          var tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: Curves.easeInOut));
 
           return SlideTransition(
             position: animation.drive(tween),
@@ -152,7 +152,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          decoration:  BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/images/app_login.jpg"),
               fit: BoxFit.cover,

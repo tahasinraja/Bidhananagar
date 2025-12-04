@@ -90,7 +90,7 @@ class _SendOtpPageState extends State<SendOtpPage> {
           data['message'].toString().toLowerCase().contains("already")) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("Phone number already exists\n Please Login")));
+        ).showSnackBar(SnackBar(content: Text("✔️ Phone number already exists.\n Please Login with MPIN")));
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -162,7 +162,26 @@ class _SendOtpPageState extends State<SendOtpPage> {
                       color: Colors.red,
                     ),
                   ),
-                  SizedBox(height: h * 0.1),
+                  SizedBox(height: 20,),
+                      Center(
+  child: ShaderMask(
+    shaderCallback: (Rect bounds) {
+      return LinearGradient(
+        colors: [Colors.blue, Colors.lightBlueAccent],
+      ).createShader(bounds);
+    },
+    child: Text(
+      "SIGN UP",
+      style: TextStyle(
+        fontSize: h * 0.035,
+        fontWeight: FontWeight.w900,
+        color: Colors.white,
+        letterSpacing: 1.5,
+      ),
+    ),
+  ),
+),
+                  SizedBox(height: h * 0.05),
                   
                 
              

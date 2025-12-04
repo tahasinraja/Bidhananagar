@@ -139,7 +139,7 @@ class _SaanjhBatiPageState extends State<SaanjhBatiPage> {
                       ),
                     ),
                     Text(
-                      'SAANJ BAATI',
+                      'SAANJHBAATI',
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,

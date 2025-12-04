@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "769694995676",
+    "project_id": "bidhannagar-police",
+    "storage_bucket": "bidhannagar-police.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:769694995676:android:091d16c18255d737859019",
+        "android_client_info": {
+          "package_name": "app.testbnpnew.service"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAotFcVSbcO8YVuaxPQ0Ls8Dp1bxkhr4TA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

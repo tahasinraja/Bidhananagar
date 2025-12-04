@@ -5,8 +5,14 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android") // ✅ updated
     id("dev.flutter.flutter-gradle-plugin")
+   id("com.google.gms.google-services")
 }
 
+dependencies {
+ 
+  implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+  implementation("com.google.firebase:firebase-analytics")
+}
 
 android {
     namespace = "app.testbnpnew.service" // change to your final package name

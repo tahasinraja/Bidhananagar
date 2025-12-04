@@ -546,6 +546,33 @@ class _trafficreportState extends State<trafficreport> {
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
+                  SizedBox(height: 40,),
+                  Container(
+  padding: EdgeInsets.all(12),
+  decoration: BoxDecoration(
+    color: Colors.red.withOpacity(0.1),
+    borderRadius: BorderRadius.circular(10),
+    border: Border.all(color: Colors.red, width: 1),
+  ),
+  child: Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(Icons.info, color: Colors.red, size: 22),
+      SizedBox(width: 10),
+      Expanded(
+        child: Text(
+          "Disclaimer:\nTo register FIR please visit Police Station",
+          style: TextStyle(
+            color: Colors.red.shade900,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
             ],
           ),
         ),

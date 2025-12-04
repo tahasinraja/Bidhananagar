@@ -142,7 +142,7 @@ class _AllParkingMapState extends State<AllParkingMap> {
               ),
             ),
           
-            Divider(),
+          //  Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

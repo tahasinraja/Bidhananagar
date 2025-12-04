@@ -49,7 +49,8 @@ class _forgetpageState extends State<forgetpage> {
         if (data['status'].toLowerCase() == 'success') 
         
         {
-           _showMessage("✅ ${data['message']}");
+          ScaffoldMessenger.of( context).showSnackBar(SnackBar(content: Text('Mpin updated successfully')));
+          //  _showMessage("✅ ${data['message']}");
           Navigator.push(
             context,
             MaterialPageRoute(

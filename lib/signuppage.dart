@@ -19,13 +19,9 @@ class signuppage extends StatefulWidget {
 
   @override
   _signuppageState createState() => _signuppageState();
-
-
 }
 
 class _signuppageState extends State<signuppage> {
-
-  
   final TextEditingController otpController = TextEditingController();
   final TextEditingController mpinController = TextEditingController();
   bool otpVerified = false;
@@ -36,13 +32,13 @@ class _signuppageState extends State<signuppage> {
   bool isLoading = false;
 
   Future<void> submit() async {
-   if (otpController.text.isEmpty) {
+    if (otpController.text.isEmpty) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Enter OTP")));
       return;
     }
-        if (mpinController.text.isEmpty) {
+    if (mpinController.text.isEmpty) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Enter MPIN")));
@@ -64,22 +60,23 @@ class _signuppageState extends State<signuppage> {
     setState(() => isLoading = true);
 
     try {
-      final loginUrl = Uri.parse("https://bnpcdeveloper.co.in/bnpolice/app/verify_otp.php"
-      //  "https://bnpcdeveloper.co.in/bnpolice/app/profile_login_check.php",
+      final loginUrl = Uri.parse(
+        "https://bnpcdeveloper.co.in/bnpolice/app/verify_otp.php",
+        //  "https://bnpcdeveloper.co.in/bnpolice/app/profile_login_check.php",
       );
       final loginResponse = await http.post(
         loginUrl,
-       headers: {"Content-Type": "application/json"},
-    body: jsonEncode({
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
           "ph": widget.phone,
           "otp": otpController.text,
           "mpin": mpinController.text,
         }),
 
-        // body: {"ph": phone, 
+        // body: {"ph": phone,
         // "mpin": pin},
       );
-         final data = jsonDecode(loginResponse.body);
+      final data = jsonDecode(loginResponse.body);
       print("🔽 VERIFY RESPONSE: ${loginResponse.body}");
 
       // final loginData = json.decode(loginResponse.body);
@@ -87,8 +84,8 @@ class _signuppageState extends State<signuppage> {
       // final loginMessage = loginData['message'] ?? '';
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-           if (data['status'].toLowerCase() == 'success') {
-               await prefs.setString('ph', widget.phone);
+      if (data['status'].toLowerCase() == 'success') {
+        await prefs.setString('ph', widget.phone);
         await prefs.setBool('isloggedin', true);
         ScaffoldMessenger.of(
           context,
@@ -98,9 +95,9 @@ class _signuppageState extends State<signuppage> {
           MaterialPageRoute(
             builder:
                 (context) => homepage(
-                    onThemeChanged: widget.onThemeChanged,
-                    isDarkMode: widget.isDarkMode,
-                  ),
+                  onThemeChanged: widget.onThemeChanged,
+                  isDarkMode: widget.isDarkMode,
+                ),
           ),
         );
         // Navigate to Signup or Home page
@@ -125,39 +122,41 @@ class _signuppageState extends State<signuppage> {
       // } else {
 
       //  new user → create profile
-      
-        // final createUrl = Uri.parse(
-        //   "https://bnpcdeveloper.co.in/bnpolice/app/profile_create.php",
-        // );
-        // final createResponse = await http.post(
-        //   createUrl,
-        //   body: {"ph": widget.phone, "mpin": mpinController},
-        // );
 
-        // final createData = json.decode(createResponse.body);
-        // final createStatus = createData['status'] ?? '';
-        // final createMessage = createData['message'] ?? '';
+      // final createUrl = Uri.parse(
+      //   "https://bnpcdeveloper.co.in/bnpolice/app/profile_create.php",
+      // );
+      // final createResponse = await http.post(
+      //   createUrl,
+      //   body: {"ph": widget.phone, "mpin": mpinController},
+      // );
 
-        // if (createStatus.toLowerCase() == 'success') {
-        //   await prefs.setString('ph', widget.phone);
-        //   await prefs.setBool('isloggedin', true);
-        //   _showMessage("✅ $createMessage");
+      // final createData = json.decode(createResponse.body);
+      // final createStatus = createData['status'] ?? '';
+      // final createMessage = createData['message'] ?? '';
 
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder:
-          //         (_) => homepage(
-          //           onThemeChanged: widget.onThemeChanged,
-          //           isDarkMode: widget.isDarkMode,
-          //         ),
-          //   ),
-          // );
-       // }
-        //  else {
-        //   _showMessage("❌ $createMessage");
-        // }
-      
+      // if (createStatus.toLowerCase() == 'success') {
+      //   await prefs.setString('ph', widget.phone);
+      //   await prefs.setBool('isloggedin', true);
+      //   _showMessage("✅ $createMessage");
+
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder:
+      //         (_) => homepage(
+      //           onThemeChanged: widget.onThemeChanged,
+      //           isDarkMode: widget.isDarkMode,
+      //         ),
+      //   ),
+      // );
+      // }
+      //  else {
+      //   _showMessage("❌ $createMessage");
+      // }
+      else{
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Invalid OTP')));
+      }
     } catch (e) {
       _showMessage("❌ Error: $e");
     } finally {
@@ -212,7 +211,7 @@ class _signuppageState extends State<signuppage> {
                       color: Colors.red,
                     ),
                   ),
-                  SizedBox(height: h * 0.1),
+                  SizedBox(height: h * 0.07),
                   // TextField(
                   //   controller: phoneController,
                   //   keyboardType: TextInputType.phone,
@@ -228,22 +227,77 @@ class _signuppageState extends State<signuppage> {
                   //     prefixText: '+91',
                   //   ),
                   // ),
+             Center(
+  child: Container(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.3),
+          spreadRadius: 2,
+          blurRadius: 6,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        text: 'OTP',
+        style: TextStyle(
+          color: Colors.blue.shade800,
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+        children: [
+          TextSpan(
+            text: ' requested for ',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+            ),
+          ),
+          TextSpan(
+            text: ' ${widget.phone} ',
+            style: TextStyle(
+              color: Colors.blue.shade800,
+              fontWeight: FontWeight.w500,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+),
+
+               
+                  // Text(
+                  //   ' ${widget.phone}.',
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  const SizedBox(height: 10),
                   Center(
                     child: Text(
-                        "ENTER OTP",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade800,
-                        ), textAlign: TextAlign.center,
+                      "ENTER OTP",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade800,
                       ),
+                    ),
                   ),
-                    PinCodeTextField(
+                  SizedBox(height: 10,),
+                  PinCodeTextField(
                     appContext: context,
                     length: 6,
                     controller: otpController,
                     keyboardType: TextInputType.number,
-                    obscureText: true,
+                    // obscureText: true,
                     animationType: AnimationType.fade,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     pinTheme: PinTheme(

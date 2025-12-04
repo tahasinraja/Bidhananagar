@@ -119,7 +119,7 @@ backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black 
                         },
                       ),
                            tilesButton(
-                          title: 'Saanjh Baati\nRegistration',
+                          title: 'SaanjhBaati\nRegistration',
                           imagepath: 'assets/images/10551084.png',
                           
                           onTap: () {

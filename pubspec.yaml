@@ -2,7 +2,7 @@ name: bidhannagarpoliceapp
 description: "A new Flutter project."
 publish_to: 'none' 
 
-version: 4.8.1+41
+version: 4.8.1+44
 
 environment:
   sdk: ^3.7.0
@@ -32,6 +32,10 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   webview_flutter: ^4.13.0
   google_maps_flutter: ^2.14.0
+  firebase_core: ^4.2.1
+  firebase_messaging: ^16.0.4
+  firebase_auth: ^6.1.2
+ 
  
  
   
@@ -129,4 +133,4 @@ flutter:
     - assets/images/messiimg.jpg
     - assets/images/messiicons.png
     - assets/images/Guidelines for organising meetings_rallies_processions under Bidhannagar Police Commissionerate.pdf
-  
+   

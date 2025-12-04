@@ -360,8 +360,8 @@ class _profilescreenState extends State<profilescreen> {
                             ),
                             elevation: 2,
                           ),
-                          onPressed: _showEditBottomSheet,
-                          child: Text(
+                          onPressed:  _showEditBottomSheet,
+                          child:  Text(
                             "Update Profile",
                             style: TextStyle(
                               fontSize: 18,
@@ -439,7 +439,7 @@ class _profilescreenState extends State<profilescreen> {
                   },
                 ),
                 const SizedBox(height: 25),
-                isLoading
+                isUpdating
                     ? const Center(child: CircularProgressIndicator())
                     : ElevatedButton.icon(
                       onPressed: isUpdating ? null : updateProfile,

@@ -63,7 +63,7 @@ class _saraipageState extends State<saraipage> {
                       ),
                     ),
                     Text(
-                      'Sarai Application',
+                      'Sarai Registration',
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
