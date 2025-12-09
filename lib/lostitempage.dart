@@ -23,6 +23,50 @@ class lostitempage extends StatefulWidget {
 }
 
 class _lostitempageState extends State<lostitempage> {
+
+  
+  String? selectedLossType; // dropdown value
+
+  bool showField() {
+  if (selectedLossType == "Mobile") {
+    
+    return true;  // show IMEI or Mobile-related field
+  } 
+  else if (selectedLossType == "Document") {
+    return true;  // show Document-related field
+  }
+  return false;   // Others me field hide
+}
+
+
+
+String getDynamicLabel() {
+  if (selectedLossType == "Mobile") {
+    return "Enter IMEI Number";
+  } else if (selectedLossType == "Document") {
+    return "Enter Identification No.";
+  } 
+
+  else {
+    return "Enter Other Name";
+  }
+}
+
+String getDynamicdocname() {
+  if (selectedLossType == "Mobile") {
+    return "Mobile Number";
+  } else if (selectedLossType == "Document") {
+    return "Type of Document";
+  } 
+  
+  else {
+    return "Enter Other Name";
+  }
+}
+
+
+  String? selectrelationship;
+
   bool isfieldname = false;
   bool isfieldemail = false;
   bool isLoading = false;
@@ -49,7 +93,7 @@ class _lostitempageState extends State<lostitempage> {
   ];
 
   Future<void> _datetimepicker(BuildContext context) async {
-    DateTime today=DateTime.now();
+    DateTime today = DateTime.now();
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: today,
@@ -66,33 +110,33 @@ class _lostitempageState extends State<lostitempage> {
       });
     }
   }
-//timer pickup
- Future<void> _timePicker(BuildContext context) async {
-  TimeOfDay now = TimeOfDay.now();
 
-  TimeOfDay? pickedTime = await showTimePicker(
-    context: context,
-    initialTime: now,
-  );
+  //timer pickup
+  Future<void> _timePicker(BuildContext context) async {
+    TimeOfDay now = TimeOfDay.now();
 
-  if (pickedTime != null) {
-    // Compare hour & minute
-    if (pickedTime.hour > now.hour ||
-        (pickedTime.hour == now.hour && pickedTime.minute > now.minute)) {
-      // Selected time > current time (NOT ALLOWED)
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("⚠️ You cannot select a future time")),
-      );
-      return;
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: now,
+    );
+
+    if (pickedTime != null) {
+      // Compare hour & minute
+      // if (pickedTime.hour > now.hour ||
+      //     (pickedTime.hour == now.hour && pickedTime.minute > now.minute)) {
+      //   // Selected time > current time (NOT ALLOWED)
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text("⚠️ You cannot select a future time")),
+      //   );
+      //   return;
+      // }
+
+      // If valid time
+      setState(() {
+        losstimeCtrlCtrl.text = pickedTime.format(context);
+      });
     }
-
-    // If valid time
-    setState(() {
-      losstimeCtrlCtrl.text = pickedTime.format(context);
-    });
   }
-}
-
 
   Future<void> fetchpslist() async {
     final url = Uri.parse(
@@ -191,6 +235,10 @@ class _lostitempageState extends State<lostitempage> {
   final TextEditingController losstimeCtrlCtrl = TextEditingController();
   final TextEditingController currentCtrlCtrl = TextEditingController();
   final TextEditingController phCtrl = TextEditingController();
+  final TextEditingController relashioncontroller = TextEditingController();
+  final TextEditingController lostitemlistcontroller = TextEditingController();
+  final TextEditingController lostitemdoccontroller = TextEditingController();
+
 
   // File? _photo;
   // File? _video;
@@ -316,6 +364,9 @@ class _lostitempageState extends State<lostitempage> {
     request.fields['time_loss'] = losstimeCtrlCtrl.text;
     // request.fields['latitude'] = latitude?.toString() ?? '';
     // request.fields['longitude'] = longitude?.toString() ?? '';
+    request.fields['relation'] = relashioncontroller.text;
+    request.fields['docname'] = lostitemlistcontroller.text;
+     request.fields['itemname'] = lostitemdoccontroller.text;
     request.fields['address'] = addressCtrlCtrl.text;
     request.fields['date_filing'] = currentCtrlCtrl.text;
     debugPrint("🧾 Fields Sent: ${request.fields}");
@@ -404,37 +455,37 @@ class _lostitempageState extends State<lostitempage> {
               ? Colors.black
               : const Color(0xFFe9e4de),
 
-     appBar: AppBar(
-  backgroundColor:
-      Theme.of(context).brightness == Brightness.dark
-          ? Colors.black
-          : const Color(0xFFe9e4de),
-  title: const Text("Report Lost Item"),
-  actions: [
-    TextButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => lostitemstatuspage(onThemeChanged: widget.onThemeChanged,
-             isDarkMode:  widget. isDarkMode, phone: phone)
-            
-
+      appBar: AppBar(
+        backgroundColor:
+            Theme.of(context).brightness == Brightness.dark
+                ? Colors.black
+                : const Color(0xFFe9e4de),
+        title: const Text("Report Lost Item"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => lostitemstatuspage(
+                        onThemeChanged: widget.onThemeChanged,
+                        isDarkMode: widget.isDarkMode,
+                        phone: phone,
+                      ),
+                ),
+              );
+            },
+            child: const Text(
+              "Check Status",
+              style: TextStyle(
+                color: Colors.blue, // Change as per design
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
-
-        );
-
-      },
-      child: const Text(
-        "Check Status",
-        style: TextStyle(
-          color: Colors.blue, // Change as per design
-          fontWeight: FontWeight.bold,
-        ),
+        ],
       ),
-    ),
-  ],
-),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -467,31 +518,132 @@ class _lostitempageState extends State<lostitempage> {
                 ),
               ),
 
-              TextFormField(
-                controller: lossCtrlCtrl,
-                //   readOnly: isfieldname,
-                decoration: InputDecoration(
-                  label: RichText(
-                    text: TextSpan(
-                      text: 'Lost/Missing Item',
-                      style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.dark
-                                ? Colors
-                                    .white // Dark Mode
-                                : Colors.black87,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "*",
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                validator: (v) => v!.isEmpty ? 'Enter Lost/Missing Item' : null,
-              ),
+
+
+Row(
+  children: [
+    // Dropdown
+    Expanded(
+      flex: 1,
+      child: DropdownButtonFormField<String>(
+        value: selectedLossType,
+        decoration:  InputDecoration(
+          label: RichText(text:   TextSpan(
+            text:  "Type of Item Lost/Missing",style: TextStyle(color: Colors.black),children: [
+              TextSpan(text: "*", style: TextStyle(color: Colors.red)),]
+          ),
+        
+          
+          ), 
+          labelStyle: TextStyle(color: Colors.black),
+        ),
+        validator: (v) => v!.isEmpty ? 'Enter Lost/Missing name' : null,
+        items: ["Document", "Mobile", "Others"].map((item) {
+          return DropdownMenuItem(
+            value: item,
+            child: Text(item, style: TextStyle(fontSize: 13)),
+            
+          );
+          
+        }).toList(),
+
+        onChanged: (value) {
+          setState(() {
+            selectedLossType = value;
+            lossCtrlCtrl.text = value!;   // Store to controller if needed
+          });
+        },
+      ),
+    ),
+
+    SizedBox(width: 10),
+
+ 
+  ],
+),
+Row(
+  children: [
+       // Name Input
+    Expanded(
+      flex: 2,
+      child: TextFormField(
+        controller: lostitemdoccontroller,
+      keyboardType:selectedLossType=="Mobile"?TextInputType.phone:TextInputType.text,
+      maxLength: selectedLossType=="Mobile"?10:null,
+        decoration: 
+        InputDecoration(
+          label: RichText(text: TextSpan(text: getDynamicdocname(),
+          children: [
+            TextSpan(text: "*", style: TextStyle(color: Colors.red)),
+          ],
+          style:
+           TextStyle(color: Colors.black )),
+          
+        ),labelStyle: TextStyle(color: Colors.black),
+        
+       
+      ),
+
+       validator: (v) => v!.isEmpty ? getDynamicdocname() : null,
+    ),
+    )
+  ],
+),
+Row(
+  children: [
+       // Name Input
+       if(showField())
+    Expanded(
+      flex: 2,
+      
+      child: 
+      
+      TextFormField(
+        
+        controller: lostitemlistcontroller,
+        decoration:  InputDecoration(
+          label: RichText(text: TextSpan(text: getDynamicLabel(),
+          style: TextStyle(color: Colors.black),children: [
+          TextSpan(text: "*", style: TextStyle(color: Colors.red)),  
+          ],
+          ),
+         
+        ),
+       
+      ),
+       validator: (v) => v!.isEmpty ? getDynamicLabel() : null,
+    ),
+    )
+  ],
+),
+
+
+              // TextFormField(
+              //   controller: lossCtrlCtrl,
+              //   //   readOnly: isfieldname,
+              //   decoration: InputDecoration(
+              //     label: RichText(
+              //       text: TextSpan(
+              //         text: 'Lost/Missing Item',
+              //         style: TextStyle(
+              //           color:
+              //               Theme.of(context).brightness == Brightness.dark
+              //                   ? Colors
+              //                       .white // Dark Mode
+              //                   : Colors.black87,
+              //         ),
+              //         children: [
+              //           TextSpan(
+              //             text: "*",
+              //             style: TextStyle(color: Colors.red),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              //   validator: (v) => v!.isEmpty ? 'Enter Lost/Missing Item' : null,
+              // ),
+
               TextFormField(
                 controller: nameCtrl,
                 //   readOnly: isfieldname,
@@ -544,30 +696,75 @@ class _lostitempageState extends State<lostitempage> {
               //   keyboardType: TextInputType.phone,
               //   validator: (v) => v!.isEmpty ? 'Enter phone' : null,
               // ),
-
-              TextFormField(
-                controller: relationCtrl,
-                // readOnly: isfieldname,
-                decoration: InputDecoration(
-                  label: RichText(
-                    text: TextSpan(
-                      text: 'S/o,D/o,W/o',
-                      style: TextStyle(
-                        color:
-                            Theme.of(context).brightness == Brightness.dark
-                                ? Colors
-                                    .white // Dark Mode
-                                : Colors.black87,
+              Row(
+                children: [
+                  // Relation Type Dropdown
+                  Expanded(
+                    flex: 1,
+                    child: DropdownButtonFormField<String>(
+                      value: selectrelationship,
+                      decoration: InputDecoration(
+                        labelText: "Select Relation",
+                        labelStyle: TextStyle(color: Colors.black),
                       ),
-                      children: [
-                        TextSpan(text: "", style: TextStyle(color: Colors.red)),
-                      ],
+                      items:
+                          ["Son of", "Daughter of", "Wife of"].map((item) {
+                            return DropdownMenuItem(
+                              value: item,
+
+                              child: Text(item, style: TextStyle(fontSize: 13)),
+                            );
+                          }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectrelationship = value;
+                          relashioncontroller.text = value ?? "";
+                        });
+                        // selectrelationship = value;
+                      },
                     ),
                   ),
-                ),
-                // keyboardType: TextInputType.phone,
-                // validator: (v) => v!.isEmpty ? 'Enter Relashion name' : null,
+
+                  SizedBox(width: 10),
+
+                  // Name Input
+                  Expanded(
+                    flex: 2,
+                    child: TextFormField(
+                      controller: relationCtrl,
+
+                      decoration: InputDecoration(
+                        labelText: "Enter Name",
+                        labelStyle: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+
+              // TextFormField(
+              //   controller: relationCtrl,
+              //   // readOnly: isfieldname,
+              //   decoration: InputDecoration(
+              //     label: RichText(
+              //       text: TextSpan(
+              //         text: 'S/o,D/o,W/o',
+              //         style: TextStyle(
+              //           color:
+              //               Theme.of(context).brightness == Brightness.dark
+              //                   ? Colors
+              //                       .white // Dark Mode
+              //                   : Colors.black87,
+              //         ),
+              //         children: [
+              //           TextSpan(text: "", style: TextStyle(color: Colors.red)),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              //   // keyboardType: TextInputType.phone,
+              //   // validator: (v) => v!.isEmpty ? 'Enter Relashion name' : null,
+              // ),
               TextFormField(
                 controller: addressCtrlCtrl,
                 //   readOnly: isfieldname,
@@ -660,10 +857,11 @@ class _lostitempageState extends State<lostitempage> {
               ),
               TextFormField(
                 controller: locationlstkCtrl,
-                decoration:  InputDecoration(
-                  label: RichText(text: TextSpan(
-                    text: 'Location of loss',
-                     style: TextStyle(
+                decoration: InputDecoration(
+                  label: RichText(
+                    text: TextSpan(
+                      text: 'Location of loss',
+                      style: TextStyle(
                         color:
                             Theme.of(context).brightness == Brightness.dark
                                 ? Colors
@@ -674,10 +872,11 @@ class _lostitempageState extends State<lostitempage> {
                         TextSpan(
                           text: "*",
                           style: TextStyle(color: Colors.red),
-                        )
-                      ]
-                  ))
-                 // labelText: 'Location of loss',
+                        ),
+                      ],
+                    ),
+                  ),
+                  // labelText: 'Location of loss',
                 ),
 
                 validator: (v) => v!.isEmpty ? 'Enter Location' : null,
@@ -740,13 +939,13 @@ class _lostitempageState extends State<lostitempage> {
                       ),
                       children: [
                         TextSpan(
-                          text: "*",
+                          text: "",
                           style: TextStyle(
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors
-                                        .white // Dark Mode
-                                    : Colors.red,
+                            color: Colors.red,
+                            // Theme.of(context).brightness == Brightness.dark
+                            //     ? Colors
+                            //         .white // Dark Mode
+                            //     : Colors.red,
                           ),
                         ),
                       ],
@@ -755,7 +954,7 @@ class _lostitempageState extends State<lostitempage> {
                 ),
                 keyboardType: TextInputType.phone,
                 maxLength: 10,
-                validator: (v) => v!.isEmpty ? 'Enter Mobile number' : null,
+               // validator: (v) => v!.isEmpty ? 'Enter Mobile number' : null,
               ),
 
               // TextFormField(

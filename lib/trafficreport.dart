@@ -99,7 +99,13 @@ class _trafficreportState extends State<trafficreport> {
   final TextEditingController localityCtrl = TextEditingController();
   final TextEditingController desCtrl = TextEditingController();
   final TextEditingController uidCtrl = TextEditingController();
+  final TextEditingController latctrl = TextEditingController();
+  final TextEditingController logCtrl = TextEditingController();
 
+
+
+  // String? latitude = currentPosition?.latitude.toString();
+  // String? longitude = currentPosition?.longitude.toString();
   File? _photo;
   File? _video;
   double? latitude;
@@ -160,6 +166,9 @@ class _trafficreportState extends State<trafficreport> {
     setState(() {
       latitude = pos.latitude;
       longitude = pos.longitude;
+
+      latctrl.text = latitude?.toString() ?? '';
+  logCtrl.text = longitude?.toString() ?? '';
     });
 
     debugPrint("✅ Location fetched: lat=$latitude, long=$longitude");
@@ -210,9 +219,11 @@ class _trafficreportState extends State<trafficreport> {
       'https://bnpcdeveloper.co.in/bnpolice/app/trafic_incident.php',
     );
     debugPrint("🚀 Sending POST request to: $uri");
+    
 
     final request = http.MultipartRequest('POST', uri);
     request.fields['name'] = nameCtrl.text.trim();
+  
     request.fields['ph'] = phCtrl.text.trim();
     request.fields['locality'] = localityCtrl.text;
     request.fields['latitude'] = latitude?.toString() ?? '';
@@ -220,6 +231,12 @@ class _trafficreportState extends State<trafficreport> {
     request.fields['des'] = desCtrl.text;
     request.fields['uid'] = uidCtrl.text;
     debugPrint("🧾 Fields Sent: ${request.fields}");
+
+//     setState(() {
+//   latctrl.text = latitude?.toString() ?? '';
+//   logCtrl.text = longitude?.toString() ?? '';
+// });
+
 
     if (_photo != null) {
       request.files.add(
@@ -430,7 +447,17 @@ class _trafficreportState extends State<trafficreport> {
                 validator: (v) => v!.isEmpty ? 'Enter description' : null,
               ),
               const SizedBox(height: 10),
-              Text('📍 Lat: ${latitude ?? "..."}, Lng: ${longitude ?? "..."}'),
+              TextField(
+                controller: latctrl,
+               // readOnly: true,
+                decoration: const InputDecoration(labelText: 'Latitude'),
+              ),
+               TextField(
+                controller: logCtrl,
+               // readOnly: true,
+                decoration: const InputDecoration(labelText: 'Longitude'),
+              ),
+            //  Text('📍 Lat: ${latitude ?? "..."}, Lng: ${longitude ?? "..."}'),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -478,7 +505,7 @@ class _trafficreportState extends State<trafficreport> {
 
                     // _pickImage,
                     icon: const Icon(Icons.image),
-                    label: const Text('Pick Photo'),
+                    label: const Text(' Photo'),
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
@@ -518,7 +545,7 @@ class _trafficreportState extends State<trafficreport> {
                       });
                     },
                     icon: const Icon(Icons.video_file),
-                    label: const Text('Pick Video'),
+                    label: const Text('Video'),
                   ),
                 ],
               ),
@@ -542,7 +569,7 @@ class _trafficreportState extends State<trafficreport> {
                       ),
                     ),
                     child: const Text(
-                      'Submit',
+                      ' Submit',
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),

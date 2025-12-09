@@ -218,6 +218,36 @@ print('createStatus:$createStatus');
             ),
           ),
         ),
+          SizedBox(height: 40,),
+                       Container(
+  padding: EdgeInsets.all(12),
+  decoration: BoxDecoration(
+    color: Colors.red.withOpacity(0.1),
+    borderRadius: BorderRadius.circular(10),
+    border: Border.all(color: Colors.red, width: 1),
+  ),
+  child: Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(Icons.note_alt_outlined, color: Colors.blue, size: 22),
+      SizedBox(width: 10),
+      Expanded(
+        child: Text(
+     'Submit duly filled up form to -'
+'Office of the Commissioner of Police,'
+' Gate no. 3, Salt Lake Stadium,'
+' Sec - III, Bidhannagar,'
+' Kolkata - 700106',
+          style: TextStyle(
+            color: Colors.blue,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    ],
+  ),
+),
 
       ],
     ),

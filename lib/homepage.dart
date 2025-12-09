@@ -8,8 +8,9 @@ import 'package:bidhannagarpoliceapp/contactscreen.dart';
 import 'package:bidhannagarpoliceapp/crimereport.dart';
 import 'package:bidhannagarpoliceapp/messipage.dart';
 import 'package:bidhannagarpoliceapp/noticedetails.dart';
+import 'package:bidhannagarpoliceapp/organizationprofile.dart';
 import 'package:bidhannagarpoliceapp/registerotppage.dart';
-import 'package:bidhannagarpoliceapp/signuppage.dart';
+
 import 'package:bidhannagarpoliceapp/lostitempage.dart';
 import 'package:bidhannagarpoliceapp/trafficreport.dart';
 //import 'package:bidhannagarpoliceapp/history.dart';
@@ -26,6 +27,7 @@ import 'package:bidhannagarpoliceapp/profile.dart';
 //import 'package:bidhannagarpoliceapp/saanjhbatipage.dart';
 import 'package:bidhannagarpoliceapp/serviceapifetch.dart';
 import 'package:bidhannagarpoliceapp/tenantregistration.dart';
+import 'package:bidhannagarpoliceapp/weborganization.dart';
 //import 'package:bidhannagarpoliceapp/trafficadvisari.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -526,39 +528,43 @@ class _homepageState extends State<homepage> {
                           //   icon: Icons.info,
                           //   title: "About Us",
                           //   children: [
-                          _buildDrawerItem(
-                            Icons.security_outlined,
-                            "Police Station Hierarchy",
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => docsdownviewpage(
-                                        filePath: 'assets/images/Capture.pdf',
-                                        title: 'Police Station Hierarchy',
-                                      ),
-                                ),
-                              );
-                            },
-                          ),
-
                           // _buildDrawerItem(
-                          //   Icons.policy_outlined,
-                          //   "Police Station Profile",
+                          //   Icons.security_outlined,
+                          //   "Police Station Hierarchy",
                           //   onTap: () {
                           //     Navigator.push(
                           //       context,
                           //       MaterialPageRoute(
                           //         builder:
-                          //             (context) => knowpspage(
-                          //               onThemeChanged: widget.onThemeChanged,
-                          //               isDarkMode: widget.isDarkMode,
+                          //             (context) => docsdownviewpage(
+                          //               filePath: 'assets/images/Capture.pdf',
+                          //               title: 'Police Station Hierarchy',
                           //             ),
                           //       ),
                           //     );
                           //   },
                           // ),
+
+                          _buildDrawerItem(
+                            Icons.policy_outlined,
+                            "Organization Profile",
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>webvieworganizationpage(
+                                        onThemeChanged:widget. onThemeChanged,
+                                         isDarkMode:widget. isDarkMode),
+                                      
+                                      //  Organizationpage(
+                                      //   onThemeChanged: widget.onThemeChanged,
+                                      //   isDarkMode: widget.isDarkMode,
+                                      // ),
+                                ),
+                              );
+                            },
+                          ),
                           // _buildDrawerItem(
                           //   Icons.history_outlined,
                           //   "History",
@@ -617,23 +623,23 @@ class _homepageState extends State<homepage> {
                           //     );
                           //   },
                           // ),
-                          _buildDrawerItem(
-                            Icons.person,
-                            "Traffic Police Hierarchy ",
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => docsdownviewpage(
-                                        filePath:
-                                            'assets/images/Traffic Heirarchy.pdf',
-                                        title: 'Traffic Police Hierarchy',
-                                      ),
-                                ),
-                              );
-                            },
-                          ),
+                          // _buildDrawerItem(
+                          //   Icons.person,
+                          //   "Traffic Police Hierarchy ",
+                          //   onTap: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder:
+                          //             (context) => docsdownviewpage(
+                          //               filePath:
+                          //                   'assets/images/Traffic Heirarchy.pdf',
+                          //               title: 'Traffic Police Hierarchy',
+                          //             ),
+                          //       ),
+                          //     );
+                          //   },
+                          // ),
 
                           // _buildDrawerItem(
                           //   Icons.rule,
@@ -1593,175 +1599,7 @@ class _homepageState extends State<homepage> {
                     physics: NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.all(1),
                     children: [
-                      tilesButton(
-                        title: ' Report Cyber \nCrime ',
-                        imagepath: 'assets/images/complain.png',
-                        onTap: () async {
-                          const ur1 =
-                              'https://cybercrime.gov.in/Webform/Index.aspx';
-                          if (await canLaunchUrl(Uri.parse(ur1))) {
-                            await launchUrl(
-                              Uri.parse(ur1),
-                              mode: LaunchMode.externalApplication,
-                            );
-                          } else {
-                            debugPrint("Could not launch $ur1");
-                          }
-                        },
-                      ),
-                           tilesButton(
-                          title: ' Report Missing\nMobile',
-                          imagepath: 'assets/images/missing.png',
-                          onTap: () async {
-                            const ur1 =
-                                'https://www.ceir.gov.in/Request/CeirUserBlockRequestDirect.jsp';
-                            if (await canLaunchUrl(Uri.parse(ur1))) {
-                              await launchUrl(Uri.parse(ur1));
-                            } else {
-                              debugPrint("Could not launch $ur1");
-                            }
-                          },
-                        ),
-                    
-                      tilesButton(
-                        title: 'Report Lost\nProperty',
-                        imagepath: 'assets/images/lost-items.png',
-                        onTap: () async {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          bool isLoggedIn =
-                              prefs.getBool('isloggedin') ?? false;
-                          if (!isLoggedIn) {
-                            showLoginSignupDialog(
-                              context,
-                              // When user taps Login
-                              () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  PageRouteBuilder(
-                                    transitionDuration: const Duration(
-                                      milliseconds: 500,
-                                    ),
-                                    pageBuilder:
-                                        (
-                                          context,
-                                          animation,
-                                          secondaryAnimation,
-                                        ) => testlogin(
-                                          onThemeChanged: widget.onThemeChanged,
-                                          isDarkMode: widget.isDarkMode,
-                                        ),
-                                    transitionsBuilder: (
-                                      context,
-                                      animation,
-                                      secondaryAnimation,
-                                      child,
-                                    ) {
-                                      const begin = Offset(0.0, -1.0);
-                                      const end = Offset.zero;
-                                      var tween = Tween(
-                                        begin: begin,
-                                        end: end,
-                                      ).chain(
-                                        CurveTween(curve: Curves.easeInOut),
-                                      );
-                                      return SlideTransition(
-                                        position: animation.drive(tween),
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              // When user taps Signup
-                              () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  PageRouteBuilder(
-                                    transitionDuration: const Duration(
-                                      milliseconds: 500,
-                                    ),
-                                    pageBuilder:
-                                        (
-                                          context,
-                                          animation,
-                                          secondaryAnimation,
-                                        ) => SendOtpPage(
-                                          onThemeChanged: widget.onThemeChanged,
-                                          isDarkMode: widget.isDarkMode,
-                                         // phone: phoneController.text,
-                                        ),
-                                    transitionsBuilder: (
-                                      context,
-                                      animation,
-                                      secondaryAnimation,
-                                      child,
-                                    ) {
-                                      const begin = Offset(0.0, -1.0);
-                                      const end = Offset.zero;
-                                      var tween = Tween(
-                                        begin: begin,
-                                        end: end,
-                                      ).chain(
-                                        CurveTween(curve: Curves.easeInOut),
-                                      );
-                                      return SlideTransition(
-                                        position: animation.drive(tween),
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            );
-                          }
-                          // ✅ 3️⃣ If logged in → go to profile screen
-                          else {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                transitionDuration: const Duration(
-                                  milliseconds: 600,
-                                ),
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) =>
-                                        lostitempage(
-                                          onThemeChanged: widget.onThemeChanged,
-                                          isDarkMode: widget.isDarkMode,
-                                        ),
-                                transitionsBuilder: (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  const begin = Offset(0.0, -1.0);
-                                  const end = Offset.zero;
-                                  var tween = Tween(
-                                    begin: begin,
-                                    end: end,
-                                  ).chain(CurveTween(curve: Curves.easeInOut));
-                                  return SlideTransition(
-                                    position: animation.drive(tween),
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            );
-                          }
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder:
-                          //         (context) =>webviewlostpage(
-                          //       onThemeChanged: widget.onThemeChanged,
-                          //       isDarkMode: widget.isDarkMode,
-                          //     ),
-                          //   ),
-                          // );
-                        },
-                      ),
-                      tilesButton(
+                        tilesButton(
                         title: 'Report \nCrime',
                         imagepath: 'assets/images/crimereport.png',
                         onTap: () async {
@@ -1899,6 +1737,176 @@ class _homepageState extends State<homepage> {
                           // );
                         },
                       ),
+                      tilesButton(
+                        title: ' Report Cyber \nCrime ',
+                        imagepath: 'assets/images/complain.png',
+                        onTap: () async {
+                          const ur1 =
+                              'https://cybercrime.gov.in/Webform/Index.aspx';
+                          if (await canLaunchUrl(Uri.parse(ur1))) {
+                            await launchUrl(
+                              Uri.parse(ur1),
+                              mode: LaunchMode.externalApplication,
+                            );
+                          } else {
+                            debugPrint("Could not launch $ur1");
+                          }
+                        },
+                      ),
+                          tilesButton(
+                        title: 'Report Lost\nProperty',
+                        imagepath: 'assets/images/lost-items.png',
+                        onTap: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          bool isLoggedIn =
+                              prefs.getBool('isloggedin') ?? false;
+                          if (!isLoggedIn) {
+                            showLoginSignupDialog(
+                              context,
+                              // When user taps Login
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => testlogin(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              // When user taps Signup
+                              () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  PageRouteBuilder(
+                                    transitionDuration: const Duration(
+                                      milliseconds: 500,
+                                    ),
+                                    pageBuilder:
+                                        (
+                                          context,
+                                          animation,
+                                          secondaryAnimation,
+                                        ) => SendOtpPage(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                         // phone: phoneController.text,
+                                        ),
+                                    transitionsBuilder: (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      const begin = Offset(0.0, -1.0);
+                                      const end = Offset.zero;
+                                      var tween = Tween(
+                                        begin: begin,
+                                        end: end,
+                                      ).chain(
+                                        CurveTween(curve: Curves.easeInOut),
+                                      );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          // ✅ 3️⃣ If logged in → go to profile screen
+                          else {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                transitionDuration: const Duration(
+                                  milliseconds: 600,
+                                ),
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        lostitempage(
+                                          onThemeChanged: widget.onThemeChanged,
+                                          isDarkMode: widget.isDarkMode,
+                                        ),
+                                transitionsBuilder: (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  const begin = Offset(0.0, -1.0);
+                                  const end = Offset.zero;
+                                  var tween = Tween(
+                                    begin: begin,
+                                    end: end,
+                                  ).chain(CurveTween(curve: Curves.easeInOut));
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder:
+                          //         (context) =>webviewlostpage(
+                          //       onThemeChanged: widget.onThemeChanged,
+                          //       isDarkMode: widget.isDarkMode,
+                          //     ),
+                          //   ),
+                          // );
+                        },
+                      ),
+                           tilesButton(
+                          title: ' Report Missing\nMobile',
+                          imagepath: 'assets/images/missing.png',
+                          onTap: () async {
+                            const ur1 =
+                                'https://www.ceir.gov.in/Request/CeirUserBlockRequestDirect.jsp';
+                            if (await canLaunchUrl(Uri.parse(ur1))) {
+                              await launchUrl(Uri.parse(ur1));
+                            } else {
+                              debugPrint("Could not launch $ur1");
+                            }
+                          },
+                        ),
+                    
+                  
+                    
                       tilesButton(
                         title: 'Report\nTraffic Incident',
                         imagepath: 'assets/images/trafficindident.png',
@@ -2750,90 +2758,90 @@ class _homepageState extends State<homepage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                                 SizedBox(
-                                         height:
-                                     MediaQuery.of(context).size.height *
-                                      0.065,
-                                   width:
-                                       MediaQuery.of(context).size.height * 0.21,
+                                //  SizedBox(
+                                //          height:
+                                //      MediaQuery.of(context).size.height *
+                                //       0.065,
+                                //    width:
+                                //        MediaQuery.of(context).size.height * 0.21,
                                       
                                       
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Theme.of(context).brightness ==
-                                                      Brightness.dark
-                                                  ? Color(0xFF1A1A1A)
-                                                  : Color(0xfff7f2f9),
+                                //       child: ElevatedButton(
+                                //         style: ElevatedButton.styleFrom(
+                                //           backgroundColor:
+                                //               Theme.of(context).brightness ==
+                                //                       Brightness.dark
+                                //                   ? Color(0xFF1A1A1A)
+                                //                   : Color(0xfff7f2f9),
                               
-                                          elevation: 2,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(15),
-                                          ),
-                                          shadowColor: Colors.black,
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        onPressed: () async {
-                                          // if (await canLaunchUrl(
-                                          //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
-                                          //   )
+                                //           elevation: 2,
+                                //           shape: RoundedRectangleBorder(
+                                //             borderRadius: BorderRadius.circular(15),
+                                //           ),
+                                //           shadowColor: Colors.black,
+                                //           padding: EdgeInsets.zero,
+                                //         ),
+                                //         onPressed: () async {
+                                //           // if (await canLaunchUrl(
+                                //           //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                //           //   )
                               
-                                          // ) {
-                                          //   await launchUrl(
-                                          //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
-                                          //     mode: LaunchMode.platformDefault,
-                                          //   );
-                                          // }
+                                //           // ) {
+                                //           //   await launchUrl(
+                                //           //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                //           //     mode: LaunchMode.platformDefault,
+                                //           //   );
+                                //           // }
                               
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (context) =>
-                                                  //   webviewparkingpage
-                                                  Messipage(
-                                                    onThemeChanged:
-                                                        widget.onThemeChanged,
-                                                    isDarkMode: widget.isDarkMode,
-                                                  ),
-                                            ),
-                                          );
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'assets/images/messiicons.png',
-                                              height: 35,
-                                            ),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  'Welcome MESSI',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize:
-                                                        MediaQuery.of(
-                                                          context,
-                                                        ).size.height *
-                                                        0.013,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
+                                //           Navigator.push(
+                                //             context,
+                                //             MaterialPageRoute(
+                                //               builder:
+                                //                   (context) =>
+                                //                   //   webviewparkingpage
+                                //                   Messipage(
+                                //                     onThemeChanged:
+                                //                         widget.onThemeChanged,
+                                //                     isDarkMode: widget.isDarkMode,
+                                //                   ),
+                                //             ),
+                                //           );
+                                //         },
+                                //         child: Row(
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.center,
+                                //           children: [
+                                //             Image.asset(
+                                //               'assets/images/messiicons.png',
+                                //               height: 35,
+                                //             ),
+                                //             SizedBox(width: 10),
+                                //             Column(
+                                //               mainAxisSize: MainAxisSize.min,
+                                //               children: [
+                                //                 Text(
+                                //                   'Welcome MESSI',
+                                //                   style: TextStyle(
+                                //                     fontWeight: FontWeight.bold,
+                                //                     fontSize:
+                                //                         MediaQuery.of(
+                                //                           context,
+                                //                         ).size.height *
+                                //                         0.013,
+                                //                   ),
+                                //                 ),
+                                //               ],
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     SizedBox(width: 10),
                               SizedBox(
                                  height:    MediaQuery.of(context).size.height *
                                       0.065,
-                                   width:
-                                       MediaQuery.of(context).size.height * 0.21,
+                               //    width:double.infinity,
+                                width:   MediaQuery.of(context).size.height * 0.44,
                                         //  MediaQuery.of(context).size.height * 0.19,
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(

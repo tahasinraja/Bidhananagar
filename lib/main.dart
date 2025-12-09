@@ -6,11 +6,39 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("🔔 Background Message: ${message.notification?.title}");
+}
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  // ⚠️ iOS ke liye permission — Android me auto grant hota hai
+  await messaging.requestPermission();
+  
+  await FirebaseMessaging.instance.requestPermission(
+  alert: true,
+  badge: true,
+  sound: true,
+);
+
+
+  // 🔥 FCM TOKEN PRINT
+  String? token = await messaging.getToken();
+  print("📌 FCM TOKEN: $token");
   try {
-    await Firebase.initializeApp();
+   
     print("🔥 Firebase Connected Successfully!");
   } catch (e) {
     print("❌ Firebase Connection Failed: $e");
@@ -42,7 +70,13 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     isDarkMode = widget.isDarkMode;
     isLoggedIn = widget.isLoggedIn;
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  print("🔔 Foreground Message: ${message.notification?.title}");
+});
+
   }
+
+  
 
   // 🔥 THEME TOGGLE FUNCTION
   void _toggleTheme(bool value) async {

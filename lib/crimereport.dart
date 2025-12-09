@@ -214,6 +214,15 @@ class _crimereportState extends State<crimereport> {
   Future<void> _pickImage() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.camera);
     if (picked != null) {
+      // int pickedimagesize =await picked.length();
+      // double sizemb= (pickedimagesize/1024*1024);
+      // if(sizemb>3){
+      //  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Image size should be less than 3mb')
+      //  )
+      //  ); 
+      //  return;
+      // }
+      // print("sizemb:$sizemb");
       setState(() => _photo = File(picked.path));
       debugPrint("📸 Image selected: ${picked.path}");
     }
@@ -223,6 +232,16 @@ class _crimereportState extends State<crimereport> {
   Future<void> _pickImagegallery() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picked != null) {
+      // int pickedimagesize =await picked.length();
+      // double sizemb= (pickedimagesize/1024*1024);
+      // if(sizemb>3){
+      //  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Image size should be less than 3mb'),
+       
+      //  ),
+      //  );
+      //  return; 
+      // }
+      // print("sizemb:$sizemb");
       setState(() => _photo = File(picked.path));
       debugPrint("📸 Image selected: ${picked.path}");
     }
@@ -232,6 +251,15 @@ class _crimereportState extends State<crimereport> {
   Future<void> _pickVideo() async {
     final picked = await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (picked != null) {
+      int pickedimagesize =await picked.length();
+      double sizemb= (pickedimagesize/1024*1024);
+      if(sizemb>15){
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Video size should be less than 15mb'),
+       ),
+       ); 
+       return;
+      }
+      print("sizemb:$sizemb");
       setState(() => _video = File(picked.path));
       debugPrint("🎬 Video selected: ${picked.path}");
     }
@@ -241,6 +269,14 @@ class _crimereportState extends State<crimereport> {
   Future<void> _pickVideocamera() async {
     final picked = await ImagePicker().pickVideo(source: ImageSource.camera);
     if (picked != null) {
+      int pickedimagesize =await picked.length(); 
+      double sizemb= (pickedimagesize/1024*1024);
+      if(sizemb>15){
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Video size should be less than 15mb'),
+       ),
+       ); 
+       return;
+      }
       setState(() => _video = File(picked.path));
       debugPrint("🎬 Video selected: ${picked.path}");
     }
@@ -564,7 +600,6 @@ class _crimereportState extends State<crimereport> {
                                         icon: const Icon(Icons.camera_alt),
                                         label: Text('Camera'),
                                       ),
-                                      
                                     ],
                                   ),
                                 );
@@ -572,14 +607,13 @@ class _crimereportState extends State<crimereport> {
                             );
                           },
                           icon: const Icon(Icons.image),
-                          label: const Text('Pick Photo'),
+                          label: const Text('Photo'),
                         ),
                         const SizedBox(height: 16),
 
                         // 📸 Image Preview
                         if (_photo != null)
-                        Icon(Icons.check_circle, color: Colors.green),
-                    
+                          Icon(Icons.check_circle, color: Colors.green),
                       ],
                     ),
                     SizedBox(width: 20),
@@ -594,14 +628,18 @@ class _crimereportState extends State<crimereport> {
                                   title: Text('Select Video Source'),
                                   content: Row(
                                     children: [
-                                      ElevatedButton.icon(onPressed: _pickVideo,
-                                      icon: const Icon(Icons.video_file),
-                                       label: const Text('Gallery'),),
-                                       SizedBox(width: 6),
-                                             SizedBox(width: 6),
-                                      ElevatedButton.icon(onPressed: _pickVideocamera,
-                                      icon: const Icon(Icons.video_call),
-                                       label: Text('Camera'),),
+                                      ElevatedButton.icon(
+                                        onPressed: _pickVideo,
+                                        icon: const Icon(Icons.video_file),
+                                        label: const Text('Gallery'),
+                                      ),
+                                      SizedBox(width: 6),
+                                     // SizedBox(width: 6),
+                                      ElevatedButton.icon(
+                                        onPressed: _pickVideocamera,
+                                        icon: const Icon(Icons.video_call),
+                                        label: Text('Camera'),
+                                      ),
                                     ],
                                   ),
                                 );
@@ -609,27 +647,27 @@ class _crimereportState extends State<crimereport> {
                             );
                           },
                           icon: const Icon(Icons.video_file),
-                          label: const Text('Pick Video'),
+                          label: const Text('Video'),
                         ),
                         const SizedBox(height: 20),
                         if (_video != null)
-                        Icon(Icons.check_circle, color: Colors.green),
-                          // Column(
-                          //   children: [
-                          //     const Text(
-                          //       "🎬 Selected Video:",
-                          //       style: TextStyle(fontWeight: FontWeight.bold),
-                          //     ),
-                          //     SizedBox(height: 10),
-                          //     Text(
-                          //       _video!.path.split('/').last,
-                          //       style: const TextStyle(
-                          //         color: Colors.blueGrey,
-                          //         overflow: TextOverflow.ellipsis,
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
+                          Icon(Icons.check_circle, color: Colors.green),
+                        // Column(
+                        //   children: [
+                        //     const Text(
+                        //       "🎬 Selected Video:",
+                        //       style: TextStyle(fontWeight: FontWeight.bold),
+                        //     ),
+                        //     SizedBox(height: 10),
+                        //     Text(
+                        //       _video!.path.split('/').last,
+                        //       style: const TextStyle(
+                        //         color: Colors.blueGrey,
+                        //         overflow: TextOverflow.ellipsis,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ],
@@ -652,33 +690,32 @@ class _crimereportState extends State<crimereport> {
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
-                  SizedBox(height: 40,),
-                 Container(
-  padding: EdgeInsets.all(12),
-  decoration: BoxDecoration(
-    color: Colors.red.withOpacity(0.1),
-    borderRadius: BorderRadius.circular(10),
-    border: Border.all(color: Colors.red, width: 1),
-  ),
-  child: Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Icon(Icons.info, color: Colors.red, size: 22),
-      SizedBox(width: 10),
-      Expanded(
-        child: Text(
-          "Disclaimer:\nTo register FIR please visit Police Station",
-          style: TextStyle(
-            color: Colors.red.shade900,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    ],
-  ),
-),
- 
+              SizedBox(height: 40),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.red, width: 1),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.info, color: Colors.red, size: 22),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        "Disclaimer:\nTo register FIR please visit Police Station",
+                        style: TextStyle(
+                          color: Colors.red.shade900,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:math';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,6 +34,14 @@ class _signuppageState extends State<signuppage> {
   bool isLoading = false;
 
   Future<void> submit() async {
+     String? token=await FirebaseMessaging.instance.getToken();
+     if(token==null){
+       print('token is null');
+     }
+     else{
+       print('Fcm token:$token');
+     }
+    
     if (otpController.text.isEmpty) {
       ScaffoldMessenger.of(
         context,

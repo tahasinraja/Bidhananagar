@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
-
+import 'package:bidhannagarpoliceapp/imageviwer.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bidhannagarpoliceapp/login.dart';
 
@@ -21,6 +23,24 @@ class profilescreen extends StatefulWidget {
 }
 
 class _profilescreenState extends State<profilescreen> {
+  File? _photo;
+
+  /// 🖼 Pick Image gallery
+  Future<void> _pickImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _photo = File(picked.path));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Selected image is :${_photo}')));
+      debugPrint("📸 Image selected: ${picked.path}");
+    }
+    // 🔥 Auto close dialog after selecting image
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+  }
+
   bool isLoading = false;
   bool isUpdating = false;
 
@@ -39,6 +59,8 @@ class _profilescreenState extends State<profilescreen> {
     super.initState();
     loadProfile();
   }
+
+  //image pick
 
   Future<void> loadProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -77,6 +99,9 @@ class _profilescreenState extends State<profilescreen> {
             data['stock'].isNotEmpty) {
           setState(() {
             profile = data['stock'][0];
+            profile!['image'];
+            debugPrint("IMAGE URL FROM API: ${profile!['image']}");
+
             nameController.text = profile!['name'] ?? '';
             psController.text = profile!['ps'] ?? '';
             dobController.text = profile!['dob'] ?? '';
@@ -108,20 +133,48 @@ class _profilescreenState extends State<profilescreen> {
       final url = Uri.parse(
         'https://bnpcdeveloper.co.in/bnpolice/app/profile_update.php',
       );
-      final response = await http.post(
-        url,
-        body: {
-          'ph': phone,
-          'name': nameController.text.trim(),
-          'ps': psController.text.trim(),
-          'dob': dobController.text.trim(),
-          'address': addressController.text.trim(),
-          'email': emailController.text.trim(),
-          'blood': bloodController.text.trim(),
-        },
-      );
+      print('Debugprint url:$url');
+      final request = http.MultipartRequest('POST', url);
 
-      final data = json.decode(response.body);
+      request.fields['ph'] = phone;
+      request.fields['name'] = nameController.text.trim();
+      request.fields['ps'] = psController.text.trim();
+      request.fields['dob'] = dobController.text.trim();
+      request.fields['address'] = addressController.text.trim();
+      request.fields['email'] = emailController.text.trim();
+      request.fields['blood'] = bloodController.text.trim();
+
+      debugPrint('Request Fields Send:${request.fields}');
+
+      if (_photo != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath('image', _photo!.path),
+        );
+        debugPrint("📎 Photo attached: ${_photo!.path}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Selected Image is :${_photo!.path}')),
+        );
+      }
+      // final response = await http.post(
+      //   url,
+      //   body: {
+      //     'ph': phone,
+      //     'name': nameController.text.trim(),
+      //     'ps': psController.text.trim(),
+      //     'dob': dobController.text.trim(),
+      //     'address': addressController.text.trim(),
+      //     'email': emailController.text.trim(),
+      //     'blood': bloodController.text.trim(),
+      //   },
+      // );
+
+      //sendrequest
+      final requestresponce = await request.send();
+      //convert streaming to string
+      final finalstring = await requestresponce.stream.bytesToString();
+      debugPrint("📦 Raw Response Body: $finalstring");
+
+      final data = json.decode(finalstring);
       final status = data['status'] ?? '';
       final message = data['message'] ?? '';
 
@@ -165,22 +218,55 @@ class _profilescreenState extends State<profilescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     backgroundColor: Theme.of(context).brightness == Brightness.dark
-    ? Colors.black
-    : const Color(0xFFe9e4de),
-          appBar: AppBar(
-            
-            title:Row(
-              children: [
-                Text(
-                  'Profile',
-                  style: TextStyle(
-                    color: widget.isDarkMode ? Colors.white : Colors.black,
-                  )),
-                  Spacer(),
-                  IconButton(
-              icon: Icon(Icons.logout_outlined,
-                  color:widget.isDarkMode ? Colors.white : Colors.black, size: 30),
+      backgroundColor:
+          Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : const Color(0xFFe9e4de),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Text(
+              'Profile',
+              style: TextStyle(
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+              ),
+            ),
+            Spacer(),
+
+            // TextButton.icon(
+            //   onPressed: () async {
+            //     final prefs = await SharedPreferences.getInstance();
+            //     await prefs.clear();
+            //     if (!context.mounted) return;
+            //     Navigator.pushAndRemoveUntil(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder:
+            //             (_) => testlogin(
+            //               onThemeChanged: widget.onThemeChanged,
+            //               isDarkMode: widget.isDarkMode,
+            //             ),
+
+            //       )
+
+            //     );
+
+            //   },
+
+            //   icon: Icon(Icons.logout_outlined),
+            //   label: Text('"Logout'),
+            // ),
+            TextButton.icon(
+              style: TextButton.styleFrom(backgroundColor: Color(0xFFe9e4de)),
+              icon: Icon(
+                Icons.logout_outlined,
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+                size: 28,
+              ),
+              label: Text(
+                'Log Out',
+                style: TextStyle(fontSize: 15, color: Colors.red),
+              ),
               onPressed: () async {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.clear();
@@ -188,20 +274,20 @@ class _profilescreenState extends State<profilescreen> {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => testlogin(
-                      onThemeChanged: widget.onThemeChanged,
-                      isDarkMode: widget.isDarkMode,
-                    ),
+                    builder:
+                        (_) => testlogin(
+                          onThemeChanged: widget.onThemeChanged,
+                          isDarkMode: widget.isDarkMode,
+                        ),
                   ),
                   (route) => false,
                 );
               },
             ),
-              ],
-            ),
-            backgroundColor:
-            widget.isDarkMode ? Colors.black : Colors.white
-          ),
+          ],
+        ),
+        backgroundColor: widget.isDarkMode ? Colors.black : Colors.white,
+      ),
       body:
           isLoading
               ? const Center(child: CircularProgressIndicator())
@@ -209,109 +295,158 @@ class _profilescreenState extends State<profilescreen> {
                 child: Column(
                   children: [
                     // 🔹 Header
-              Stack(
-  clipBehavior: Clip.none,
-  children: [
-    // 🟦 Background Container
-    Container(
-      width: double.infinity,
-      height: 150,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(40),
-          bottomRight: Radius.circular(40),
-        ),
-        color:widget. isDarkMode ? Colors.black : Colors.white,
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(40),
-            bottomRight: Radius.circular(40),
-          ),
-          gradient: LinearGradient(
-             colors: widget.isDarkMode
-          ?  [Colors.black, Colors.grey.shade900] // dark mode shades
-          : [Colors.white, Colors.white],        // light mode shades
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        // child: Align(
-        //   alignment: Alignment.topRight,
-        //   child: Padding(
-        //     padding: const EdgeInsets.only(top: 40, right: 20),
-        //     child: IconButton(
-        //       icon: const Icon(Icons.logout_outlined,
-        //           color: Colors.black, size: 30),
-        //       onPressed: () async {
-        //         final prefs = await SharedPreferences.getInstance();
-        //         await prefs.clear();
-        //         if (!context.mounted) return;
-        //         Navigator.pushAndRemoveUntil(
-        //           context,
-        //           MaterialPageRoute(
-        //             builder: (_) => testlogin(
-        //               onThemeChanged: widget.onThemeChanged,
-        //               isDarkMode: widget.isDarkMode,
-        //             ),
-        //           ),
-        //           (route) => false,
-        //         );
-        //       },
-        //     ),
-        //   ),
-        // ),
-      ),
-    ),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        // 🟦 Background Container
+                        Container(
+                          width: double.infinity,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(40),
+                              bottomRight: Radius.circular(40),
+                            ),
+                            color:
+                                widget.isDarkMode ? Colors.black : Colors.white,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(40),
+                                bottomRight: Radius.circular(40),
+                              ),
+                              gradient: LinearGradient(
+                                colors:
+                                    widget.isDarkMode
+                                        ? [
+                                          Colors.black,
+                                          Colors.grey.shade900,
+                                        ] // dark mode shades
+                                        : [
+                                          Colors.white,
+                                          Colors.white,
+                                        ], // light mode shades
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                            ),
+                            // child: Align(
+                            //   alignment: Alignment.topRight,
+                            //   child: Padding(
+                            //     padding: const EdgeInsets.only(top: 40, right: 20),
+                            //     child: IconButton(
+                            //       icon: const Icon(Icons.logout_outlined,
+                            //           color: Colors.black, size: 30),
+                            //       onPressed: () async {
+                            //         final prefs = await SharedPreferences.getInstance();
+                            //         await prefs.clear();
+                            //         if (!context.mounted) return;
+                            //         Navigator.pushAndRemoveUntil(
+                            //           context,
+                            //           MaterialPageRoute(
+                            //             builder: (_) => testlogin(
+                            //               onThemeChanged: widget.onThemeChanged,
+                            //               isDarkMode: widget.isDarkMode,
+                            //             ),
+                            //           ),
+                            //           (route) => false,
+                            //         );
+                            //       },
+                            //     ),
+                            //   ),
+                            // ),
+                          ),
+                        ),
 
-    // 🟨 Profile Image overlapping bottom edge
-    Positioned(
-      top: 77, // adjust this to overlap more or less
-      left: 0,
-      right: 0,
-      child: Center(
-        child: Container(
-          height: 110,
-          width: 110,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(0, 3),
-                //blurRadius: 8,
-              ),
-            ],
-          ),
-          child: ClipOval(
-            child: Image.asset(
-              "assets/images/man_4140037.png",
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        
-      ),
-    ),
-    Positioned(
-      top: 65,
-       left: 0,
-      right: 0,
-      child: Center(
-        child: SizedBox(
-            height: 140,
-            width: 140,
-          child: ClipOval(
-            
-            child: Image.asset('assets/images/line.png',fit: BoxFit.cover,)),
-        ),
-      ),
-    )
-   
-  ],
-),
+                        // 🟨 Profile Image overlapping bottom edge
+                        Positioned(
+                          top: 77, // adjust this to overlap more or less
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: Container(
+                              height: 110,
+                              width: 110,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    offset: Offset(0, 3),
+                                    //blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => Imageviwer(
+                                            Imageview: profile!['image'],
+                                          ),
+                                    ),
+                                  );
+                                },
+                                child: ClipOval(
+                                  child:
+                                      (profile == null)
+                                          ? Image.asset(
+                                            'assets/images/man_4140037.png',
+                                            fit: BoxFit.cover,
+                                          )
+                                          : (profile!['image'] != null &&
+                                              profile!['image']
+                                                  .toString()
+                                                  .isNotEmpty)
+                                          ? Image.network(
+                                            profile!['image'],
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
+                                              return Image.asset(
+                                                'assets/images/man_4140037.png',
+                                              );
+                                            },
+                                          )
+                                          : Image.asset(
+                                            'assets/images/man_4140037.png',
+                                          ),
 
+                                  // Image.network(profile!['image']??"N/A",fit: BoxFit.cover,)
+                                  // Image.asset(
+                                  //   "assets/images/man_4140037.png",
+                                  //   fit: BoxFit.cover,
+                                  // ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 65,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: SizedBox(
+                              height: 140,
+                              width: 140,
+                              child: ClipOval(
+                                child: Image.asset(
+                                  'assets/images/line.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
 
                     const SizedBox(height: 70),
 
@@ -334,10 +469,18 @@ class _profilescreenState extends State<profilescreen> {
                           ),
                         ],
                       ),
-                      child: profile == null?
-                       const Center(child:Text('No Profile Found', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),)):
-                      
-                       buildProfileInfo(profile!, widget.isDarkMode),
+                      child:
+                          profile == null
+                              ? const Center(
+                                child: Text(
+                                  'No Profile Found',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              )
+                              : buildProfileInfo(profile!, widget.isDarkMode),
                     ),
 
                     const SizedBox(height: 35),
@@ -360,8 +503,8 @@ class _profilescreenState extends State<profilescreen> {
                             ),
                             elevation: 2,
                           ),
-                          onPressed:  _showEditBottomSheet,
-                          child:  Text(
+                          onPressed: _showEditBottomSheet,
+                          child: Text(
                             "Update Profile",
                             style: TextStyle(
                               fontSize: 18,
@@ -413,11 +556,11 @@ class _profilescreenState extends State<profilescreen> {
                 ),
                 const SizedBox(height: 15),
                 _editField("Name", nameController),
-                 _editField("Email", emailController),
+                _editField("Email", emailController),
                 _editField("Address", addressController),
                 _editField("PS", psController),
                 _editField("Blood Group", bloodController),
-               
+
                 TextField(
                   controller: dobController,
                   readOnly: true,
@@ -438,7 +581,64 @@ class _profilescreenState extends State<profilescreen> {
                     }
                   },
                 ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    isLoading? const Center(child: CircularProgressIndicator(),):
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SizedBox(
+                              height: 150,
+                              child: AlertDialog(
+                                title: Text('Profile Image'),
+                                content: SizedBox(
+                                  height: 150,
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'If you are change or upload new profile image then click Gallery  or cancle it',
+                                      ),
+                                      SizedBox(height: 20,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextButton(
+                                            onPressed: _pickImage,
+                                            child: Text("Gallery"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("close"),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      label: Text('Profile Image'),
+                      icon: Icon(Icons.image),
+                    ),
+                     
+                      if (_photo != null)
+                      
+                                 Icon(Icons.check_circle, color: Colors.green),
+                  ],
+                ),
+              
+               
                 const SizedBox(height: 25),
+
                 isUpdating
                     ? const Center(child: CircularProgressIndicator())
                     : ElevatedButton.icon(
@@ -466,16 +666,14 @@ class _profilescreenState extends State<profilescreen> {
                         ),
                       ),
                       label: Text(
-                      isUpdating ? "Saving..." : "Save",
-                      style: TextStyle(
-                        fontSize: 17,
-                        color:
-                            widget.isDarkMode ? Colors.white : Colors.black,
+                        isUpdating ? "Saving..." : "Save",
+                        style: TextStyle(
+                          fontSize: 17,
+                          color:
+                              widget.isDarkMode ? Colors.white : Colors.black,
+                        ),
                       ),
-                      )
-                    )
-                    
-              
+                    ),
               ],
             ),
           ),
@@ -527,7 +725,7 @@ Widget buildProfileInfo(Map<String, dynamic> profile, bool isDarkMode) {
         textStyleLabel,
         textStyleValue,
       ),
-         _buildTableRow(
+      _buildTableRow(
         "Address:",
         profile['address'],
         textStyleLabel,
@@ -535,14 +733,12 @@ Widget buildProfileInfo(Map<String, dynamic> profile, bool isDarkMode) {
       ),
       _buildTableRow("PS:", profile['ps'], textStyleLabel, textStyleValue),
       _buildTableRow("D.O.B:", profile['dob'], textStyleLabel, textStyleValue),
-        _buildTableRow(
+      _buildTableRow(
         "Blood Group:",
         profile['blood'],
         textStyleLabel,
         textStyleValue,
       ),
-   
-    
     ],
   );
 }

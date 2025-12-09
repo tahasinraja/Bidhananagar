@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:bidhannagarpoliceapp/forgetpage.dart';
 import 'package:bidhannagarpoliceapp/registerotppage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,8 @@ class _testloginState extends State<testlogin> {
   bool isLoading = false;
 
   Future<void> submit() async {
+    String? token=await FirebaseMessaging.instance.getToken();
+    print('Fcm token:$token');
     final phone = phoneController.text.trim();
     final pin = pinController.text.trim();
 
