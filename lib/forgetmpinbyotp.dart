@@ -7,12 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'homepage.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class signuppage extends StatefulWidget {
+class mpinupdatebyotp extends StatefulWidget {
   final String phone;
   final Function(bool) onThemeChanged;
   final bool isDarkMode;
 
-  const signuppage({
+  const mpinupdatebyotp({
     super.key,
     required this.onThemeChanged,
     required this.isDarkMode,
@@ -20,10 +20,10 @@ class signuppage extends StatefulWidget {
   });
 
   @override
-  _signuppageState createState() => _signuppageState();
+  _mpinupdatebyotpState createState() => _mpinupdatebyotpState();
 }
 
-class _signuppageState extends State<signuppage> {
+class _mpinupdatebyotpState extends State<mpinupdatebyotp> {
   final TextEditingController otpController = TextEditingController();
   final TextEditingController mpinController = TextEditingController();
   bool otpVerified = false;
@@ -70,8 +70,8 @@ class _signuppageState extends State<signuppage> {
     setState(() => isLoading = true);
 
     try {
-      final loginUrl = Uri.parse(
-        "https://bnpcdeveloper.co.in/bnpolice/app/verify_otp.php",
+      final loginUrl = Uri.parse('https://bnpcdeveloper.co.in/bnpolice/app/mpin_update.php?',
+       // "https://bnpcdeveloper.co.in/bnpolice/app/verify_otp.php",
         //  "https://bnpcdeveloper.co.in/bnpolice/app/profile_login_check.php",
       );
       final loginResponse = await http.post(
@@ -107,7 +107,7 @@ class _signuppageState extends State<signuppage> {
                 (context) => homepage(
                   onThemeChanged: widget.onThemeChanged,
                   isDarkMode: widget.isDarkMode,
-                  phoneNumber: '',
+                  phoneNumber: phoneController.text,
                 ),
           ),
         );
@@ -328,7 +328,7 @@ class _signuppageState extends State<signuppage> {
                   const SizedBox(height: 10),
                   Center(
                     child: Text(
-                      "CREATE MPIN",
+                      "UPDATE MPIN",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,

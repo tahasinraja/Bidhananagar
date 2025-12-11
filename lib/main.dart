@@ -112,10 +112,15 @@ class _MyAppState extends State<MyApp> {
       // Page control
       home:
           isLoggedIn
-              ? homepage(onThemeChanged: _toggleTheme, isDarkMode: isDarkMode)
+              ? homepage(onThemeChanged: _toggleTheme, 
+              isDarkMode: isDarkMode,
+              phoneNumber: '',
+              
+              )
               : SplashScreen(
                 onThemeChanged: _toggleTheme,
                 isDarkMode: isDarkMode,
+                
               ),
     );
   }

@@ -222,6 +222,7 @@ class _forgetpageState extends State<forgetpage> {
                                       homepage(
                                         onThemeChanged: widget.onThemeChanged,
                                         isDarkMode: widget.isDarkMode,
+                                        phoneNumber: '',
                                       ),
                                 ),
                               ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:bidhannagarpoliceapp/forgetpage.dart';
+import 'package:bidhannagarpoliceapp/forgetbyotppage.dart';
+
 import 'package:bidhannagarpoliceapp/registerotppage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +75,7 @@ class _testloginState extends State<testlogin> {
                 (_) => homepage(
                   onThemeChanged: widget.onThemeChanged,
                   isDarkMode: widget.isDarkMode,
+                  phoneNumber: phone,
                 ),
           ),
         );
@@ -107,6 +109,7 @@ class _testloginState extends State<testlogin> {
                   (_) => homepage(
                     onThemeChanged: widget.onThemeChanged,
                     isDarkMode: widget.isDarkMode,
+                    phoneNumber: phone,
                   ),
             ),
           );
@@ -280,10 +283,12 @@ class _testloginState extends State<testlogin> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => forgetpage(
-                                      onThemeChanged: widget.onThemeChanged,
-                                      isDarkMode: widget.isDarkMode,
-                                    ),
+                                    (context) => forgotSendOtpPage(onThemeChanged:widget. onThemeChanged, 
+                                    isDarkMode:widget. isDarkMode),
+                                    // forgetpage(
+                                    //   onThemeChanged: widget.onThemeChanged,
+                                    //   isDarkMode: widget.isDarkMode,
+                                    // ),
                               ),
                             );
                           },
@@ -335,6 +340,7 @@ class _testloginState extends State<testlogin> {
                                       (_) => homepage(
                                         onThemeChanged: widget.onThemeChanged,
                                         isDarkMode: widget.isDarkMode,
+                                        phoneNumber: phoneController.text,
                                       ),
                                 ),
                               ),

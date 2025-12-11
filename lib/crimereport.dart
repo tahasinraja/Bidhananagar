@@ -338,6 +338,7 @@ class _crimereportState extends State<crimereport> {
                   (context) => homepage(
                     onThemeChanged: widget.onThemeChanged,
                     isDarkMode: widget.isDarkMode,
+                    phoneNumber: phone,
                   ),
             ),
           );
@@ -361,6 +362,7 @@ class _crimereportState extends State<crimereport> {
                 (context) => homepage(
                   onThemeChanged: widget.onThemeChanged,
                   isDarkMode: widget.isDarkMode,
+                  phoneNumber: phone,
                 ),
           ),
         );

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bidhannagarpoliceapp/imageviwer.dart';
+import 'package:bidhannagarpoliceapp/mailotppage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -24,6 +25,48 @@ class profilescreen extends StatefulWidget {
 
 class _profilescreenState extends State<profilescreen> {
   File? _photo;
+
+
+  Future<bool> checkVerified(String email) async {
+    print("📩 Checking verification for email: $email");
+    print("📱 Phone: $phone");
+
+    final resp = await http.post(
+      Uri.parse(
+        "https://bnpcdeveloper.co.in/bnpolice/app/profile_update.php?ph=$phone",
+      ),
+      body: {
+        "ph": phone,
+        "email": email},
+    );
+
+    print("⬇️ Raw Response Body:");
+    print(resp.body); // <-- DEBUG PRINT
+
+    try {
+      final data = json.decode(resp.body);
+
+      print("📌 Decoded Response:");
+       print(data);
+      Navigator.push(context, 
+      MaterialPageRoute(builder: (context) => Sendmailotp(
+        onThemeChanged:widget. onThemeChanged,
+       isDarkMode:widget. isDarkMode,
+        phone: phone,
+        email: email,
+        ),));  
+     
+
+      bool isVerified = data["verified"] == 1;
+
+      print("🔍 Verified Status: $isVerified");
+
+      return isVerified;
+    } catch (e) {
+      print("❌ JSON Decode Error: $e");
+      return false;
+    }
+  }
 
   /// 🖼 Pick Image gallery
   Future<void> _pickImage() async {
@@ -126,96 +169,104 @@ class _profilescreenState extends State<profilescreen> {
     }
   }
 
-  Future<void> updateProfile() async {
-    setState(() => isUpdating = false);
+Future<void> updateProfile() async {
+  if (isUpdating) return; // double-click protection
+  setState(() => isUpdating = true);
 
-    try {
-      final url = Uri.parse(
-        'https://bnpcdeveloper.co.in/bnpolice/app/profile_update.php',
+  try {
+    final url = Uri.parse(
+      'https://bnpcdeveloper.co.in/bnpolice/app/profile_update.php',
+    );
+
+    debugPrint('🔗 API URL: $url');
+
+    final request = http.MultipartRequest('POST', url);
+
+    // ------------ Sending Fields ------------
+    request.fields['ph'] = phone;
+    request.fields['name'] = nameController.text.trim();
+    request.fields['ps'] = psController.text.trim();
+    request.fields['dob'] = dobController.text.trim();
+    request.fields['address'] = addressController.text.trim();
+    request.fields['email'] = emailController.text.trim();
+    request.fields['blood'] = bloodController.text.trim();
+
+    debugPrint('📨 Sending Fields → ${request.fields}');
+
+    // ------------ Attach Image ------------
+    if (_photo != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath('image', _photo!.path),
       );
-      print('Debugprint url:$url');
-      final request = http.MultipartRequest('POST', url);
+      debugPrint("📸 Uploading Image: ${_photo!.path}");
+    }
 
-      request.fields['ph'] = phone;
-      request.fields['name'] = nameController.text.trim();
-      request.fields['ps'] = psController.text.trim();
-      request.fields['dob'] = dobController.text.trim();
-      request.fields['address'] = addressController.text.trim();
-      request.fields['email'] = emailController.text.trim();
-      request.fields['blood'] = bloodController.text.trim();
+    // ------------ Server Response ------------
+    final response = await request.send();
+    final responseString = await response.stream.bytesToString();
 
-      debugPrint('Request Fields Send:${request.fields}');
+    debugPrint("📦 Server Raw Response → $responseString");
 
-      if (_photo != null) {
-        request.files.add(
-          await http.MultipartFile.fromPath('image', _photo!.path),
-        );
-        debugPrint("📎 Photo attached: ${_photo!.path}");
+    final data = json.decode(responseString);
+    final status = data['status'] ?? '';
+    final message = data['message'] ?? '';
+
+    // ------------ Success Case ------------
+    if (status.toLowerCase() == 'success') {
+      _showMessage("✅ Profile updated...");
+
+      await fetchProfile(phone);
+
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Selected Image is :${_photo!.path}')),
+          const SnackBar(
+            content: Text("✅ Profile updated successfully!"),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: EdgeInsets.only(bottom: 20, left: 20, right: 20, top: 20),
+            duration: Duration(seconds: 1),
+          ),
         );
       }
-      // final response = await http.post(
-      //   url,
-      //   body: {
-      //     'ph': phone,
-      //     'name': nameController.text.trim(),
-      //     'ps': psController.text.trim(),
-      //     'dob': dobController.text.trim(),
-      //     'address': addressController.text.trim(),
-      //     'email': emailController.text.trim(),
-      //     'blood': bloodController.text.trim(),
-      //   },
-      // );
 
-      //sendrequest
-      final requestresponce = await request.send();
-      //convert streaming to string
-      final finalstring = await requestresponce.stream.bytesToString();
-      debugPrint("📦 Raw Response Body: $finalstring");
+      await Future.delayed(const Duration(seconds: 1));
 
-      final data = json.decode(finalstring);
-      final status = data['status'] ?? '';
-      final message = data['message'] ?? '';
-
-      if (status.toLowerCase() == 'success') {
-        _showMessage("✅ $message");
-        await fetchProfile(phone);
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("✅ Profile updated successfully!"),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              duration: Duration(seconds: 1),
-            ),
-          );
-        }
-        await Future.delayed(const Duration(seconds: 1));
+      if (context.mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => profilescreen(
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
-                ),
+            builder: (context) => profilescreen(
+              onThemeChanged: widget.onThemeChanged,
+              isDarkMode: widget.isDarkMode,
+            ),
           ),
         );
-      } else {
-        _showMessage("❌ $message");
       }
-    } catch (e) {
-      _showMessage("❌ Error: $e");
     }
+    // ------------ Failed Case ------------
+    else {
+      _showMessage("❌ $message");
+    }
+  } catch (e) {
+    _showMessage("❌ Error: $e");
+    debugPrint("🔥 Exception: $e");
+  }
+
+  if (mounted) {
     setState(() => isUpdating = false);
   }
+  
+}
+void _showMessage(String msg) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(msg)),
+  );
+}
 
-  void _showMessage(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-  }
+
 
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:
@@ -233,29 +284,7 @@ class _profilescreenState extends State<profilescreen> {
             ),
             Spacer(),
 
-            // TextButton.icon(
-            //   onPressed: () async {
-            //     final prefs = await SharedPreferences.getInstance();
-            //     await prefs.clear();
-            //     if (!context.mounted) return;
-            //     Navigator.pushAndRemoveUntil(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder:
-            //             (_) => testlogin(
-            //               onThemeChanged: widget.onThemeChanged,
-            //               isDarkMode: widget.isDarkMode,
-            //             ),
-
-            //       )
-
-            //     );
-
-            //   },
-
-            //   icon: Icon(Icons.logout_outlined),
-            //   label: Text('"Logout'),
-            // ),
+      
             TextButton.icon(
               style: TextButton.styleFrom(backgroundColor: Color(0xFFe9e4de)),
               icon: Icon(
@@ -331,43 +360,19 @@ class _profilescreenState extends State<profilescreen> {
                                 end: Alignment.bottomCenter,
                               ),
                             ),
-                            // child: Align(
-                            //   alignment: Alignment.topRight,
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.only(top: 40, right: 20),
-                            //     child: IconButton(
-                            //       icon: const Icon(Icons.logout_outlined,
-                            //           color: Colors.black, size: 30),
-                            //       onPressed: () async {
-                            //         final prefs = await SharedPreferences.getInstance();
-                            //         await prefs.clear();
-                            //         if (!context.mounted) return;
-                            //         Navigator.pushAndRemoveUntil(
-                            //           context,
-                            //           MaterialPageRoute(
-                            //             builder: (_) => testlogin(
-                            //               onThemeChanged: widget.onThemeChanged,
-                            //               isDarkMode: widget.isDarkMode,
-                            //             ),
-                            //           ),
-                            //           (route) => false,
-                            //         );
-                            //       },
-                            //     ),
-                            //   ),
-                            // ),
+                
                           ),
                         ),
 
                         // 🟨 Profile Image overlapping bottom edge
                         Positioned(
-                          top: 77, // adjust this to overlap more or less
+                          top: 74, // adjust this to overlap more or less
                           left: 0,
                           right: 0,
                           child: Center(
                             child: Container(
-                              height: 110,
-                              width: 110,
+                              height: 120,
+                              width: 120,
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 boxShadow: [
@@ -378,53 +383,45 @@ class _profilescreenState extends State<profilescreen> {
                                   ),
                                 ],
                               ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => Imageviwer(
-                                            Imageview: profile!['image'],
-                                          ),
-                                    ),
-                                  );
-                                },
-                                child: ClipOval(
-                                  child:
-                                      (profile == null)
-                                          ? Image.asset(
-                                            'assets/images/man_4140037.png',
-                                            fit: BoxFit.cover,
-                                          )
-                                          : (profile!['image'] != null &&
-                                              profile!['image']
-                                                  .toString()
-                                                  .isNotEmpty)
-                                          ? Image.network(
-                                            profile!['image'],
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (
-                                              context,
-                                              error,
-                                              stackTrace,
-                                            ) {
-                                              return Image.asset(
-                                                'assets/images/man_4140037.png',
-                                              );
-                                            },
-                                          )
-                                          : Image.asset(
-                                            'assets/images/man_4140037.png',
-                                          ),
+                              child:
+                              GestureDetector(
+  onTap: () {
+    // 👉 Agar profile null hai ya image nahi hai → ImageViewer na khole
+    if (profile != null &&
+        profile!['image'] != null &&
+        profile!['image'].toString().isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Imageviwer(
+            Imageview: profile!['image'],
+          ),
+        ),
+      );
+    }
+  },
+  child: ClipOval(
+    child: (profile == null)
+        ? Image.asset(
+            'assets/images/man_4140037.png',
+            fit: BoxFit.cover,
+          )
+        : (profile!['image'] != null &&
+                profile!['image'].toString().isNotEmpty)
+            ? Image.network(
+                profile!['image'],
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset('assets/images/man_4140037.png');
+                },
+              )
+            : Image.asset(
+                'assets/images/man_4140037.png',
+                fit: BoxFit.cover,
+              ),
+  ),
+),
 
-                                  // Image.network(profile!['image']??"N/A",fit: BoxFit.cover,)
-                                  // Image.asset(
-                                  //   "assets/images/man_4140037.png",
-                                  //   fit: BoxFit.cover,
-                                  // ),
-                                ),
-                              ),
                             ),
                           ),
                         ),
@@ -524,163 +521,366 @@ class _profilescreenState extends State<profilescreen> {
               ),
     );
   }
-
   void _showEditBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor:
-          widget.isDarkMode ? Colors.grey[900] : const Color(0xFFf8f6f2),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-      ),
-      isScrollControlled: true,
-      builder: (_) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 20,
-            right: 20,
-            top: 20,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Edit Profile",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: widget.isDarkMode ? Colors.white : Colors.black,
+  showModalBottomSheet(
+    context: context,
+    backgroundColor:
+        widget.isDarkMode ? Colors.grey[900] : const Color(0xFFf8f6f2),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+    ),
+    isScrollControlled: true,
+    builder: (_) {
+      bool localUpdating = false; // 🔹 Local state for Save button
+      return StatefulBuilder(
+        builder: (context, setModalState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+              left: 20,
+              right: 20,
+              top: 20,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Edit Profile",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: widget.isDarkMode ? Colors.white : Colors.black,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 15),
-                _editField("Name", nameController),
-                _editField("Email", emailController),
-                _editField("Address", addressController),
-                _editField("PS", psController),
-                _editField("Blood Group", bloodController),
+                  const SizedBox(height: 15),
+                  _editField("Name", nameController),
+                       TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        final email = emailController.text.trim();
 
-                TextField(
-                  controller: dobController,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    labelText: "DOB",
-                    suffixIcon: Icon(Icons.calendar_today),
+                        if (email.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Please enter email")),
+                          );
+                          return;
+                        }
+
+                        checkVerified(email); // ← OTP bhejega
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        child: Text(
+                          "Verify",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime.now(),
-                    );
-                    if (pickedDate != null) {
-                      dobController.text =
-                          "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                    }
-                  },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
+                  _editField("Address", addressController),
+                  _editField("PS", psController),
+                  _editField("Blood Group", bloodController),
+                  TextField(
+                    controller: dobController,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: "DOB",
+                      suffixIcon: Icon(Icons.calendar_today),
+                    ),
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime.now(),
+                      );
+                      if (pickedDate != null) {
+                        dobController.text =
+                            "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 25),
+              
+               
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    isLoading? const Center(child: CircularProgressIndicator(),):
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return SizedBox(
-                              height: 150,
-                              child: AlertDialog(
-                                title: Text('Profile Image'),
-                                content: SizedBox(
+                    isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : ElevatedButton.icon(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return SizedBox(
                                   height: 150,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        'If you are change or upload new profile image then click Gallery  or cancle it',
-                                      ),
-                                      SizedBox(height: 20,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  child: AlertDialog(
+                                    title: Text('Profile Image'),
+                                    content: SizedBox(
+                                      height: 150,
+                                      child: Column(
                                         children: [
-                                          TextButton(
-                                            onPressed: _pickImage,
-                                            child: Text("Gallery"),
+                                          Text(
+                                            'If you are change or upload new profile image then click Gallery  or cancle it',
                                           ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text("close"),
+                                          SizedBox(height: 20),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              TextButton(
+                                                onPressed: _pickImage,
+                                                child: Text("Gallery"),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text("close"),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                      label: Text('Profile Image'),
-                      icon: Icon(Icons.image),
-                    ),
-                     
-                      if (_photo != null)
-                      
-                                 Icon(Icons.check_circle, color: Colors.green),
+                          label: Text('Profile Image'),
+                          icon: Icon(Icons.image),
+                        ),
+
+                    if (_photo != null)
+                      Icon(Icons.check_circle, color: Colors.green),
                   ],
                 ),
-              
-               
+
                 const SizedBox(height: 25),
 
-                isUpdating
-                    ? const Center(child: CircularProgressIndicator())
-                    : ElevatedButton.icon(
-                      onPressed: isUpdating ? null : updateProfile,
-                      icon:
-                          isUpdating
-                              ? const SizedBox(
-                                height: 18,
-                                width: 18,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                              : const Icon(Icons.save),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            widget.isDarkMode ? Colors.blueGrey : Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 50,
-                          vertical: 14,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                      label: Text(
-                        isUpdating ? "Saving..." : "Save",
-                        style: TextStyle(
-                          fontSize: 17,
-                          color:
-                              widget.isDarkMode ? Colors.white : Colors.black,
-                        ),
-                      ),
-                    ),
-              ],
+
+                  ElevatedButton.icon(
+                    onPressed: localUpdating
+                        ? null
+                        : () async {
+                            setModalState(() => localUpdating = true);
+                            await updateProfile();
+                            setModalState(() => localUpdating = false);
+                          },
+                    icon: localUpdating
+                        ? SizedBox(
+                            height: 18,
+                            width: 18,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Icon(Icons.save),
+                    label: Text(localUpdating ? "Updating please wait.." : "Save"),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
-    );
-  }
+          );
+        },
+      );
+    },
+  );
+}
+
+
+//   void _showEditBottomSheet() {
+//     showModalBottomSheet(
+//       context: context,
+//       backgroundColor:
+//           widget.isDarkMode ? Colors.grey[900] : const Color(0xFFf8f6f2),
+//       shape: const RoundedRectangleBorder(
+//         borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+//       ),
+//       isScrollControlled: true,
+//       builder: (_) {
+//         return Padding(
+//           padding: EdgeInsets.only(
+//             bottom: MediaQuery.of(context).viewInsets.bottom,
+//             left: 20,
+//             right: 20,
+//             top: 20,
+//           ),
+//           child: SingleChildScrollView(
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 Text(
+//                   "Edit Profile",
+//                   style: TextStyle(
+//                     fontSize: 20,
+//                     fontWeight: FontWeight.bold,
+//                     color: widget.isDarkMode ? Colors.white : Colors.black,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 15),
+//                 _editField("Name", nameController),
+//                // _editField("Email", emailController),
+//                 TextField(
+//                   controller: emailController,
+//                   decoration: InputDecoration(
+//                     labelText: "Email",
+//                     border: OutlineInputBorder(
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                     suffixIcon: InkWell(
+//                       onTap: () {
+//                         final email = emailController.text.trim();
+
+//                         if (email.isEmpty) {
+//                           ScaffoldMessenger.of(context).showSnackBar(
+//                             SnackBar(content: Text("Please enter email")),
+//                           );
+//                           return;
+//                         }
+
+//                         checkVerified(email); // ← OTP bhejega
+//                       },
+//                       child: Padding(
+//                         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+//                         child: Text(
+//                           "Verify",
+//                           style: TextStyle(
+//                             color: Colors.blue,
+//                             fontWeight: FontWeight.bold,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+
+//                 SizedBox(height: 10),
+           
+//                 _editField("Address", addressController),
+//                 _editField("PS", psController),
+//                 _editField("Blood Group", bloodController),
+
+//                 TextField(
+//                   controller: dobController,
+//                   readOnly: true,
+//                   decoration: const InputDecoration(
+//                     labelText: "DOB",
+//                     suffixIcon: Icon(Icons.calendar_today),
+//                   ),
+//                   onTap: () async {
+//                     DateTime? pickedDate = await showDatePicker(
+//                       context: context,
+//                       initialDate: DateTime.now(),
+//                       firstDate: DateTime(1900),
+//                       lastDate: DateTime.now(),
+//                     );
+//                     if (pickedDate != null) {
+//                       dobController.text =
+//                           "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+//                     }
+//                   },
+//                 ),
+//                 SizedBox(height: 20),
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     isLoading
+//                         ? const Center(child: CircularProgressIndicator())
+//                         : ElevatedButton.icon(
+//                           onPressed: () {
+//                             showDialog(
+//                               context: context,
+//                               builder: (context) {
+//                                 return SizedBox(
+//                                   height: 150,
+//                                   child: AlertDialog(
+//                                     title: Text('Profile Image'),
+//                                     content: SizedBox(
+//                                       height: 150,
+//                                       child: Column(
+//                                         children: [
+//                                           Text(
+//                                             'If you are change or upload new profile image then click Gallery  or cancle it',
+//                                           ),
+//                                           SizedBox(height: 20),
+//                                           Row(
+//                                             mainAxisAlignment:
+//                                                 MainAxisAlignment.spaceBetween,
+//                                             children: [
+//                                               TextButton(
+//                                                 onPressed: _pickImage,
+//                                                 child: Text("Gallery"),
+//                                               ),
+//                                               TextButton(
+//                                                 onPressed: () {
+//                                                   Navigator.pop(context);
+//                                                 },
+//                                                 child: Text("close"),
+//                                               ),
+//                                             ],
+//                                           ),
+//                                         ],
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 );
+//                               },
+//                             );
+//                           },
+//                           label: Text('Profile Image'),
+//                           icon: Icon(Icons.image),
+//                         ),
+
+//                     if (_photo != null)
+//                       Icon(Icons.check_circle, color: Colors.green),
+//                   ],
+//                 ),
+
+//                 const SizedBox(height: 25),
+
+               
+// ElevatedButton.icon(
+//   onPressed: isUpdating  ? null : updateProfile,
+//   icon: isUpdating 
+//       ? SizedBox(
+//           height: 18,
+//           width: 18,
+//           child: CircularProgressIndicator(
+//             color: Colors.white,
+//             strokeWidth: 2,
+//           ),
+//         )
+//       : Icon(Icons.save),
+//   label: Text(
+//     isUpdating ? "Saving..." : "Save",
+//   ),
+// ),
+
+
+
+//               ],
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
 
   Widget _editField(String label, TextEditingController controller) {
     return Padding(

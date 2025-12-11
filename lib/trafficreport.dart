@@ -274,6 +274,7 @@ class _trafficreportState extends State<trafficreport> {
                   (context) => homepage(
                     onThemeChanged: widget.onThemeChanged,
                     isDarkMode: widget.isDarkMode,
+                    phoneNumber: phone,
                   ),
             ),
           );
@@ -297,6 +298,7 @@ class _trafficreportState extends State<trafficreport> {
                 (context) => homepage(
                   onThemeChanged: widget.onThemeChanged,
                   isDarkMode: widget.isDarkMode,
+                  phoneNumber: phone,
                 ),
           ),
         );

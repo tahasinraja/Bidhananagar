@@ -7,29 +7,32 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'homepage.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class signuppage extends StatefulWidget {
+class Sendmailotp extends StatefulWidget {
+  final String email;
   final String phone;
   final Function(bool) onThemeChanged;
   final bool isDarkMode;
 
-  const signuppage({
+  const Sendmailotp({
     super.key,
     required this.onThemeChanged,
     required this.isDarkMode,
     required this.phone,
+    required this.email,
   });
 
   @override
-  _signuppageState createState() => _signuppageState();
+  _SendmailotpState createState() => _SendmailotpState();
 }
 
-class _signuppageState extends State<signuppage> {
+class _SendmailotpState extends State<Sendmailotp> {
   final TextEditingController otpController = TextEditingController();
-  final TextEditingController mpinController = TextEditingController();
+  final TextEditingController mailController = TextEditingController();
+  
   bool otpVerified = false;
 
   final TextEditingController phoneController = TextEditingController();
-  final TextEditingController pinController = TextEditingController();
+
 
   bool isLoading = false;
 
@@ -48,50 +51,30 @@ class _signuppageState extends State<signuppage> {
       ).showSnackBar(const SnackBar(content: Text("Enter OTP")));
       return;
     }
-    if (mpinController.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Enter MPIN")));
-      return;
-    }
-    // final phone = phoneController.text.trim();
-    // final pin = pinController.text.trim();
-
-    // if (phone.isEmpty || pin.isEmpty) {
-    //   _showMessage("❌ Enter mobile number and PIN");
-    //   return;
-    // }
-
-    // if (pin.length != 4) {
-    //   _showMessage("❌ PIN must be 4 digits");
-    //   return;
-    // }
+ 
 
     setState(() => isLoading = true);
 
     try {
-      final loginUrl = Uri.parse(
-        "https://bnpcdeveloper.co.in/bnpolice/app/verify_otp.php",
-        //  "https://bnpcdeveloper.co.in/bnpolice/app/profile_login_check.php",
-      );
+      final loginUrl = Uri.parse('https://bnpcdeveloper.co.in/bnpolice/app/verify_email_otp.php',);
       final loginResponse = await http.post(
         loginUrl,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
+      //  headers: {"Content-Type": "application/json"},
+        body: {
           "ph": widget.phone,
           "otp": otpController.text,
-          "mpin": mpinController.text,
-        }),
+           "email": widget.email,
+        }
 
         // body: {"ph": phone,
         // "mpin": pin},
       );
       final data = jsonDecode(loginResponse.body);
       print("🔽 VERIFY RESPONSE: ${loginResponse.body}");
+print("SENDING → ph=${widget.phone}, otp=${otpController.text}, email=${widget.email}");
+print("SERVER RESPONSE → ${loginResponse.body}");
 
-      // final loginData = json.decode(loginResponse.body);
-      // final loginStatus = loginData['status'] ?? '';
-      // final loginMessage = loginData['message'] ?? '';
+    
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       if (data['status'].toLowerCase() == 'success') {
@@ -99,7 +82,7 @@ class _signuppageState extends State<signuppage> {
         await prefs.setBool('isloggedin', true);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text("OTP & MPIN Verified ✔")));
+        ).showSnackBar(const SnackBar(content: Text("OTP & MAIL Verified ✔")));
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -107,7 +90,7 @@ class _signuppageState extends State<signuppage> {
                 (context) => homepage(
                   onThemeChanged: widget.onThemeChanged,
                   isDarkMode: widget.isDarkMode,
-                  phoneNumber: '',
+                  phoneNumber: phoneController.text,
                 ),
           ),
         );
@@ -273,7 +256,7 @@ class _signuppageState extends State<signuppage> {
             ),
           ),
           TextSpan(
-            text: ' ${widget.phone} ',
+            text: ' ${widget.email} ',
             style: TextStyle(
               color: Colors.blue.shade800,
               fontWeight: FontWeight.w500,
@@ -326,39 +309,39 @@ class _signuppageState extends State<signuppage> {
                     onChanged: (value) {},
                   ),
                   const SizedBox(height: 10),
-                  Center(
-                    child: Text(
-                      "CREATE MPIN",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade800,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  PinCodeTextField(
-                    appContext: context,
-                    length: 4,
-                    controller: mpinController,
-                    keyboardType: TextInputType.number,
-                    obscureText: true,
-                    animationType: AnimationType.fade,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(8),
-                      fieldHeight: 55,
-                      fieldWidth: 55,
-                      activeFillColor: Colors.white,
-                      selectedFillColor: Colors.grey.shade200,
-                      inactiveFillColor: Colors.grey.shade100,
-                      activeColor: Colors.blue,
-                      selectedColor: Colors.blueAccent,
-                      inactiveColor: Colors.grey,
-                    ),
-                    onChanged: (value) {},
-                  ),
+                  // Center(
+                  //   child: Text(
+                  //     "UPDATE MPIN",
+                  //     style: TextStyle(
+                  //       fontSize: 20,
+                  //       fontWeight: FontWeight.bold,
+                  //       color: Colors.blue.shade800,
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 10),
+                  // PinCodeTextField(
+                  //   appContext: context,
+                  //   length: 4,
+                  //   controller: mpinController,
+                  //   keyboardType: TextInputType.number,
+                  //   obscureText: true,
+                  //   animationType: AnimationType.fade,
+                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //   pinTheme: PinTheme(
+                  //     shape: PinCodeFieldShape.box,
+                  //     borderRadius: BorderRadius.circular(8),
+                  //     fieldHeight: 55,
+                  //     fieldWidth: 55,
+                  //     activeFillColor: Colors.white,
+                  //     selectedFillColor: Colors.grey.shade200,
+                  //     inactiveFillColor: Colors.grey.shade100,
+                  //     activeColor: Colors.blue,
+                  //     selectedColor: Colors.blueAccent,
+                  //     inactiveColor: Colors.grey,
+                  //   ),
+                  //   onChanged: (value) {},
+                  // ),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,

@@ -2,7 +2,7 @@ name: bidhannagarpoliceapp
 description: "A new Flutter project."
 publish_to: 'none' 
 
-version: 4.8.1+49
+version: 4.8.1+53
 
 environment:
   sdk: ^3.7.0

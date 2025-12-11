@@ -6,9 +6,9 @@ import 'package:bidhannagarpoliceapp/allparkingmape.dart';
 //import 'package:bidhannagarpoliceapp/feedback.dart';
 import 'package:bidhannagarpoliceapp/contactscreen.dart';
 import 'package:bidhannagarpoliceapp/crimereport.dart';
-import 'package:bidhannagarpoliceapp/messipage.dart';
+
 import 'package:bidhannagarpoliceapp/noticedetails.dart';
-import 'package:bidhannagarpoliceapp/organizationprofile.dart';
+
 import 'package:bidhannagarpoliceapp/registerotppage.dart';
 
 import 'package:bidhannagarpoliceapp/lostitempage.dart';
@@ -26,7 +26,7 @@ import 'package:bidhannagarpoliceapp/notification.dart';
 import 'package:bidhannagarpoliceapp/profile.dart';
 //import 'package:bidhannagarpoliceapp/saanjhbatipage.dart';
 import 'package:bidhannagarpoliceapp/serviceapifetch.dart';
-import 'package:bidhannagarpoliceapp/tenantregistration.dart';
+
 import 'package:bidhannagarpoliceapp/weborganization.dart';
 //import 'package:bidhannagarpoliceapp/trafficadvisari.dart';
 
@@ -42,6 +42,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class homepage extends StatefulWidget {
+  final String phoneNumber;
   final Function(bool) onThemeChanged; // 🔹 Dark mode toggle callback
   final bool isDarkMode; // 🔹 Current mode state
 
@@ -49,6 +50,7 @@ class homepage extends StatefulWidget {
     super.key,
     required this.onThemeChanged,
     required this.isDarkMode,
+    required this.phoneNumber,
   });
 
   @override
@@ -56,6 +58,29 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
+  Map<String, dynamic>? profile;
+  Future<void> Fetchprofile(String phoneNumber) async {
+    final url = Uri.parse(
+      'https://bnpcdeveloper.co.in/bnpolice/app/profile_fetch.php?ph=$phoneNumber',
+    );
+    try {
+      final responce = await http.get(url);
+      if (responce.statusCode == 200) {
+        final data = jsonDecode(responce.body);
+        if (data['stock'] != null &&
+            data['stock'] is List &&
+            data['stock'].isNotEmpty) {
+          setState(() {
+            profile = data['stock'][0];
+            //  profile!['image'];
+          });
+        }
+      }
+    } catch (e) {
+      print('Error:$e');
+    }
+  }
+
   final TextEditingController phoneController = TextEditingController();
   void loadSavedCount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -327,13 +352,13 @@ class _homepageState extends State<homepage> {
   }
 
   @override
-
   void initState() {
     super.initState();
     newsfetch();
+    Fetchprofile(widget.phoneNumber);
     _startAutoScroll();
     fetchSliderImage();
-  //  _futureNotices = ApiService.fetchNotices();
+    //  _futureNotices = ApiService.fetchNotices();
     _loadNotices();
     loadSavedCount();
     // selectedfeedback = "facebook"; // 👈 Default Facebook select
@@ -544,7 +569,6 @@ class _homepageState extends State<homepage> {
                           //     );
                           //   },
                           // ),
-
                           _buildDrawerItem(
                             Icons.policy_outlined,
                             "Organization Profile",
@@ -553,14 +577,15 @@ class _homepageState extends State<homepage> {
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (context) =>webvieworganizationpage(
-                                        onThemeChanged:widget. onThemeChanged,
-                                         isDarkMode:widget. isDarkMode),
-                                      
-                                      //  Organizationpage(
-                                      //   onThemeChanged: widget.onThemeChanged,
-                                      //   isDarkMode: widget.isDarkMode,
-                                      // ),
+                                      (context) => webvieworganizationpage(
+                                        onThemeChanged: widget.onThemeChanged,
+                                        isDarkMode: widget.isDarkMode,
+                                      ),
+
+                                  //  Organizationpage(
+                                  //   onThemeChanged: widget.onThemeChanged,
+                                  //   isDarkMode: widget.isDarkMode,
+                                  // ),
                                 ),
                               );
                             },
@@ -1301,7 +1326,7 @@ class _homepageState extends State<homepage> {
                                       ) => SendOtpPage(
                                         onThemeChanged: widget.onThemeChanged,
                                         isDarkMode: widget.isDarkMode,
-                                       // phone: phoneController.text,
+                                        // phone: phoneController.text,
                                       ),
                                   transitionsBuilder: (
                                     context,
@@ -1427,7 +1452,7 @@ class _homepageState extends State<homepage> {
                                       SendOtpPage(
                                         onThemeChanged: widget.onThemeChanged,
                                         isDarkMode: widget.isDarkMode,
-                                      //  phone: phoneController.text,
+                                        //  phone: phoneController.text,
                                       ),
                               transitionsBuilder: (
                                 context,
@@ -1489,8 +1514,31 @@ class _homepageState extends State<homepage> {
                   child: CircleAvatar(
                     radius: MediaQuery.of(context).size.height * 0.020,
                     backgroundColor: Colors.white,
-                    child: Image(
-                      image: AssetImage('assets/images/man_4140037.png'),
+                    child: ClipOval(
+                      child:
+                          (profile == null)
+                              ? Image.asset(
+                                'assets/images/man_4140037.png',
+                                fit: BoxFit.cover,
+                              )
+                              : (profile!['image'] != null &&
+                                  profile!['image'].toString().isNotEmpty)
+                              ? Image.network(
+                                profile!['image'],
+                                width: double.infinity,
+                                height: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/images/man_4140037.png',
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              )
+                              : Image.asset(
+                                'assets/images/man_4140037.png',
+                                fit: BoxFit.cover,
+                              ),
                     ),
                   ),
                 ),
@@ -1599,7 +1647,7 @@ class _homepageState extends State<homepage> {
                     physics: NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.all(1),
                     children: [
-                        tilesButton(
+                      tilesButton(
                         title: 'Report \nCrime',
                         imagepath: 'assets/images/crimereport.png',
                         onTap: () async {
@@ -1665,7 +1713,7 @@ class _homepageState extends State<homepage> {
                                         ) => SendOtpPage(
                                           onThemeChanged: widget.onThemeChanged,
                                           isDarkMode: widget.isDarkMode,
-                                         // phone: phoneController.text,
+                                          // phone: phoneController.text,
                                         ),
                                     transitionsBuilder: (
                                       context,
@@ -1753,7 +1801,7 @@ class _homepageState extends State<homepage> {
                           }
                         },
                       ),
-                          tilesButton(
+                      tilesButton(
                         title: 'Report Lost\nProperty',
                         imagepath: 'assets/images/lost-items.png',
                         onTap: () async {
@@ -1819,7 +1867,7 @@ class _homepageState extends State<homepage> {
                                         ) => SendOtpPage(
                                           onThemeChanged: widget.onThemeChanged,
                                           isDarkMode: widget.isDarkMode,
-                                         // phone: phoneController.text,
+                                          // phone: phoneController.text,
                                         ),
                                     transitionsBuilder: (
                                       context,
@@ -1891,24 +1939,22 @@ class _homepageState extends State<homepage> {
                           // );
                         },
                       ),
-                           tilesButton(
-                          title: ' Report Missing\nMobile',
-                          imagepath: 'assets/images/missing.png',
-                          onTap: () async {
-                            const ur1 =
-                                'https://www.ceir.gov.in/Request/CeirUserBlockRequestDirect.jsp';
-                            if (await canLaunchUrl(Uri.parse(ur1))) {
-                              await launchUrl(Uri.parse(ur1));
-                            } else {
-                              debugPrint("Could not launch $ur1");
-                            }
-                          },
-                        ),
-                    
-                  
-                    
                       tilesButton(
-                        title: 'Report\nTraffic Incident',
+                        title: 'Report Missing\nMobile',
+                        imagepath: 'assets/images/missing.png',
+                        onTap: () async {
+                          const ur1 =
+                              'https://www.ceir.gov.in/Request/CeirUserBlockRequestDirect.jsp';
+                          if (await canLaunchUrl(Uri.parse(ur1))) {
+                            await launchUrl(Uri.parse(ur1));
+                          } else {
+                            debugPrint("Could not launch $ur1");
+                          }
+                        },
+                      ),
+
+                      tilesButton(
+                        title: 'Report Traffic\nIncident',
                         imagepath: 'assets/images/trafficindident.png',
                         onTap: () async {
                           SharedPreferences prefs =
@@ -1973,7 +2019,7 @@ class _homepageState extends State<homepage> {
                                         ) => SendOtpPage(
                                           onThemeChanged: widget.onThemeChanged,
                                           isDarkMode: widget.isDarkMode,
-                                         // phone: phoneController.text,
+                                          // phone: phoneController.text,
                                         ),
                                     transitionsBuilder: (
                                       context,
@@ -2066,8 +2112,6 @@ class _homepageState extends State<homepage> {
 
                       // 🔹 Extra buttons only when showMore is true
                       if (showMore) ...[
-                   
-
                         tilesButton(
                           title: 'Pay Traffic \nChallan',
                           imagepath: 'assets/images/14897102.png',
@@ -2121,7 +2165,7 @@ class _homepageState extends State<homepage> {
                         //     );
                         //   },
                         // ),
-                              tilesButton(
+                        tilesButton(
                           title: 'Passport\nStatus',
                           imagepath: 'assets/images/620765.png',
                           onTap: () async {
@@ -2156,22 +2200,22 @@ class _homepageState extends State<homepage> {
                             );
                           },
                         ),
-                          tilesButton(
-                        title: ' Police\nContact ',
-                        imagepath: 'assets/images/phone-book_7229022.png',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => contactscreen(
-                                    onThemeChanged: widget.onThemeChanged,
-                                    isDarkMode: widget.isDarkMode,
-                                  ),
-                            ),
-                          );
-                        },
-                      ),
+                        tilesButton(
+                          title: ' Police\nContact ',
+                          imagepath: 'assets/images/phone-book_7229022.png',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => contactscreen(
+                                      onThemeChanged: widget.onThemeChanged,
+                                      isDarkMode: widget.isDarkMode,
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
 
                         // tilesButton(
                         //   title: 'Tenant\nRegistration',
@@ -2206,7 +2250,6 @@ class _homepageState extends State<homepage> {
                         //     }
                         //   },
                         // ),
-                  
 
                         // ServiceButton(
                         //   title: 'Traffic Rules',
@@ -2269,7 +2312,7 @@ class _homepageState extends State<homepage> {
                           //   ),
                           // ),
                         ),
-                        SizedBox(height:10),
+                        SizedBox(height: 10),
 
                         // SingleChildScrollView(
                         //   scrollDirection: Axis.horizontal,
@@ -2754,167 +2797,164 @@ class _homepageState extends State<homepage> {
                         //     ),
                         //   ),
                         // ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            //  SizedBox(
+                            //          height:
+                            //      MediaQuery.of(context).size.height *
+                            //       0.065,
+                            //    width:
+                            //        MediaQuery.of(context).size.height * 0.21,
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                                //  SizedBox(
-                                //          height:
-                                //      MediaQuery.of(context).size.height *
-                                //       0.065,
-                                //    width:
-                                //        MediaQuery.of(context).size.height * 0.21,
-                                      
-                                      
-                                //       child: ElevatedButton(
-                                //         style: ElevatedButton.styleFrom(
-                                //           backgroundColor:
-                                //               Theme.of(context).brightness ==
-                                //                       Brightness.dark
-                                //                   ? Color(0xFF1A1A1A)
-                                //                   : Color(0xfff7f2f9),
-                              
-                                //           elevation: 2,
-                                //           shape: RoundedRectangleBorder(
-                                //             borderRadius: BorderRadius.circular(15),
-                                //           ),
-                                //           shadowColor: Colors.black,
-                                //           padding: EdgeInsets.zero,
-                                //         ),
-                                //         onPressed: () async {
-                                //           // if (await canLaunchUrl(
-                                //           //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
-                                //           //   )
-                              
-                                //           // ) {
-                                //           //   await launchUrl(
-                                //           //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
-                                //           //     mode: LaunchMode.platformDefault,
-                                //           //   );
-                                //           // }
-                              
-                                //           Navigator.push(
-                                //             context,
-                                //             MaterialPageRoute(
-                                //               builder:
-                                //                   (context) =>
-                                //                   //   webviewparkingpage
-                                //                   Messipage(
-                                //                     onThemeChanged:
-                                //                         widget.onThemeChanged,
-                                //                     isDarkMode: widget.isDarkMode,
-                                //                   ),
-                                //             ),
-                                //           );
-                                //         },
-                                //         child: Row(
-                                //           mainAxisAlignment:
-                                //               MainAxisAlignment.center,
-                                //           children: [
-                                //             Image.asset(
-                                //               'assets/images/messiicons.png',
-                                //               height: 35,
-                                //             ),
-                                //             SizedBox(width: 10),
-                                //             Column(
-                                //               mainAxisSize: MainAxisSize.min,
-                                //               children: [
-                                //                 Text(
-                                //                   'Welcome MESSI',
-                                //                   style: TextStyle(
-                                //                     fontWeight: FontWeight.bold,
-                                //                     fontSize:
-                                //                         MediaQuery.of(
-                                //                           context,
-                                //                         ).size.height *
-                                //                         0.013,
-                                //                   ),
-                                //                 ),
-                                //               ],
-                                //             ),
-                                //           ],
-                                //         ),
-                                //       ),
-                                //     ),
-                                //     SizedBox(width: 10),
-                              SizedBox(
-                                 height:    MediaQuery.of(context).size.height *
-                                      0.065,
-                               //    width:double.infinity,
-                                width:   MediaQuery.of(context).size.height * 0.44,
-                                        //  MediaQuery.of(context).size.height * 0.19,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Theme.of(context).brightness ==
-                                                      Brightness.dark
-                                                  ? Color(0xFF1A1A1A)
-                                                  : Color(0xfff7f2f9),
-                              
-                                          elevation: 2,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(15),
+                            //       child: ElevatedButton(
+                            //         style: ElevatedButton.styleFrom(
+                            //           backgroundColor:
+                            //               Theme.of(context).brightness ==
+                            //                       Brightness.dark
+                            //                   ? Color(0xFF1A1A1A)
+                            //                   : Color(0xfff7f2f9),
+
+                            //           elevation: 2,
+                            //           shape: RoundedRectangleBorder(
+                            //             borderRadius: BorderRadius.circular(15),
+                            //           ),
+                            //           shadowColor: Colors.black,
+                            //           padding: EdgeInsets.zero,
+                            //         ),
+                            //         onPressed: () async {
+                            //           // if (await canLaunchUrl(
+                            //           //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                            //           //   )
+
+                            //           // ) {
+                            //           //   await launchUrl(
+                            //           //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                            //           //     mode: LaunchMode.platformDefault,
+                            //           //   );
+                            //           // }
+
+                            //           Navigator.push(
+                            //             context,
+                            //             MaterialPageRoute(
+                            //               builder:
+                            //                   (context) =>
+                            //                   //   webviewparkingpage
+                            //                   Messipage(
+                            //                     onThemeChanged:
+                            //                         widget.onThemeChanged,
+                            //                     isDarkMode: widget.isDarkMode,
+                            //                   ),
+                            //             ),
+                            //           );
+                            //         },
+                            //         child: Row(
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.center,
+                            //           children: [
+                            //             Image.asset(
+                            //               'assets/images/messiicons.png',
+                            //               height: 35,
+                            //             ),
+                            //             SizedBox(width: 10),
+                            //             Column(
+                            //               mainAxisSize: MainAxisSize.min,
+                            //               children: [
+                            //                 Text(
+                            //                   'Welcome MESSI',
+                            //                   style: TextStyle(
+                            //                     fontWeight: FontWeight.bold,
+                            //                     fontSize:
+                            //                         MediaQuery.of(
+                            //                           context,
+                            //                         ).size.height *
+                            //                         0.013,
+                            //                   ),
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ),
+                            //     SizedBox(width: 10),
+                            SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.065,
+                                //  width:double.infinity,
+                              width: MediaQuery.of(context).size.width * 0.93,
+                              //  MediaQuery.of(context).size.height * 0.19,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Color(0xFF1A1A1A)
+                                          : Color(0xfff7f2f9),
+
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  shadowColor: Colors.black,
+                                  padding: EdgeInsets.zero,
+                                ),
+                                onPressed: () async {
+                                  // if (await canLaunchUrl(
+                                  //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                  //   )
+
+                                  // ) {
+                                  //   await launchUrl(
+                                  //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
+                                  //     mode: LaunchMode.platformDefault,
+                                  //   );
+                                  // }
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                          //   webviewparkingpage
+                                          AllParkingMap(
+                                            onThemeChanged:
+                                                widget.onThemeChanged,
+                                            isDarkMode: widget.isDarkMode,
                                           ),
-                                          shadowColor: Colors.black,
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        onPressed: () async {
-                                          // if (await canLaunchUrl(
-                                          //   Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
-                                          //   )
-                              
-                                          // ) {
-                                          //   await launchUrl(
-                                          //     Uri.parse('https://bnpcdeveloper.co.in/bnpolice/park/form.php'),
-                                          //     mode: LaunchMode.platformDefault,
-                                          //   );
-                                          // }
-                              
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder:
-                                                  (context) =>
-                                                  //   webviewparkingpage
-                                                  AllParkingMap(
-                                                    onThemeChanged:
-                                                        widget.onThemeChanged,
-                                                    isDarkMode: widget.isDarkMode,
-                                                  ),
-                                            ),
-                                          );
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'assets/images/parking-area.png',
-                                              height: 35,
-                                            ),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  ' Find My Parking',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize:
-                                                        MediaQuery.of(
-                                                          context,
-                                                        ).size.height *
-                                                        0.013,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
                                     ),
-                            ],
-                          ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/parking-area.png',
+                                      height: 35,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          ' Find My Parking',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).size.height *
+                                                0.013,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -3499,7 +3539,7 @@ class _homepageState extends State<homepage> {
               backgroundColor: Colors.white,
               heroTag: 'btn2',
               onPressed: () async {
-                const ur1 = 'https://wa.me/+919147889491';
+                const ur1 = 'https://wa.me/+919147889470';
 
                 if (await canLaunchUrl(Uri.parse(ur1))) {
                   await launchUrl(

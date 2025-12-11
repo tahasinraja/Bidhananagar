@@ -1,3 +1,5 @@
+import 'package:bidhannagarpoliceapp/forgetmpinbyotp.dart';
+import 'package:bidhannagarpoliceapp/forgetpage.dart';
 import 'package:bidhannagarpoliceapp/homepage.dart';
 import 'package:bidhannagarpoliceapp/login.dart';
 import 'package:bidhannagarpoliceapp/signuppage.dart';
@@ -6,21 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:pin_code_fields/pin_code_fields.dart';
 
-class SendOtpPage extends StatefulWidget {
+
+class forgotSendOtpPage extends StatefulWidget {
   final Function(bool) onThemeChanged;
   final bool isDarkMode;
-  const SendOtpPage({
+  const forgotSendOtpPage({
     super.key,
     required this.onThemeChanged,
     required this.isDarkMode,
   });
   @override
-  _SendOtpPageState createState() => _SendOtpPageState();
+  _forgotSendOtpPageState createState() => _forgotSendOtpPageState();
 }
 
-class _SendOtpPageState extends State<SendOtpPage> {
+class _forgotSendOtpPageState extends State<forgotSendOtpPage> {
   final TextEditingController phoneController = TextEditingController();
   bool isLoading = false;
   // 🔥 Random 6-digit OTP generate
@@ -35,8 +37,8 @@ class _SendOtpPageState extends State<SendOtpPage> {
 
     setState(() => isLoading = true);
 
-    final url = Uri.parse(
-      'https://bnpcdeveloper.co.in/bnpolice/app/sent_otp.php', //user cheking vi hota hain
+    final url = Uri.parse('https://bnpcdeveloper.co.in/bnpolice/app/mpin_update.php?'
+      //'https://bnpcdeveloper.co.in/bnpolice/app/sent_otp.php', //user cheking vi hota hain
     ); // Replace with your API
     try {
       print("====================================");
@@ -74,11 +76,15 @@ class _SendOtpPageState extends State<SendOtpPage> {
           context,
           MaterialPageRoute(
             builder:
-                (context) => signuppage(
-                  phone: phoneController.text,
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
-                ),
+                (context) =>mpinupdatebyotp(
+                  onThemeChanged:widget. onThemeChanged,
+                 isDarkMode:widget. isDarkMode,
+                  phone:phoneController.text)
+                //  signuppage(
+                //   phone: phoneController.text,
+                //   onThemeChanged: widget.onThemeChanged,
+                //   isDarkMode: widget.isDarkMode,
+                // ),
           ),
         );
         return;
@@ -95,10 +101,16 @@ class _SendOtpPageState extends State<SendOtpPage> {
           context,
           MaterialPageRoute(
             builder:
-                (context) => testlogin(
-                  onThemeChanged: widget.onThemeChanged,
-                  isDarkMode: widget.isDarkMode,
-                ),
+                (context) =>
+                //  forgetpage(onThemeChanged:widget. onThemeChanged,
+                //  isDarkMode:widget. isDarkMode),
+                
+                mpinupdatebyotp(onThemeChanged:widget. onThemeChanged, 
+                isDarkMode:widget. isDarkMode, phone: phoneController.text),
+                //  testlogin(
+                //   onThemeChanged: widget.onThemeChanged,
+                //   isDarkMode: widget.isDarkMode,
+                // ),
           ),
         );
 
@@ -171,7 +183,7 @@ class _SendOtpPageState extends State<SendOtpPage> {
       ).createShader(bounds);
     },
     child: Text(
-      "SIGN UP",
+      "FORGOT MPIN", 
       style: TextStyle(
         fontSize: h * 0.035,
         fontWeight: FontWeight.w900,

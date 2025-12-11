@@ -48,7 +48,7 @@ String getDynamicLabel() {
   } 
 
   else {
-    return "Enter Other Name";
+    return "Description of item ";
   }
 }
 
@@ -60,7 +60,7 @@ String getDynamicdocname() {
   } 
   
   else {
-    return "Enter Other Name";
+    return "Description of item";
   }
 }
 
@@ -408,6 +408,7 @@ String getDynamicdocname() {
                   (context) => homepage(
                     onThemeChanged: widget.onThemeChanged,
                     isDarkMode: widget.isDarkMode,
+                    phoneNumber: phone,
                   ),
             ),
           );
@@ -431,6 +432,7 @@ String getDynamicdocname() {
                 (context) => homepage(
                   onThemeChanged: widget.onThemeChanged,
                   isDarkMode: widget.isDarkMode,
+                  phoneNumber: phone,
                 ),
           ),
         );
@@ -446,6 +448,7 @@ String getDynamicdocname() {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
